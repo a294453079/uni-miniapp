@@ -34,19 +34,21 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
-        // "iconPath": "static/tabbar/home.png",
-        // "selectedIconPath": "static/tabbar/home-active.png"
+        "text": "首页",
+         "iconPath": "static/tabbar/home-active.png",
+         "selectedIconPath": "static/tabbar/home-active.png"
       },
       {
         "pagePath": "pages/practice/index",
-        "text": "练习"
-     
+        "text": "练习",
+         "iconPath": "static/tabbar/practice.png",
+         "selectedIconPath": "static/tabbar/practice-active.png"
       },
       {
         "pagePath": "pages/my/index",
-        "text": "我的"
-    
+        "text": "我的",
+        "iconPath": "static/tabbar/my-active.png",
+        "selectedIconPath": "static/tabbar/my-active.png"
       }
     ]
   },
