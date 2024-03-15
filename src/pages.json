@@ -1,0 +1,99 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "智慧课堂"
+			}
+		},
+		{
+			"path": "pages/queryResults/index",
+			"style": {
+				"navigationBarTitleText": "查询结果"
+			}
+		}
+	],
+   "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#386EE8",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "练习",
+        "iconPath": "static/tabbar/my.png",
+        "selectedIconPath": "static/tabbar/my-active.png"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "我的",
+        "iconPath": "static/tabbar/my.png",
+        "selectedIconPath": "static/tabbar/my-active.png"
+      }
+    ]
+  },
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "智慧课堂",
+		"navigationBarBackgroundColor": "#2B63FF",
+		"backgroundColor": "#F8F8F8"
+	},
+	"easycom": {
+		"autoscan": true,
+			"custom": {
+			"fui-(.*)": "firstui-uni/firstui/fui-$1/fui-$1.vue",
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+	    "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue"
+		}
+	},
+  "subPackages": [
+    {
+      "root": "pages/my-modules",
+      "pages": [
+        {
+          "path": "personalInfo",
+          "style": {
+            "navigationBarTitleText": "个人信息"
+          }
+        },
+        {
+          "path": "helpCenter",
+          "style": {
+            "navigationBarTitleText": "帮助中心"
+          }
+        },
+        {
+          "path": "userFeedback",
+          "style": {
+            "navigationBarTitleText": "用户反馈"
+          }
+        },
+        {
+          "path": "serviceTel",
+          "style": {
+            "navigationBarTitleText": "客服电话"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/news",
+      "pages": [
+        {
+          "path": "detail",
+          "style": {
+            "navigationBarTitleText": "新闻详情"
+          }
+        }
+      ]
+    }
+  ]
+}
