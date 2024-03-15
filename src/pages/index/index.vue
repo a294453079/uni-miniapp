@@ -1,7 +1,5 @@
 <template>
   <view class="content">
-    <view class="title"> 赣州市普通高中录取查询 </view>
-
     <view class="px-30rpx">
       <view class="input-group">
         <input class="input-item" type="number" v-model="form.number" placeholder="请输入考生的报名序号"
@@ -16,7 +14,6 @@
     <view class="px-30rpx">看看2</view>
     <view class="px-30px">看看1</view>
 
-    <view class="tips">查询系统将于2023年7月1日 09:00 开启</view>
     <view class="">
       <up-button type="primary" text="确定" u-reset-button></up-button>
     </view>

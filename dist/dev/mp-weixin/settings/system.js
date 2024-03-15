@@ -93,7 +93,7 @@ const useGlobalSetting = () => {
     name: name2,
     version: version2,
     appCode: "af_plat",
-    apiUrl: "https://saas.police.mixwoo.com/v2_java",
+    apiUrl: "https://teacher.sce.test.zhongteng.tech/",
     locationKey: "",
     wxAppId: "wxf97536376ab02675",
     alipayId: "",

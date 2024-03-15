@@ -11,7 +11,20 @@
 			"style": {
 				"navigationBarTitleText": "查询结果"
 			}
+		},
+    {
+			"path": "pages/practice/index",
+			"style": {
+				"navigationBarTitleText": "练习"
+			}
+		},
+    {
+			"path": "pages/my/index",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
 		}
+
 	],
    "tabBar": {
     "color": "#999999",
@@ -21,21 +34,19 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "static/tabbar/home.png",
-        "selectedIconPath": "static/tabbar/home-active.png"
+        "text": "首页"
+        // "iconPath": "static/tabbar/home.png",
+        // "selectedIconPath": "static/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/practice/index",
+        "text": "练习"
+     
       },
       {
         "pagePath": "pages/my/index",
-        "text": "练习",
-        "iconPath": "static/tabbar/my.png",
-        "selectedIconPath": "static/tabbar/my-active.png"
-      },
-      {
-        "pagePath": "pages/my/index",
-        "text": "我的",
-        "iconPath": "static/tabbar/my.png",
-        "selectedIconPath": "static/tabbar/my-active.png"
+        "text": "我的"
+    
       }
     ]
   },
@@ -83,17 +94,7 @@
           }
         }
       ]
-    },
-    {
-      "root": "pages/news",
-      "pages": [
-        {
-          "path": "detail",
-          "style": {
-            "navigationBarTitleText": "新闻详情"
-          }
-        }
-      ]
     }
+  
   ]
 }
