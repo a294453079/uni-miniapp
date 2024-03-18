@@ -1,5 +1,18 @@
-import { createPinia } from "pinia";
+import {
+	appStore
+} from "./modules/app.js"
 
-const pinia = createPinia()
+const useStore = () => ({
+	app: appStore(),
+});
 
-export default pinia
+export default useStore;
+/**
+ * 用法
+ * 	import useStore from "@/store/index.js"
+	const {
+		app
+	} = userStore();
+	
+	let app = app.appIndex
+ */
