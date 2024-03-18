@@ -192,10 +192,7 @@ const handleQuery = async () => {
     }
   }
 
-  // .px-30rpx {
-  //   padding-left: 30rpx;
-  //   padding-right: 30rpx;
-  // }
+
 
   .button {
     background: linear-gradient(-90deg, rgba(43, 100, 255, 1), rgba(78, 149, 255, 1));
