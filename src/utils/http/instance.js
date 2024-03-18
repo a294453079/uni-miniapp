@@ -16,7 +16,7 @@ const requestInstance = Ajax.create<AjaxRequestConfig>({
   dataType: 'json',
   timeout: 60 * 1000,
   header: {
-    Authorization: `Basic Z3pub25neWV6aGVueGluZ2RhaTo0NWE1NWZhNTUwNmI5Y2Y2ZTcyOTQ1MGQ2MjU4MGYxNQ==`
+    Authorization: `Bearer`
   },
   fetcher
 })
