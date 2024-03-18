@@ -1,0 +1,133 @@
+@import "uni";
+
+// preflight
+page {
+  background-color: $color-secondary;
+}
+
+view {
+  box-sizing: border-box;
+}
+
+button {
+  -webkit-appearance: none !important;
+}
+
+
+// global style
+
+.page-container {
+  padding: $space-base $space-base calc($space-base + $bs-height);
+
+  &.no-safe-area {
+    padding-bottom: $space-base;
+  }
+
+  &.full-screen {
+    min-height: 100vh;
+  }
+
+  &.has-bottom-box {
+    padding: $space-base $space-base calc(150rpx + $bs-height);
+  }
+}
+
+.card-container {
+  background: #ffffff;
+  padding: $space-sm $space-base;
+  box-shadow: 0 0 26rpx rgba(0, 0, 0, 0.07);
+  border-radius: $border-radius-base;
+}
+
+.tabs {
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  background-color: #ffffff;
+}
+
+.menu-container {
+  width: 690rpx;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: $border-radius-base;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  background-color: #ffffff;
+
+  .menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 230rpx;
+    height: 230rpx;
+
+    &.col-4 {
+      width: 165rpx;
+      height: 165rpx;
+      border-right: none !important;
+
+      &:not(:nth-child(4n)) {
+        margin-right: 10rpx;
+      }
+
+      &:not(:nth-child(-n+4)) {
+        margin-top: 10rpx;
+      }
+
+    }
+
+
+
+    &:not(:nth-child(3n)) {
+      border-right: 1rpx solid $color-secondary;
+    }
+
+    &:not(:nth-child(-n+3)) {
+      border-top: 1rpx solid $color-secondary;
+    }
+
+  }
+}
+
+.scroll-container {
+  box-sizing: border-box;
+  overflow-anchor: auto;
+}
+
+// uview form style fix
+::v-deep .u-form-item__body__left__content__required {
+  display: none;
+
+  &+.u-form-item__body__left__content__label:after {
+    content: '*';
+    color: #f56c6c;
+    margin-left: 4rpx;
+  }
+}
+
+::v-deep .u-form-item__body__left__content__label {
+  font-weight: 600;
+  font-size: $font-size-base;
+  color: $color-first-text;
+  line-height: 28rpx;
+}
+
+::v-deep .u-form-item:not(:first-child) {
+  margin-top: $space-sm;
+}
+
+.bottom-box {
+  @include gap-x(50rpx);
+  @apply fixed left-0 right-0 bottom-0 z-index-99 px-30rpx pt-20rpx bg-white flex items-center;
+  padding-bottom: calc($space-sm + $bs-height);
+  box-shadow: 8rpx 8rpx 26rpx 0 rgba(0, 0, 0, 0.07);
+}
+
+// global hover style
+
+.button-hover-class {
+  background: rgba(56, 110, 232, 0.1);
+}

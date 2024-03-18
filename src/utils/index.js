@@ -1,3 +1,5 @@
+export * from './tools'
+
 // 定时器方案
 export function throttle(fn, wait) {
   let timer = null
