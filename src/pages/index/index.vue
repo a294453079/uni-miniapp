@@ -1,211 +1,211 @@
 <template>
+  <u-toast ref="uToastRef"></u-toast>
   <view class="content">
-    <view class="px-30rpx">
-      <view class="input-group">
-        <input class="input-item" type="number" v-model="form.number" placeholder="请输入考生的报名序号"
-          placeholder-style="color: #BFBFBF" :maxlength="numberMaxLength"
-          :style="{ color: verifyNumber ? '#333' : 'red' }" />
-        <input class="input-item" type="idcard" v-model="form.idCard" maxlength="4" placeholder="请输入身份证后四位"
-          placeholder-style="color: #BFBFBF" />
+    <view class="heater">智慧课堂</view>
+    <view class="tabs">
+      <view @click="handleDetailClick('live-broadcast')">
+        <img src="@/static/home/live-broadcast-icon.png" alt="" />
+        <text>点播课</text>
       </view>
-
-      <button class="button" type="primary" :loading="loading" @click="handleQuery">查询</button>
+      <view @click="handleDetailClick('school-timetable')">
+        <img src="@/static/home/school-timetable-icon.png" alt="" />
+        <text>课程表</text>
+      </view>
+      <view @click="handleDetailClick('classroom-review')">
+        <img src="@/static/home/classroom-review-icon.png" alt="" />
+        <text>课堂回顾</text>
+      </view>
     </view>
-    <view class="px-30rpx">看看2</view>
-    <view class="px-30px">看看1</view>
-
-    <view class="">
-      <up-button type="primary" text="确定" u-reset-button></up-button>
+    <view class="mt-16px">
+      <moduleTitle title="学生课表" />
+      <view class="mt-16px">
+        <view v-for="(item, index) in 3" :key="index" class="schedule">
+          <!-- 更多 -->
+          <view class="more" v-show="index == 0" @click="handleMoreScheduleClick">
+            <text>更多</text>
+            <img class="w-12px h-12px" src="@/static/my/arrow-right.png" alt="" />
+          </view>
+          <view>
+            <view class="schedule-date">{{ list[index] }}</view>
+            <view
+              v-for="(o, idx) in 4"
+              :key="idx"
+              class="class-list"
+              :class="idx > 1 ? 'next-class' : 'end-class'"
+            >
+              <view class="schedule-info">
+                <text class="subject">体育与健康</text>
+                <text class="mx-8px leading-14px">/</text>
+                <text class="teacherName">蒙太奇</text>
+              </view>
+              <view class="time">第一节（08:00-08:40）</view>
+              <text class="status">已结束</text>
+              <div class="course-review-btn">
+                <text>课堂回顾</text>
+                <img class="w-5px h-12px" src="@/static/home/right-arrow-active.png" alt="" />
+              </div>
+            </view>
+          </view>
+        </view>
+      </view>
     </view>
-    <fui-button @click="showRef = true">默认按钮</fui-button>
-    <fui-tag text="标签一"></fui-tag>
-    <u-rate :count="count" v-model="value"></u-rate>
-    <view>
-      <u-tag text="标签" plain size="large" type="warning"></u-tag>
-    </view>
-
-    <u-radio-group v-model="radiovalue1" placement="column" @change="groupChange">
-      <u-radio :customStyle="{ marginBottom: '8px' }" v-for="(item, index) in radiolist1" :key="index"
-        :label="item.name" :name="item.name" @change="radioChange">
-      </u-radio>
-    </u-radio-group>
   </view>
 </template>
 
 <script setup>
-import { computed, shallowReactive, shallowRef } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+  import moduleTitle from '@/components/moduleTitle.vue'
+  import { ref } from 'vue'
+  const uToastRef = ref(null)
+  const list = ['上午', '下午', '晚上']
 
-import { useGlobalSetting } from '../../settings/system'
-import { ref } from 'vue';
-
-
-// 基本案列数据
-const radiolist1 = shallowReactive([
-  {
-    name: '苹果',
-    disabled: false,
-  },
-  {
-    name: '香蕉',
-    disabled: false,
-  },
-  {
-    name: '橙子',
-    disabled: false,
-  },
-  {
-    name: '榴莲',
-    disabled: false,
-  },
-]);
-
-// u-radio-group的v-model绑定的值如果设置为某个radio的name，就会被默认选中
-const radiovalue1 = shallowRef('苹果');
-
-const groupChange = (n) => {
-  console.log('groupChange', n);
-};
-
-const radioChange = (n) => {
-  console.log('radioChange', n);
-};
-
-const list = ref([
-  {
-    text: '点赞',
-    color: 'blue',
-    fontSize: 28
-  },
-  {
-    text: '分享'
-  },
-  {
-    text: '评论'
-  }
-]);
-
-const showRef = ref(true);
-
-const count = ref(4);
-const value = ref(2);
-
-const { basisId, apiUrl, alipayId } = useGlobalSetting()
-
-const loading = shallowRef(false)
-
-const form = shallowReactive({ number: '', idCard: '', year: 2023 })
-
-const verifyNumber = computed(() => {
-  if (!form.number) return true
-  return new RegExp('^' + basisId + '\\d{10}$|^07\\d{7}$').test(form.number)
-})
-
-const numberMaxLength = computed(() => (/^07/.test(form.number) ? 9 : 14))
-
-onLoad(async () => {
-  // const { code, authSuccessScopes } = await uni.login({
-  //   provider: 'alipay',
-  //   scopes: ['auth_base', 'auth_user', 'auth_zhima'],
-  // })
-  // console.log(code, authSuccessScopes)
-  // const { data } = await uni.request({
-  //   url: `${apiUrl}/paas/userAuth/login/alipay`,
-  //   method: 'POST',
-  //   data: { authCode: code, appId: alipayId },
-  // })
-
-  // uni.setStorageSync('USER_INFO', data.data)
-})
-
-const handleQuery = async () => {
-  if (loading.value) return
-
-  try {
-    loading.value = true
-
-    if (!new RegExp('^' + basisId + '\\d{10}$|^07\\d{7}$').test(form.number)) {
-      return uni.showModal({
-        title: '温馨提示',
-        content: `请输入以"${basisId}"开头正确的报名序号`,
-        showCancel: false,
+  const handleDetailClick = (type) => {
+    if (type == 'live-broadcast') {
+      uToastRef.value.show({
+        message: '程序猿们已经在加紧开发，请期待此功能',
+      })
+    } else {
+      uni.navigateTo({
+        url: '/pages/practice/detail',
       })
     }
-    const { data } = await uni.request({
-      url: `${apiUrl}/wec-hsees/v2/exam/score/read`,
-      header: {
-        authorization: uni.getStorageSync('USER_INFO').token,
-      },
-      method: 'GET',
-      data: { idcardLast: form.idCard, serialNumber: form.number },
+  }
+  // 查看更多课表
+  const handleMoreScheduleClick = () => {
+    uni.navigateTo({
+      url: '/pages/practice/detail',
     })
-    uni.setStorageSync('SCORE', data.data)
-
-    await uni.navigateTo({ url: '/pages/queryResults/index' })
-  } catch (e) {
-    if (e?.data?.code !== 200) {
-      uni.showToast({ title: `查询错误: ${e.data.msg}` })
-    }
-  } finally {
-    loading.value = false
   }
-}
 </script>
-
 <style scoped lang="scss">
-.content {
-  input {
-    cursor: auto;
-    display: block;
-    height: 1.4rem;
-    min-height: 1.4rem;
-    overflow: hidden;
-    text-overflow: clip;
-    white-space: nowrap;
-    padding-left: 20rpx;
-  }
-
-  .title {
-    color: #2b64ff;
-    margin: 80rpx 30rpx 50rpx;
-    font-size: 38rpx;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .input-group {
-    width: 690rpx;
-    margin: 0 auto;
-    background-color: white;
-    border-radius: 10rpx;
-    overflow: hidden;
-    box-shadow: 0 5rpx 10rpx 0 rgba(0, 0, 0, 0.1);
-
-    .input-item {
-      margin: 0 30rpx;
-      font-size: 34rpx;
-      border-bottom: 1px solid #e5e5e5;
-
-      &:last-child {
-        margin-bottom: 0;
+  .content {
+    height: 100vh;
+    background: #f8f8f8;
+    .heater {
+      height: 149px;
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+      background: #00a0ff;
+    }
+    .tabs {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 118px;
+      border-radius: 16px;
+      background: #fff;
+      padding: 0 20px;
+      box-sizing: border-box;
+      margin: -43px 16px 0 16px;
+      view {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        cursor: pointer;
+        image {
+          width: 55px;
+          height: 55px;
+        }
+        text {
+          color: #474747;
+          font-size: 15px;
+          line-height: 16px;
+          margin-top: 6px;
+        }
+      }
+    }
+    .schedule {
+      background: #fff;
+      padding: 0 16px;
+      position: relative;
+      .more {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        right: 14px;
+        top: 20px;
+        text {
+          color: #474747;
+          font-size: 15px;
+          line-height: 16px;
+          margin-right: 3px;
+        }
+      }
+      .schedule-date {
+        color: #333;
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 28px;
+        margin-bottom: 15px;
+        padding-top: 15px;
+      }
+      .class-list {
+        height: 88px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        position: relative;
+        padding-left: 16px;
+        border-radius: 8px;
+        box-sizing: border-box;
+        margin-bottom: 16px;
+        .schedule-info {
+          display: flex;
+          align-items: center;
+          color: #666;
+          .subject {
+            font-weight: bold;
+            font-size: 22px;
+            line-height: 28px;
+          }
+          .teacherName {
+            font-size: 15px;
+            line-height: 20px;
+          }
+        }
+        .time {
+          margin-top: 12px;
+          font-size: 12px;
+          color: #666;
+          line-height: 16px;
+          font-weight: bold;
+        }
+        .status {
+          position: absolute;
+          right: 16px;
+          top: 16px;
+          color: #b0b8c7;
+          font-size: 12px;
+          line-height: 16px;
+        }
+        .course-review-btn {
+          width: 79px;
+          height: 28px;
+          background: #fff;
+          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          position: absolute;
+          right: 16px;
+          bottom: 12px;
+          text {
+            color: #00a0ff;
+            font-size: 12px;
+            line-height: 12px;
+            margin-right: 6px;
+          }
+        }
+      }
+      .end-class {
+        background: url('@/static/home/end-status.png') no-repeat;
+      }
+      .next-class {
+        background: url('@/static/home/next-status.png') no-repeat;
       }
     }
   }
-
-
-
-  .button {
-    background: linear-gradient(-90deg, rgba(43, 100, 255, 1), rgba(78, 149, 255, 1));
-    margin: 50rpx 0 20rpx;
-    border-radius: 44rpx;
-  }
-
-  .tips {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #999;
-  }
-}
 </style>

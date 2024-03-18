@@ -3,7 +3,9 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "智慧课堂"
+				"navigationBarTitleText": "",
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white"
 			}
 		},
     {
@@ -22,7 +24,9 @@
     {
 			"path": "pages/practice/index",
 			"style": {
-				"navigationBarTitleText": "练习"
+				"navigationBarTitleText": "",
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white"
 			}
 		},
     {
@@ -102,6 +106,12 @@
           "path": "serviceTel",
           "style": {
             "navigationBarTitleText": "客服电话"
+          }
+        }
+        {
+          "path": "setting",
+          "style": {
+            "navigationBarTitleText": "设置"
           }
         }
       ]
