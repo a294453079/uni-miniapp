@@ -1,10 +1,18 @@
 <script>
+import { checkAuth, getUpdate } from '@/utils'
+import userStore from "@/stores/index.js"
 export default {
   onLaunch: function () {
+    getUpdate()
     console.log('App Launch')
   },
-  onShow: function () {
-    console.log('App Show')
+  onShow: function (options) {
+    checkAuth(options.path)
+    const {
+      app
+    } = userStore();
+    console.log({ ...options });
+    console.log('App Show==', app.appIndex);
   },
   onHide: function () {
     console.log('App Hide')

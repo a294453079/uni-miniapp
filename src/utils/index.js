@@ -1,5 +1,8 @@
 export * from './tools'
-
+export * from './helper/storeHelper'
+export * from './helper/uniHelper'
+export * from './asyncPromise'
+export * from './http'
 // 定时器方案
 export function throttle(fn, wait) {
   let timer = null
@@ -14,3 +17,4 @@ export function throttle(fn, wait) {
     }
   }
 }
+

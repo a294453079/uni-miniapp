@@ -11,6 +11,6 @@ export default list
 
 const matchFnList = list.map((o) => match(o, { decode: decodeURIComponent }))
 
-export function reqUrlMatch(url: string) {
+export function reqUrlMatch(url) {
   return matchFnList.some((o) => o(url))
 }

@@ -158,10 +158,10 @@ export function semanticTime(
   }
 }
 
-export function getThisInstance(this, name) {
-  let parent = this.$parent
+export function getThisInstance(Recordable, name) {
+  let parent = Recordable.$parent
 
-  if (!parent) return this
+  if (!parent) return Recordable
 
   // 通过while历遍，这里主要是为了H5需要多层解析的问题
   while (parent) {

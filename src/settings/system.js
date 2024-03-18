@@ -19,6 +19,7 @@ export const useGlobalSetting = () => {
     locationKey: import.meta.env.VITE_APP_LOCATIONKEY,
     wxAppId: import.meta.env.VITE_APP_WXAPPID,
     alipayId: import.meta.env.VITE_APP_ALIPAYID,
+    checkAuth: import.meta.env.VUE_APP_NEED_LOGIN,
     tmpIds,
     basisId: import.meta.env.VITE_APP_BASIS_NUM,
   }

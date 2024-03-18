@@ -57,6 +57,8 @@
     "lodash-es": "^4.17.21",
     "path-to-regexp": "^6.2.1",
     "pinia": "2.0.36",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "pinia-plugin-unistorage": "^0.0.19",
     "uni-ajax": "^2.5.1",
     "uview-plus": "^3.1.45",
     "vue": "^3.2.45",

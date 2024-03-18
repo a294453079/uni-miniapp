@@ -62,6 +62,12 @@ dependencies:
   pinia:
     specifier: 2.0.36
     version: 2.0.36(vue@3.3.4)
+  pinia-plugin-persistedstate:
+    specifier: ^3.2.1
+    version: 3.2.1(pinia@2.0.36)
+  pinia-plugin-unistorage:
+    specifier: ^0.0.19
+    version: 0.0.19(vue@3.3.4)
   uni-ajax:
     specifier: ^2.5.1
     version: 2.5.1
@@ -7667,12 +7673,47 @@ packages:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}
     engines: {node: '>=0.10.0'}
 
+  /pinia-plugin-persistedstate@3.2.1(pinia@2.0.36):
+    resolution: {integrity: sha512-MK++8LRUsGF7r45PjBFES82ISnPzyO6IZx3CH5vyPseFLZCk1g2kgx6l/nW8pEBKxxd4do0P6bJw+mUSZIEZUQ==, tarball: https://registry.npmmirror.com/pinia-plugin-persistedstate/-/pinia-plugin-persistedstate-3.2.1.tgz}
+    peerDependencies:
+      pinia: ^2.0.0
+    dependencies:
+      pinia: 2.0.36(vue@3.3.4)
+    dev: false
+
+  /pinia-plugin-unistorage@0.0.19(vue@3.3.4):
+    resolution: {integrity: sha512-kau6KlqRkXzMQUTT6CW3QRpqzVCypewpCLKcBYShKVpoqJY/0I8lqCwRSiRsIVaM8hI8/AO86RzFgq2wQZ7ZzA==, tarball: https://registry.npmmirror.com/pinia-plugin-unistorage/-/pinia-plugin-unistorage-0.0.19.tgz}
+    dependencies:
+      pinia: 2.1.7(vue@3.3.4)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - typescript
+      - vue
+    dev: false
+
   /pinia@2.0.36(vue@3.3.4):
     resolution: {integrity: sha512-4UKApwjlmJH+VuHKgA+zQMddcCb3ezYnyewQ9NVrsDqZ/j9dMv5+rh+1r48whKNdpFkZAWVxhBp5ewYaYX9JcQ==, tarball: https://registry.npmmirror.com/pinia/-/pinia-2.0.36.tgz}
     peerDependencies:
       '@vue/composition-api': ^1.4.0
       typescript: '>=4.4.4'
       vue: ^2.6.14 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@vue/devtools-api': 6.5.0
+      vue: 3.3.4
+      vue-demi: 0.14.7(vue@3.3.4)
+    dev: false
+
+  /pinia@2.1.7(vue@3.3.4):
+    resolution: {integrity: sha512-+C2AHFtcFqjPih0zpYuvof37SFxMQ7OEG2zV9jRI12i9BOy3YQVAHwdKtyyc8pDcDyIc33WCIsZaCFWU7WWxGQ==, tarball: https://registry.npmmirror.com/pinia/-/pinia-2.1.7.tgz}
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.3.0
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true

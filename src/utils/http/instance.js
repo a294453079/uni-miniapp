@@ -1,4 +1,4 @@
-import Ajax, { AjaxRequestConfig, Fetcher } from 'uni-ajax'
+import Ajax, {  Fetcher } from 'uni-ajax'
 
 import { useGlobalSetting } from '@/settings'
 
@@ -11,7 +11,7 @@ const { apiUrl } = useGlobalSetting()
 
 export const fetcher = new Fetcher()
 
-const requestInstance = Ajax.create<AjaxRequestConfig>({
+const requestInstance = Ajax.create({
   baseURL: apiUrl,
   dataType: 'json',
   timeout: 60 * 1000,
@@ -24,7 +24,7 @@ const requestInstance = Ajax.create<AjaxRequestConfig>({
 // handleInterceptorLoading(requestInstance)
 handleRequestToken(requestInstance)
 // handleRequestParameter(requestInstance)
-// handleRespResult(requestInstance)
+handleRespResult(requestInstance)
 
 export default requestInstance
 export { requestInstance }

@@ -1,8 +1,9 @@
 import { merge } from 'lodash-es'
+import pinia from '@/stores/pinia'
+import { appStore } from "@/stores/modules/app.js"
 
 import { AuthApi } from '@/api/sys/auth'
 import { reqUrlMatch, useGlobalSetting } from '@/settings'
-import { userStore } from '@/store/modules'
 import { AsyncPromise, http, verificationToken } from '@/utils'
 
 import { IGNORE_ERROR } from '../const'
@@ -13,7 +14,13 @@ export default function (instance) {
 
   let isRefreshing = false // 当前是否在请求刷新 Token
   let requestQueue = [] // 将在请求刷新 Token 中的请求暂存起来，等刷新 Token 后再重新请求
+  
 
+  // const store = appStore(pinia);
+  
+  // const { app } = appStore();
+  // console.log('app1-', store);
+  console.log('AsyncPromise',AsyncPromise)
   // 执行暂存起来的请求
   const executeQueue = (error) => {
     for (const promise of requestQueue) {
@@ -40,7 +47,7 @@ export default function (instance) {
     // 发起刷新 Token 请求，成功或失败都将执行队列中的请求
 
     try {
-      await userStore.Login()
+      await app.Login()
       executeQueue()
     } catch (e) {
       executeQueue(e)
@@ -58,10 +65,9 @@ export default function (instance) {
       // 退出登陆时单独处理
       if (config.url === AuthApi.Logout) {
         config.header = {
-          'blade-auth': `bearer ${userStore.getToken}`,
-          ...config.header
+          'blade-auth': `bearer ${app.getToken}`,
+          ...config.header,
         }
-
         return config
       }
 
@@ -69,42 +75,37 @@ export default function (instance) {
 
       const { checkAuth } = useGlobalSetting()
       if (checkAuth && code < 0) {
-        userStore.Logout()
+        app.Logout()
         return Promise.reject({
           message: 'Unauthorized, Login required',
-          config
+          config,
         })
       } else if ((!checkAuth && code < 1) || (checkAuth && code === 0)) {
         await refreshToken()
       }
-
       config.header = {
-        'blade-auth': `bearer ${userStore.getToken}`,
-        ...config.header
+        'blade-auth': `bearer ${app.getToken}`,
+        ...config.header,
       }
-
       return config
     })
 
-    respId = instance.interceptors.response.use(
-      undefined,
-      (error) => {
-        const { config, statusCode } = error
-        const { checkAuth } = useGlobalSetting()
+      respId = instance.interceptors.response.use(undefined, (error) => {
+      const { config, statusCode } = error
+      const { checkAuth } = useGlobalSetting()
 
-        // 处理401错误
-        if (statusCode === 401) {
-          if (checkAuth) {
-            userStore.Logout()
-            return Promise.reject(merge(error, { [IGNORE_ERROR]: true }))
-          } else {
-            return refreshToken().then(() => http(config))
-          }
+      // 处理401错误
+      if (statusCode === 401) {
+        if (checkAuth) {
+          app.Logout()
+          return Promise.reject(merge(error, { [IGNORE_ERROR]: true }))
+        } else {
+          return refreshToken().then(() => http(config))
         }
-
-        return Promise.reject(error)
       }
-    )
+
+      return Promise.reject(error)
+    })
   }
 
   const eject = () => {
@@ -116,6 +117,6 @@ export default function (instance) {
 
   return {
     apply,
-    eject
+    eject,
   }
 }
