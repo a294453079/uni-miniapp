@@ -9,7 +9,8 @@
     {
 			"path": "pages/login/index",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "",
+         "navigationStyle": "custom"
 			}
 		},
 		{
