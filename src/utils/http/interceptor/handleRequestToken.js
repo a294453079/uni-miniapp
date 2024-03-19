@@ -59,6 +59,7 @@ export default function (instance) {
 
   const apply = () => {
     reqId = instance.interceptors.request.use(async (config) => {
+      console.log('请求拦截',config);
       if (reqUrlMatch(config.url) || config.ignoreCheckToken) {
         return config
       }
@@ -66,7 +67,7 @@ export default function (instance) {
       // 退出登陆时单独处理
       if (config.url === AuthApi.Logout) {
         config.header = {
-          'blade-auth': `bearer ${app.getToken}`,
+          // 'blade-auth': `bearer ${app.getToken}`,
           ...config.header,
         }
         return config
@@ -86,9 +87,9 @@ export default function (instance) {
         console.log('1111');
         await refreshToken()
       }
+    
       config.header = {
-        // 'blade-auth': `Bearer ${app.getToken}`,
-        Token:app.getToken,//暂时写死
+        //  'blade-auth': `Bearer ${app.getToken}`,
         ...config.header,
       }
       return config
