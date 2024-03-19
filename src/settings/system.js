@@ -13,9 +13,7 @@ export const useGlobalSetting = () => {
     name,
     version,
     appCode: import.meta.env.VITE_APP_APP_CODE,
-    apiUrl: import.meta.env.NODE_ENV === 'development'
-      ? import.meta.env.VITE_APP_DEV_API_URL
-      : import.meta.env.VITE_APP_PRO_API_URL,
+    apiUrl: import.meta.env.VITE_APP_DEV_API_URL,
     locationKey: import.meta.env.VITE_APP_LOCATIONKEY,
     wxAppId: import.meta.env.VITE_APP_WXAPPID,
     alipayId: import.meta.env.VITE_APP_ALIPAYID,

@@ -26,12 +26,12 @@
             <img class="w-12px h-12px" src="@/static/my/arrow-right.png" alt="" />
           </view>
           <view>
-            <view class="schedule-date">{{ list[index] }}</view>
+            <view class="schedule-date">{{ timePeriodsData[index] }}</view>
             <view
               v-for="(o, idx) in 4"
               :key="idx"
               class="class-list"
-              :class="idx > 1 ? 'next-class' : 'end-class'"
+              :class="handleScheduleBgImgClass(idx)"
             >
               <view class="schedule-info">
                 <text class="subject">体育与健康</text>
@@ -56,8 +56,28 @@
   import moduleTitle from '@/components/moduleTitle.vue'
   import { ref } from 'vue'
   const uToastRef = ref(null)
-  const list = ['上午', '下午', '晚上']
-
+  const timePeriodsData = ['上午', '下午', '晚上']
+  import { requestInstance as http } from '@/utils/http/instance'
+  http.get({
+    url: '/app-teach/classCourses/listDayClassCoursesByClass',
+    params: {
+      schoolId: '64428937560064000',
+      semesterId: '376447209173975053',
+      classId: '449227900294791393',
+      date: '2024-03-19',
+    },
+  })
+  // 处理课表不同类型的背景图片
+  const handleScheduleBgImgClass = (e) => {
+    if (e == 0) {
+      return 'end-class'
+    } else if (e == 1) {
+      return 'next-class'
+    } else {
+      return 'not-class'
+    }
+  }
+  // 跳转详情
   const handleDetailClick = (type) => {
     if (type == 'live-broadcast') {
       uToastRef.value.show({
@@ -205,6 +225,27 @@
       }
       .next-class {
         background: url('@/static/home/next-status.png') no-repeat;
+        .schedule-info {
+          color: #ff9500;
+        }
+        .time {
+          color: #ff9500;
+        }
+        .status {
+          color: #ff9500;
+        }
+      }
+      .not-class {
+        background: url('@/static/home/not-status.png') no-repeat;
+        .schedule-info {
+          color: #388c7e;
+        }
+        .time {
+          color: #388c7e;
+        }
+        .status {
+          color: #4cbe99;
+        }
       }
     }
   }
