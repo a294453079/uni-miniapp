@@ -3,8 +3,8 @@ import Ajax, {  Fetcher } from 'uni-ajax'
 import { useGlobalSetting } from '@/settings'
 
 import handleInterceptorLoading from './interceptor/handleInterceptorLoading'
-import handleRequestParameter from './interceptor/handleRequestParameter'
 import handleRequestToken from './interceptor/handleRequestToken'
+import handleRequestParameter from './interceptor/handleRequestParameter'
 import handleRespResult from './interceptor/handleRespResult'
 
 const { apiUrl } = useGlobalSetting()
@@ -30,9 +30,9 @@ let requestInstance = new Proxy(ajaxObj, {
       },
       fetcher
     })
-    //  handleInterceptorLoading(ajaxObj)
+    //handleInterceptorLoading(ajaxObj)
     handleRequestToken(ajaxObj)
-    // handleRequestParameter(ajaxObj)
+    handleRequestParameter(ajaxObj) 
     handleRespResult(ajaxObj)
     return ajaxObj
   }

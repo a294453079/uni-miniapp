@@ -26,7 +26,7 @@
 <script setup>
 import moduleTitle from '@/components/moduleTitle.vue'
 import daySchedule from '@/components/daySchedule.vue'
-import { requestInstance as http } from '@/utils/http/instance'
+import { http } from '@/utils'
 import { ref, onMounted } from 'vue'
 const uToastRef = ref(null)
 let dayClassCoursesByStudentPropsList = ref([])

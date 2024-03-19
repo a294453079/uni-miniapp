@@ -16,9 +16,6 @@ export function registerAccount(data) {
 
 /* 小程序账号登录 */
 export function loginByAccount (data, token) {
-  console.log(http, 'http');
-  http.post({url:'/hahahah'})
-  return
   return http.post(AuthApi.Login, data, {
     header: token ? { 'blade-auth': `bearer ${token}` } : {},
     ignoreCheckToken: true,
