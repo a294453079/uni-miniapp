@@ -11,20 +11,39 @@ const { apiUrl } = useGlobalSetting()
 
 export const fetcher = new Fetcher()
 
-const requestInstance = Ajax.create({
-  baseURL: apiUrl,
-  dataType: 'json',
-  timeout: 60 * 1000,
-  header: {
-    Authorization: `Bearer`
-  },
-  fetcher
-})
 
+let ajaxObj = {}
+
+let requestInstance = new Proxy(ajaxObj, {
+  get: () => {
+    return getRequestInstance()
+  }
+});
+  const getRequestInstance = () => {
+  if (!Object.keys(ajaxObj).length) {
+    ajaxObj = Ajax.create({
+      baseURL: apiUrl,
+      dataType: 'json',
+      timeout: 60 * 1000,
+      header: {
+        Authorization: `Bearer`
+      },
+      fetcher
+    })
+    // handleInterceptorLoading(requestInstance)
+    handleRequestToken(ajaxObj)
+    // handleRequestParameter(requestInstance)
+    handleRespResult(ajaxObj)
+    return ajaxObj
+  }
+  return ajaxObj
+}
 // handleInterceptorLoading(requestInstance)
-handleRequestToken(requestInstance)
-// handleRequestParameter(requestInstance)
-handleRespResult(requestInstance)
+// setTimeout(() => {
+//   handleRequestToken(requestInstance)
+//   // handleRequestParameter(requestInstance)
+//   handleRespResult(requestInstance)
+// }, 0)
 
 export default requestInstance
-export { requestInstance }
+export { requestInstance  }

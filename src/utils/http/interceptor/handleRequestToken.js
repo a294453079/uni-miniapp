@@ -1,11 +1,10 @@
 import { merge } from 'lodash-es'
-import pinia from '@/stores/pinia'
-import { appStore } from "@/stores/modules/app.js"
-
 import { AuthApi } from '@/api/sys/auth'
 import { reqUrlMatch, useGlobalSetting } from '@/settings'
-import { AsyncPromise, http, verificationToken } from '@/utils'
-
+import { requestInstance as http } from '@/utils/http/instance'
+import { AsyncPromise } from '@/utils/asyncPromise'
+import { verificationToken } from "@/utils/helper/storeHelper.js"
+import userStore from "@/stores/index.js"
 import { IGNORE_ERROR } from '../const'
 
 export default function (instance) {
@@ -14,12 +13,14 @@ export default function (instance) {
 
   let isRefreshing = false // 当前是否在请求刷新 Token
   let requestQueue = [] // 将在请求刷新 Token 中的请求暂存起来，等刷新 Token 后再重新请求
-  
+  const {app} = userStore();
+  console.log('appStore',app.appIndex)
 
-  // const store = appStore(pinia);
-  
+//  const appStore = appStore()
+//   console.log('hahahahhaha',appStore)
   // const { app } = appStore();
   // console.log('app1-', store);
+  
   console.log('AsyncPromise',AsyncPromise)
   // 执行暂存起来的请求
   const executeQueue = (error) => {
@@ -75,12 +76,14 @@ export default function (instance) {
 
       const { checkAuth } = useGlobalSetting()
       if (checkAuth && code < 0) {
+         console.log('2222');
         app.Logout()
         return Promise.reject({
           message: 'Unauthorized, Login required',
           config,
         })
       } else if ((!checkAuth && code < 1) || (checkAuth && code === 0)) {
+        console.log('1111');
         await refreshToken()
       }
       config.header = {
