@@ -6,11 +6,14 @@
       <view class="page__title">你好，</view>
       <view class="page__desc">欢迎来到<span class="page__desc__titles">常态课堂</span></view>
       <view class="loginContainer">
-        12
+        <view>
+
+        </view>
+        <img src="@/static/login/account.png" class="login_icon" alt="" />
+        <img src="@/static/login/password.png" class="login_icon" alt="" />
+        <img src="@/static/login/seePassword.png" class="see_icon" alt="" />
       </view>
-
     </view>
-
   </view>
 </template>
 
@@ -62,7 +65,17 @@ getDataList()
     background: #fff;
     border-top-left-radius: 20rpx;
     border-top-right-radius: 20rpx;
-    padding: 120rpx 60rpx 0rpx 60rpx
+    padding: 120rpx 60rpx 100rpx 60rpx;
+
+    .login_icon {
+      width: 32rpx;
+      height: 32rpx;
+    }
+
+    .see_icon {
+      width: 28rpx;
+      height: 17rpx;
+    }
   }
 
   &__title {

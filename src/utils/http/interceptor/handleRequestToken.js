@@ -15,7 +15,6 @@ export default function (instance) {
 
   let requestQueue = [] // 将在请求刷新 Token 中的请求暂存起来，等刷新 Token 后再重新请求
   const {app} = userStore();
-  console.log('appStore',app.appIndex)
 
 //  const appStore = appStore()
 //   console.log('hahahahhaha',appStore)
@@ -33,17 +32,16 @@ export default function (instance) {
       }
     }
     requestQueue = []
-    console.log('存起来', requestQueue);
+    console.log('存请求', requestQueue);
   }
 
   // 刷新 Token 请求处理,多个请求将拦截结果
   const refreshToken = async () => {
-    console.log('刷新',isRefreshing);
+    console.log('刷新toekn',isRefreshing);
     // 如果当前是在请求刷新 Token 中，则将期间的请求推到等待队列
     if (isRefreshing) {
       const Promise = new AsyncPromise()
       requestQueue.push(Promise)
-      console.log('返回的Promise',Promise);
       return Promise.promise
     }
 
@@ -76,7 +74,6 @@ export default function (instance) {
 
       const code = verificationToken()
       const { checkAuth } = useGlobalSetting()
-      console.log('checkAuth',checkAuth,code);
       if (checkAuth && code < 0) {
         app.Logout()
         return Promise.reject({
@@ -94,7 +91,6 @@ export default function (instance) {
       return config
     })
     respId = instance.interceptors.response.use(undefined, (error) => {
-        console.log('相应',error);
       const { config, statusCode } = error
       const { checkAuth } = useGlobalSetting()
 

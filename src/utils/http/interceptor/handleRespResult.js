@@ -15,21 +15,21 @@ export default function (instance) {
 
         // 返回原始响应内容
         if (isReturnNativeResponse) {
-          console.log('11');
+          console.log('返回原始响应');
           resolve(response);
           return response
         }
 
         // 不处理返回内容时
         if (!isTransformResponse) {
-          console.log('22');
+          console.log('不处理返回内容');
           resolve(response.data);
           return response.data
         }
 
         // 没有正确的返回响应内容
         if (!response.data) {
-          console.log('33');
+          console.log('没有正确的返回响应内容');
           response.errMsg = '请求出错，请稍候重试！'
           return Promise.reject(response)
         }
@@ -37,7 +37,6 @@ export default function (instance) {
         const { code, data: result, success } = response.data
 
         if (success && code === 0) {
-          console.log('44', response.data);
           resolve(response.data);
           return response.data
         }
