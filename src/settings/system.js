@@ -9,11 +9,11 @@ export const useGlobalSetting = () => {
   }
 
   return {
-    isDev: import.meta.env.DEV,
+    isDev: import.meta.env.NODE_ENV === 'development',
     name,
     version,
     appCode: import.meta.env.VITE_APP_APP_CODE,
-    apiUrl: import.meta.env.DEV
+    apiUrl: import.meta.env.NODE_ENV === 'development'
       ? import.meta.env.VITE_APP_DEV_API_URL
       : import.meta.env.VITE_APP_PRO_API_URL,
     locationKey: import.meta.env.VITE_APP_LOCATIONKEY,

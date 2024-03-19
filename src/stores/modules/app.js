@@ -11,7 +11,7 @@ export const appStore = defineStore('app', {
     /**是否已登录 hasLogin */
     hasLogin: false,
     /**token */
-    getToken: '',
+    getToken: '2df167e8-2b56-4c6c-a34d-fdf923e1b02e',
     /**用户信息 token*/
     authInfo: {},
     /**详细用户信息 */
