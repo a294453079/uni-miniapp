@@ -15,7 +15,35 @@
 </template>
 
 <script setup>
+import { requestInstance as http } from '@/utils/http/instance'
 import navbar from '@/components/navbar/navbar.vue';
+const getDataList = async () => {
+  const res = await http.get({
+    url: '/app-teach/classCourses/listDayClassCoursesByClass',
+    params: {
+      schoolId: '64428937560064000',
+      semesterId: '376447209173975053',
+      classId: '449227900294791393',
+      date: '2024-03-19',
+    },
+  })
+  console.log('-------', res);
+}
+getDataList()
+// uni.request({
+//   url: 'https://portal.dev.zhongteng.tech/api/app-teach/classCourses/listDayClassCoursesByClass',
+//   header: {
+//     authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDI4MzY0MjksImp0aSI6IjIyYjU4ZjY3LWY1ZjEtNGY0Zi1hZjU0LWYyZjYyZjUyZ',
+//   },
+//   method: 'GET',
+//   data: {
+//     schoolId: '64428937560064000',
+//     semesterId: '376447209173975053',
+//     classId: '449227900294791393',
+//     date: '2024-03-19',
+//   }
+// })
+
 </script>
 
 <style scoped lang="scss">

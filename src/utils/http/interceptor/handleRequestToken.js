@@ -1,11 +1,10 @@
 import { merge } from 'lodash-es'
-import pinia from '@/stores/pinia'
-import { appStore } from "@/stores/modules/app.js"
-
 import { AuthApi } from '@/api/sys/auth'
 import { reqUrlMatch, useGlobalSetting } from '@/settings'
-import { AsyncPromise, http, verificationToken } from '@/utils'
-
+import { requestInstance as http } from '@/utils/http/instance'
+import { AsyncPromise } from '@/utils/asyncPromise'
+import { verificationToken } from "@/utils/helper/storeHelper.js"
+import userStore from "@/stores/index.js"
 import { IGNORE_ERROR } from '../const'
 
 export default function (instance) {
@@ -13,33 +12,38 @@ export default function (instance) {
   let respId
 
   let isRefreshing = false // 当前是否在请求刷新 Token
-  let requestQueue = [] // 将在请求刷新 Token 中的请求暂存起来，等刷新 Token 后再重新请求
-  
 
-  // const store = appStore(pinia);
-  
+  let requestQueue = [] // 将在请求刷新 Token 中的请求暂存起来，等刷新 Token 后再重新请求
+  const {app} = userStore();
+  console.log('appStore',app.appIndex)
+
+//  const appStore = appStore()
+//   console.log('hahahahhaha',appStore)
   // const { app } = appStore();
   // console.log('app1-', store);
-  console.log('AsyncPromise',AsyncPromise)
+  
   // 执行暂存起来的请求
   const executeQueue = (error) => {
     for (const promise of requestQueue) {
       if (error) {
+        console.log('error',error);
         promise.reject(error)
       } else {
         promise.resolve(null)
       }
     }
-
     requestQueue = []
+    console.log('存起来', requestQueue);
   }
 
   // 刷新 Token 请求处理,多个请求将拦截结果
   const refreshToken = async () => {
+    console.log('刷新',isRefreshing);
     // 如果当前是在请求刷新 Token 中，则将期间的请求推到等待队列
     if (isRefreshing) {
       const Promise = new AsyncPromise()
       requestQueue.push(Promise)
+      console.log('返回的Promise',Promise);
       return Promise.promise
     }
 
@@ -61,19 +65,18 @@ export default function (instance) {
       if (reqUrlMatch(config.url) || config.ignoreCheckToken) {
         return config
       }
-
       // 退出登陆时单独处理
       if (config.url === AuthApi.Logout) {
         config.header = {
-          'blade-auth': `bearer ${app.getToken}`,
+          // 'blade-auth': `bearer ${app.getToken}`,
           ...config.header,
         }
         return config
       }
 
       const code = verificationToken()
-
       const { checkAuth } = useGlobalSetting()
+      console.log('checkAuth',checkAuth,code);
       if (checkAuth && code < 0) {
         app.Logout()
         return Promise.reject({
@@ -84,13 +87,14 @@ export default function (instance) {
         await refreshToken()
       }
       config.header = {
-        'blade-auth': `bearer ${app.getToken}`,
+        //  'blade-auth': `Bearer ${app.getToken}`,
         ...config.header,
       }
+      
       return config
     })
-
-      respId = instance.interceptors.response.use(undefined, (error) => {
+    respId = instance.interceptors.response.use(undefined, (error) => {
+        console.log('相应',error);
       const { config, statusCode } = error
       const { checkAuth } = useGlobalSetting()
 

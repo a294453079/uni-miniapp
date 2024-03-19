@@ -1,4 +1,4 @@
-export class AsyncPromise {
+export class AsyncPromise{
   constructor() {
     this.promise = new Promise((resolve, reject) => {
       this.resolve = resolve
