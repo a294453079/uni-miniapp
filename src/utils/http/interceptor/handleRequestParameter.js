@@ -3,6 +3,7 @@ import { isNull, isUndefined, merge, omit, omitBy, pick } from 'lodash-es'
 import { reqUrlMatch } from '@/settings'
 
 export default function (instance) {
+  console.log('实例',instance);
   let reqId
   const apply = () => {
     reqId = instance.interceptors.request.use((config) => {

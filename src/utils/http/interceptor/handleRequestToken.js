@@ -1,7 +1,7 @@
 import { merge } from 'lodash-es'
 import { AuthApi } from '@/api/sys/auth'
 import { reqUrlMatch, useGlobalSetting } from '@/settings'
-import { requestInstance as http } from '@/utils/http/instance'
+import {  http } from '@/utils'
 import { AsyncPromise } from '@/utils/asyncPromise'
 import { verificationToken } from "@/utils/helper/storeHelper.js"
 import userStore from "@/stores/index.js"
@@ -60,6 +60,7 @@ export default function (instance) {
 
   const apply = () => {
     reqId = instance.interceptors.request.use(async (config) => {
+      console.log('请求发出',config);
       if (reqUrlMatch(config.url) || config.ignoreCheckToken) {
         return config
       }

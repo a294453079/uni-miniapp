@@ -1,9 +1,9 @@
-import { requestInstance as http } from '@/utils/http/instance'
+import { http } from '@/utils'
 export const AuthApi = {
   register : '/paas/paasuser/tenantUserRegister',
-  Login : '/paas/userAuth/login',
-  Logout : '/paas/paasuser/userLogout',
-  BaseInfo : '/paas/paasuser/myInfo'
+  Login : '/oauth-server/login/token',
+  Logout : '/oauth-server/logout/token',
+  BaseInfo : '/user-server/users/getUserInfo'
 }
 
 /* 小程序账号注册     */
@@ -15,7 +15,10 @@ export function registerAccount(data) {
 }
 
 /* 小程序账号登录 */
-export function loginByAccount(data, token) {
+export function loginByAccount (data, token) {
+  console.log(http, 'http');
+  http.post({url:'/hahahah'})
+  return
   return http.post(AuthApi.Login, data, {
     header: token ? { 'blade-auth': `bearer ${token}` } : {},
     ignoreCheckToken: true,
@@ -25,7 +28,7 @@ export function loginByAccount(data, token) {
 
 /* 小程序退出登录清除token */
 export function logout() {
-  return http.get(AuthApi.Logout, undefined, { ignoreHandleError: true })
+  return http.post(AuthApi.Logout, undefined, { ignoreHandleError: true })
 }
 
 // 查询手机号码是否已经注册

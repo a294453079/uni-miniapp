@@ -1,5 +1,12 @@
 {
 	"pages": [
+    {
+      "path": "pages/redirect/index",
+      "style": {
+        "navigationBarTitleText": "常态课堂"
+      },
+      "affix": true
+    },
 		{
 			"path": "pages/index/index",
 			"style": {

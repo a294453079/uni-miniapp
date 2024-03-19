@@ -30,9 +30,9 @@ let requestInstance = new Proxy(ajaxObj, {
       },
       fetcher
     })
-    // handleInterceptorLoading(requestInstance)
+    //  handleInterceptorLoading(ajaxObj)
     handleRequestToken(ajaxObj)
-    // handleRequestParameter(requestInstance)
+    // handleRequestParameter(ajaxObj)
     handleRespResult(ajaxObj)
     return ajaxObj
   }
@@ -45,5 +45,4 @@ let requestInstance = new Proxy(ajaxObj, {
 //   handleRespResult(requestInstance)
 // }, 0)
 
-export default requestInstance
-export { requestInstance  }
+export { requestInstance  as http }
