@@ -87,7 +87,8 @@ export default function (instance) {
         await refreshToken()
       }
       config.header = {
-        'blade-auth': `bearer ${app.getToken}`,
+        'blade-auth': `Bearer ${app.getToken}`,
+        token:app.getToken,//暂时写死
         ...config.header,
       }
       return config
