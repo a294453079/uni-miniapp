@@ -12,6 +12,7 @@ export default function (instance) {
   let respId
 
   let isRefreshing = false // 当前是否在请求刷新 Token
+
   let requestQueue = [] // 将在请求刷新 Token 中的请求暂存起来，等刷新 Token 后再重新请求
   const {app} = userStore();
   console.log('appStore',app.appIndex)
@@ -21,26 +22,28 @@ export default function (instance) {
   // const { app } = appStore();
   // console.log('app1-', store);
   
-  console.log('AsyncPromise',AsyncPromise)
   // 执行暂存起来的请求
   const executeQueue = (error) => {
     for (const promise of requestQueue) {
       if (error) {
+        console.log('error',error);
         promise.reject(error)
       } else {
         promise.resolve(null)
       }
     }
-
     requestQueue = []
+    console.log('存起来', requestQueue);
   }
 
   // 刷新 Token 请求处理,多个请求将拦截结果
   const refreshToken = async () => {
+    console.log('刷新',isRefreshing);
     // 如果当前是在请求刷新 Token 中，则将期间的请求推到等待队列
     if (isRefreshing) {
       const Promise = new AsyncPromise()
       requestQueue.push(Promise)
+      console.log('返回的Promise',Promise);
       return Promise.promise
     }
 
@@ -59,11 +62,9 @@ export default function (instance) {
 
   const apply = () => {
     reqId = instance.interceptors.request.use(async (config) => {
-      console.log('请求拦截',config);
       if (reqUrlMatch(config.url) || config.ignoreCheckToken) {
         return config
       }
-
       // 退出登陆时单独处理
       if (config.url === AuthApi.Logout) {
         config.header = {
@@ -74,28 +75,26 @@ export default function (instance) {
       }
 
       const code = verificationToken()
-
       const { checkAuth } = useGlobalSetting()
+      console.log('checkAuth',checkAuth,code);
       if (checkAuth && code < 0) {
-         console.log('2222');
         app.Logout()
         return Promise.reject({
           message: 'Unauthorized, Login required',
           config,
         })
       } else if ((!checkAuth && code < 1) || (checkAuth && code === 0)) {
-        console.log('1111');
         await refreshToken()
       }
-    
       config.header = {
         //  'blade-auth': `Bearer ${app.getToken}`,
         ...config.header,
       }
+      
       return config
     })
-
-      respId = instance.interceptors.response.use(undefined, (error) => {
+    respId = instance.interceptors.response.use(undefined, (error) => {
+        console.log('相应',error);
       const { config, statusCode } = error
       const { checkAuth } = useGlobalSetting()
 

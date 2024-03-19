@@ -75,7 +75,8 @@ export function toPromise(
   fn,
   options
 ) {
-  return new Promise<SuccessFnParameter<F>>((resolve, reject) => {
+  console.log('转promise');
+  return new Promise((resolve, reject) => {
     fn.call(null, { ...options, success: resolve, fail: reject })
   })
 }

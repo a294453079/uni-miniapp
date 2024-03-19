@@ -53,7 +53,7 @@ import { ref } from 'vue'
 const uToastRef = ref(null)
 const timePeriodsData = ['上午', '下午', '晚上']
 import { requestInstance as http } from '@/utils/http/instance'
-http.get({
+const res = await http.get({
   url: '/app-teach/classCourses/listDayClassCoursesByClass',
   params: {
     schoolId: '64428937560064000',
@@ -62,7 +62,7 @@ http.get({
     date: '2024-03-19',
   },
 })
-
+console.log('结果', res);
 
 // 处理课表不同类型的背景图片
 const handleScheduleBgImgClass = (e) => {

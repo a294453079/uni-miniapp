@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
 import { get, merge, set } from 'lodash-es'
+import { reqUrlMatch, useGlobalSetting } from '@/settings'
 import { getBaseInfo, loginByAccount, logout } from '@/api/sys/auth'
 import { currentPageMatch } from '@/settings'
+import { toPromise } from '@/utils'
 export const appStore = defineStore('app', {
   unistorage: true, // 是否持久化到内存
   state: () => {
@@ -21,11 +23,9 @@ export const appStore = defineStore('app', {
   },
   getters: {},
   actions: {
-    async Login(params) {
+    async Login (params) {
       const { wxAppId, checkAuth, appCode } = useGlobalSetting()
-
       let token = ''
-
       // 合并默认参数
       params = merge(
         {
@@ -35,13 +35,11 @@ export const appStore = defineStore('app', {
         },
         params,
       )
-
       /**企微专用 */
       // const isQyWxLogin = get(params, 'thirdLoginReq.thirdAppType') === 2
-
       const { code } = await toPromise(uni.login)
       // set(params, 'thirdLoginReq.code', code) 设置第三方授权登录请求参数所用
-
+      /**无账号登录 */
       const result = await loginByAccount(params, token)
       this.authInfo = result
 
@@ -70,7 +68,7 @@ export const appStore = defineStore('app', {
 
       // checkAuth &&
       //   !currentPageMatch() &&
-      //   uni.reLaunch({ url: '/pages/login/index' })
+      uni.reLaunch({ url: '/pages/login/index' })
     },
     async afterLogin(isRest = false) {
       const checkExpireTime = Date.now() - this.lastUpdateTime > 24 * 3600
