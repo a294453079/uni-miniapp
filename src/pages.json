@@ -115,6 +115,17 @@
           }
         }
       ]
+    },
+    {
+      "root": "pages/index/schedule",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "课程表"
+          }
+        }
+      ]
     }
   
   ]
