@@ -18,7 +18,7 @@
     </view>
     <view class="mt-16px">
       <moduleTitle title="学生课表" />
-      <daySchedule :dayClassCoursesByStudentList="dayClassCoursesByStudentList" :isShowMore="true" />
+      <daySchedule :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList" :isShowMore="true" />
     </view>
   </view>
 </template>
@@ -26,10 +26,10 @@
 <script setup>
 import moduleTitle from '@/components/moduleTitle.vue'
 import daySchedule from '@/components/daySchedule.vue'
-import { http } from '@/utils'
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { requestInstance as http } from '@/utils/http/instance'
+import { ref, onMounted } from 'vue'
 const uToastRef = ref(null)
-let dayClassCoursesByStudentList = ref([])
+let dayClassCoursesByStudentPropsList = ref([])
 
 
 // 获取首页课表
@@ -43,11 +43,19 @@ const getListDayClassCoursesByClass = async () => {
       date: '2024-03-19',
     }
   })
-  console.log(11111111, res.obj);
   if (res.code == 0) {
-    dayClassCoursesByStudentList.value = res.obj
+    dayClassCoursesByStudentPropsList.value = res.obj
   }
 }
+
+onMounted(async () => {
+  await getListDayClassCoursesByClass()
+})
+console.log(11111111, res.obj);
+if (res.code == 0) {
+  dayClassCoursesByStudentList.value = res.obj
+}
+
 
 onBeforeMount(() => {
   console.log('爹');
