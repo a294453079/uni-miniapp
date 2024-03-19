@@ -30,7 +30,7 @@ export default function (instance) {
 
       const { code, data: result, success } = response.data
 
-      if (success && code === 200) {
+      if (success && code === 0) {
         return result
       }
 
