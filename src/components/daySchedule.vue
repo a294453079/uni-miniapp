@@ -1,33 +1,46 @@
 <template>
   <view class="mt-16px" style="background: #fff; border-radius: 16px">
-    <view v-for="(item, index) in filteredTimePeriodsData" :key="index" class="schedule">
+    <view v-for="(item, index) in dayClassCoursesByStudentList" :key="index" class="schedule">
       <!-- 更多 -->
-      <view class="more" v-show="index == 0 && isShowMore" @click="handleMoreScheduleClick">
+      <view class="more" v-if="index == 0 && isShowMore" @click="handleMoreScheduleClick">
         <text>更多</text>
         <img class="w-12px h-12px" src="@/static/my/arrow-right.png" alt="" />
       </view>
       <view class="pb-1px">
         <view class="schedule-date">{{ item.name }}</view>
         <view
-          v-for="(o, idx) in 4"
+          v-for="(o, idx) in item.scheduleData"
           :key="idx"
           class="class-list"
-          :class="handleScheduleBgImgClass(idx)"
+          :class="handleScheduleBgImgClass(o)"
         >
           <view class="schedule-info">
-            <text class="subject">体育与健康</text>
+            <text class="subject">{{ o.subjectsName }}</text>
             <text class="mx-8px leading-14px">/</text>
-            <text class="teacherName">蒙太奇</text>
+            <text class="teacherName">{{ o.teacherName }}</text>
           </view>
           <view class="time"
-            >第一节（08:00-08:40）
+            >第一节（{{ o.startTime }}-{{ o.endTime }}）
             <text class="substitute">代课</text>
           </view>
-          <text class="status">已结束</text>
-          <div class="course-review-btn">
+          <text class="status" v-if="handleEndFn(o)">已结束</text>
+          <text class="status" v-if="handleNotOperableFn(o)">未开始</text>
+
+          <!--state 1进行中 2未开始 3已完成 4已过期-->
+          <view v-if="o.liveBroadcastClassId && (o.broadcastState == 1 || o.broadcastState == 2)">
+            <span>加入直播</span>
+            <!-- <el-button type="primary" v-if="o.broadcastState == 1" @click="handleLive(o)"
+              >加入直播</el-button
+            >
+            <el-button plain v-else-if="o.broadcastState == 2" @click="handleLive(o)"
+              >加入直播</el-button
+            > -->
+          </view>
+          <view class="course-review-btn" v-else-if="o.classCoursesHistoryId">
+            <!-- @click="goCourseDetail(o.classCoursesHistoryId)" -->
             <text>课堂回顾</text>
             <img class="w-5px h-12px" src="@/static/home/right-arrow-active.png" alt="" />
-          </div>
+          </view>
         </view>
       </view>
     </view>
@@ -35,53 +48,70 @@
 </template>
 
 <script setup>
-  import { computed, defineProps, onBeforeMount } from 'vue'
+  import dayjs from 'dayjs'
+  import { defineProps, watch } from 'vue'
   const props = defineProps({
     isShowMore: Boolean, // 是否显示更多
-    dayClassCoursesByStudentList: Array, // 课表数据
+    dayClassCoursesByStudentPropsList: Array, // 课表数据
   })
-  const timePeriodsData = [
+
+  console.log(dayjs().format('YYYY-MM-DD HH:mm:ss'))
+
+  let dayClassCoursesByStudentList = [
     { name: '上午', scheduleData: [] },
     { name: '下午', scheduleData: [] },
     { name: '晚上', scheduleData: [] },
     { name: '其他', scheduleData: [] },
   ]
 
-  onBeforeMount(() => {
-    const dayClassCoursesByStudentList = computed(() => {
-      if (props.dayClassCoursesByStudentList) {
-        return props.dayClassCoursesByStudentList
-      }
-    })
-
-    console.log(9999999999, dayClassCoursesByStudentList.value)
-
-    // 循环处理课程表不同时间段的数据
-    dayClassCoursesByStudentList.value.forEach((item) => {
-      if (item.classScheduleType !== 3) {
-        const index = timePeriodsData.findIndex((period) => period.name === item.periodTime)
-        if (index !== -1) {
-          timePeriodsData[index].scheduleData.push(item)
+  // 使用watch来观察props的变化
+  watch(
+    () => props.dayClassCoursesByStudentPropsList,
+    (newData, oldData) => {
+      // 循环处理课程表不同时间段的数据
+      props.dayClassCoursesByStudentPropsList.forEach((item) => {
+        if (item.classScheduleType !== 3) {
+          const index = dayClassCoursesByStudentList.findIndex(
+            (period) => period.name === item.periodTime,
+          )
+          if (index !== -1) {
+            dayClassCoursesByStudentList[index].scheduleData.push(item)
+          }
+        } else {
+          dayClassCoursesByStudentList[3].scheduleData.push(item)
         }
-      } else {
-        timePeriodsData[3].scheduleData.push(item)
-      }
-    })
+      })
+      dayClassCoursesByStudentList = dayClassCoursesByStudentList.filter(
+        (period) => period.scheduleData.length > 0,
+      )
+      console.log(11111111111111, dayClassCoursesByStudentList)
+    },
+  )
 
-    const filteredTimePeriodsData = timePeriodsData.filter(
-      (period) => period.scheduleData.length > 0,
-    )
-  })
-
+  // 判断列表上课状态----已结束
+  const handleEndFn = (item) => {
+    return dayjs().format('YYYY-MM-DD HH:mm:ss') > item.date + ' ' + item.endTime + ':00'
+  }
+  // 判断列表上课状态----未开始
+  const handleNotOperableFn = (item) => {
+    return dayjs().format('YYYY-MM-DD HH:mm:ss') < item.date + ' ' + item.startTime + ':00'
+  }
   // 处理课表不同类型的背景图片
-  const handleScheduleBgImgClass = (e) => {
-    if (e == 0) {
+  const handleScheduleBgImgClass = (item) => {
+    if (handleEndFn(item)) {
       return 'end-class'
-    } else if (e == 1) {
-      return 'next-class'
-    } else {
-      return 'not-class'
     }
+
+    // if (item.classScheduleType == 3) {
+    //   return 'not-class'
+    // }
+    // if (e == 0) {
+    //   return 'end-class'
+    // } else if (e == 1) {
+    //   return 'next-class'
+    // } else {
+    //   return 'not-class'
+    // }
   }
   // 查看更多课表
   const handleMoreScheduleClick = () => {

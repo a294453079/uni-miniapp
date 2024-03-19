@@ -1,6 +1,10 @@
 <template>
-  <view class="content"> 111111111 </view>
+  <view class="content">
+    <weekCurriculum />
+  </view>
 </template>
 
-<script setup></script>
+<script setup>
+  import weekCurriculum from './weekCurriculum/index.vue'
+</script>
 <style scoped lang="scss"></style>

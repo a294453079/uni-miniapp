@@ -18,7 +18,7 @@
     </view>
     <view class="mt-16px">
       <moduleTitle title="学生课表" />
-      <daySchedule :dayClassCoursesByStudentList="dayClassCoursesByStudentList" :isShowMore="true" />
+      <daySchedule :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList" :isShowMore="true" />
     </view>
   </view>
 </template>
@@ -29,7 +29,7 @@
   import { requestInstance as http } from '@/utils/http/instance'
   import { ref, onMounted } from 'vue'
   const uToastRef = ref(null)
-  let dayClassCoursesByStudentList = ref([])
+  let dayClassCoursesByStudentPropsList = ref([])
 
 
   // 获取首页课表
@@ -43,15 +43,13 @@
         date: '2024-03-19',
       }
     })
-    console.log(11111111, res.obj);
     if(res.code == 0) {
-      dayClassCoursesByStudentList.value = res.obj
+      dayClassCoursesByStudentPropsList.value = res.obj
     }
   }
 
-  onMounted(() => {
-    // 调用方法
-    getListDayClassCoursesByClass()
+  onMounted(async () => {
+    await getListDayClassCoursesByClass()
   })
 
 
