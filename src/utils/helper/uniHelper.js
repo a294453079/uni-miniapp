@@ -1,7 +1,7 @@
 import { isPlainObject, merge } from 'lodash-es'
 
 import { pageUrlMatch, pageWhiteList, useGlobalSetting } from '@/settings'
-import useStore  from '@/stores'
+import userStore  from '@/stores'
 import { toPromise } from '@/utils'
 
 /**
@@ -72,10 +72,10 @@ export function getUpdate() {
 }
 
 export function checkAuth (path) {
-  const { appStore } = useStore()
+  const { userInfoStore } = userStore()
   const { checkAuth } = useGlobalSetting()
   if (!checkAuth) return
   // if (pageUrlMatch(path)) return 白名单
-  if (appStore.hasLogin) return
-  return appStore.Logout()
+  if (userInfoStore.hasLogin) return
+  return userInfoStore.Logout()
 }

@@ -1,16 +1,16 @@
 
 import dayjs from 'dayjs'
 import { find, flatMap } from 'lodash-es'
-import useStore from "@/stores/index.js"
+import userStore from "@/stores/index.js"
 export function verificationToken () {
   // 1：安全可用；0：临近过期；-1：已过期
-  const { appStore } = useStore()
-  if (appStore.getToken) {
-    const { expires_in = 0, token_type } = appStore.authInfo ?? {}
+  const { userInfoStore } = userStore()
+  if (userInfoStore.getToken) {
+    const { expires_in = 0, token_type } = userInfoStore.authInfo ?? {}
     return 1
     // const diff = dayjs.unix(Number(expires_in)).diff(undefined, 's')
 
-    // const expiration = appStore.authInfo?.expiration || 3600
+    // const expiration = userInfoStore.authInfo?.expiration || 3600
 
     // 防止值过大，造成无限刷新token的问题
     // expiration = expiration > 23 * 3600 ? 3600 : expiresIn

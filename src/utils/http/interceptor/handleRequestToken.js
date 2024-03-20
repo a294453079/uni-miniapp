@@ -14,7 +14,7 @@ export default function (instance) {
   let isRefreshing = false // 当前是否在请求刷新 Token
 
   let requestQueue = [] // 将在请求刷新 Token 中的请求暂存起来，等刷新 Token 后再重新请求
-  const {appStore} = userStore();
+  const {userInfoStore} = userStore();
 
   // 执行暂存起来的请求
   const executeQueue = (error) => {
@@ -45,7 +45,7 @@ export default function (instance) {
     // 发起刷新 Token 请求，成功或失败都将执行队列中的请求
 
     try {
-      await appStore.Login()
+      await userInfoStore.Login()
       executeQueue()
     } catch (e) {
       executeQueue(e)
@@ -63,7 +63,7 @@ export default function (instance) {
       // 退出登陆时单独处理
       if (config.url === AuthApi.Logout) {
         config.header = {
-           Authorization: `Bearer ${appStore.getToken}`,
+           Authorization: `Bearer ${userInfoStore.getToken}`,
           // 'blade-auth': `bearer ${app.getToken}`,
           ...config.header,
         }
@@ -73,7 +73,7 @@ export default function (instance) {
       const code = verificationToken()
       const { checkAuth } = useGlobalSetting()
       if (checkAuth && code < 0) {
-        appStore.Logout()
+        userInfoStore.Logout()
         return Promise.reject({
           message: 'Unauthorized, Login required',
           config,
@@ -82,7 +82,7 @@ export default function (instance) {
         await refreshToken()
       }
       config.header = {
-        Authorization: `Bearer ${appStore.getToken}`,
+        Authorization: `Bearer ${userInfoStore.getToken}`,
         ...config.header,
       }
       
@@ -96,7 +96,7 @@ export default function (instance) {
       // 处理401错误
       if (statusCode === 401) {
         if (checkAuth) {
-          appStore.Logout()
+          userInfoStore.Logout()
           return Promise.reject(merge(error, { [IGNORE_ERROR]: true }))
         } else {
           return refreshToken().then(() => http(config))

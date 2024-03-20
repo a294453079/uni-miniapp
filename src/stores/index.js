@@ -1,9 +1,9 @@
 import {
-	appStore
-} from "./modules/app.js"
+	userInfoStore
+} from "./modules/userInfo.js"
 
 const useStore = ()=>({
-		appStore: appStore(),
+		userInfoStore: userInfoStore(),
 })
 
 
@@ -12,8 +12,8 @@ export default useStore;
  * 用法
  * 	import useStore from "@/store/index.js"
 	const {
-		appStore
+		userStore
 	} = useStore();
 	
-	let app = appStore.appIndex
+	let app = userStore.appIndex
  */

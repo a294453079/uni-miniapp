@@ -26,8 +26,11 @@ export function loginByAccount (data, token) {
 }
 
 /* 小程序退出登录清除token */
-export function logout() {
-  return http.post(AuthApi.Logout, undefined, { ignoreHandleError: true })
+export function logout(data) {
+  return http.post(AuthApi.Logout, data, {
+    joinParamsToUrl: true,
+    ignoreHandleError: true
+  })
 }
 
 // 查询手机号码是否已经注册

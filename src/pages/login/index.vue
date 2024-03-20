@@ -96,7 +96,7 @@ let account = shallowRef('')
 let password = shallowRef('')
 let uToastRef = shallowRef('')
 
-const { appStore } = userStore();
+const { userInfoStore } = userStore();
 
 const rememberChange = (params) => {
   rememberMe.value = params
@@ -120,20 +120,20 @@ const handleLogin = async () => {
       title: '登录中...'
     })
     try {
-      await appStore.Login({
+      await userInfoStore.Login({
         userNameLoginReq: {
           username: account.value,
           password: password.value
         },
         loginType: 1
       })
-      // appStore.hasLogin = false
+      // userInfoStore.hasLogin = false
       uni.switchTab({
         url: '/pages/index/index'
       })
     } catch (e) {
       console.log('报错啦', e);
-      appStore.resetState()
+      userInfoStore.resetState()
     } finally {
       uni.hideLoading()
     }
