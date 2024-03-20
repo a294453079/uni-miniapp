@@ -127,6 +127,17 @@ export const userInfoStore = defineStore(
       resetState() {
         console.log('清空用户信息')
         this.authInfo = null
+        this.hasLogin = false
+        /**学生信息 */
+        this.userInfo = {}
+        /**班级信息 */
+        this.classInfo = {}
+        /**学期信息 */
+        this.semesterInfo = {}
+        /**角色列表 */
+        this.userPartRroList = []
+        /**详细用户信息 */
+        this.authUserInfo = {}
       },
 
       // 加密
@@ -142,7 +153,6 @@ export const userInfoStore = defineStore(
 
       /**获取公共key */
       async getPublicKeyInfo() {
-        console.log('执行')
         const res = await getPublicKey()
         if (res.code == 0) {
           this.publicKey = res.data
@@ -152,18 +162,15 @@ export const userInfoStore = defineStore(
 
       async requestUserInfo() {
         const { data } = await getUserInfo({ token: this.getToken })
-        console.log(data, '用户信息')
         /**储存角色列表 */
         this.userPartRroList = data.userPartRroList
         let userInfoClone = cloneDeep(data)
-        console.log('复制', userInfoClone)
         delete userInfoClone.userPartRroList
         /**角色列表中匹配 */
         const studentInfo = data.userPartRroList.find((item) => item.id == data.studentId)
         this.userInfo = { ...studentInfo, ...userInfoClone }
         /**查询班级信息 */
         const classRes = await getStudentClassInfo({ studentId: this.userInfo.studentId })
-        console.log('班级信息', classRes)
         this.classInfo = classRes.obj
         /**查询学期信息 */
         const semester = await getSemesterInfo({ schoolId: this.userInfo?.orgId })
