@@ -4,12 +4,15 @@ import { reqUrlMatch, useGlobalSetting } from '@/settings'
 import { getBaseInfo, loginByAccount, logout } from '@/api/sys/auth'
 import { currentPageMatch } from '@/settings'
 import { toPromise } from '@/utils'
+import { JSEncrypt } from "jsencrypt";
+import { getPublicKey } from '@/api/sys/service'
 export const appStore = defineStore('app', {
   unistorage: true, // 是否持久化到内存
   state: () => {
     return {
        // 测试
-    appIndex: 999,
+      appIndex: 999,
+      publicKey:'',
     /**是否已登录 hasLogin */
     hasLogin: false,
     /**token */
@@ -23,11 +26,12 @@ export const appStore = defineStore('app', {
   },
   getters: {
     getToken () {
-      return this.authInfo?.token ?? ''
+      return this.authInfo?.access_token ?? ''
     }
   },
   actions: {
     async Login (params) {
+      console.log('登录',params);
       const { wxAppId, checkAuth, appCode } = useGlobalSetting()
       let token = ''
       // 合并默认参数
@@ -39,14 +43,22 @@ export const appStore = defineStore('app', {
         },
         params,
       )
-      console.log(params,'-----');
+      console.log(params, '-----');
       /**企微专用 */
       // const isQyWxLogin = get(params, 'thirdLoginReq.thirdAppType') === 2
       const { code } = await toPromise(uni.login)
       // set(params, 'thirdLoginReq.code', code) 设置第三方授权登录请求参数所用
+      if (Object.keys(params?.userNameLoginReq).length) {
+        const { userName, password } = params.userNameLoginReq
+          console.log('password',password);
+       await this.getPublicKeyInfo()
+      params.userNameLoginReq.password =  this.encryptDate(this.publicKey, password);
+      console.log('参数',this.publicKey,password);
+      }
       /**账号登录 */
       const result = await loginByAccount(params, token)
-      this.authInfo = result
+      console.log('登录信息返回',result);
+      this.authInfo = result.data
 console.log('账号登录信息',this.authInfo);
       // 当账号密码登录时，设置用户为已登录状态
       if (!checkAuth || params?.userNameLoginReq) {
@@ -91,6 +103,27 @@ console.log('账号登录信息',this.authInfo);
     resetState () {
       console.log('清空用户信息');
       this.authInfo = null
+    },
+    
+      // 加密
+    encryptDate (publicKey, data) {
+      if (publicKey) {
+        const encrypt = new JSEncrypt(); // 1.实例化对象
+        encrypt.setPublicKey(publicKey); // 2. 设置公钥
+        return encrypt.encrypt(data); // 3. 返回加密的字符串
+      } else {
+        return "";
+      }
+    },
+
+    /**获取公共key */
+    async getPublicKeyInfo () {
+      console.log('执行');
+      const res = await getPublicKey()
+       if (res.code == 0) {
+        this.publicKey = res.data;
+        uni.setStorageSync("publicKey", JSON.stringify(res.data));
+      }
     },
   },
 },

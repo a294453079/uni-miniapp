@@ -96,7 +96,7 @@ let account = shallowRef('')
 let password = shallowRef('')
 let uToastRef = shallowRef('')
 
-const { app } = userStore();
+const { appStore } = userStore();
 
 const groupChange = (params) => {
   readValue.value = params
@@ -117,16 +117,20 @@ const handleLogin = async () => {
       title: '登录中...'
     })
     try {
-      await app.Login({
+      await appStore.Login({
         userNameLoginReq: {
           username: account.value,
           password: password.value
         },
         loginType: 1
       })
-      app.setHasLogin(false)
+      appStore.hasLogin = false
+      uni.switchTab({
+        url: '/pages/index/index'
+      })
     } catch (e) {
-      app.resetState()
+      console.log('报错啦', e);
+      appStore.resetState()
     } finally {
       uni.hideLoading()
     }
@@ -164,7 +168,8 @@ const handleLogin = async () => {
     background: #fff;
     border-top-left-radius: 20rpx;
     border-top-right-radius: 20rpx;
-    padding: 120rpx 60rpx 100rpx 60rpx;
+    padding: 120rpx 60rpx 50rpx 60rpx;
+    // height: calc(100vh-);
 
     .login_icon {
       width: 32rpx;

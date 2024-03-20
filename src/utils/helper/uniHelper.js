@@ -72,10 +72,10 @@ export function getUpdate() {
 }
 
 export function checkAuth (path) {
-  const { app } = useStore()
+  const { appStore } = useStore()
   const { checkAuth } = useGlobalSetting()
   if (!checkAuth) return
   // if (pageUrlMatch(path)) return 白名单
-  if (app.hasLogin) return
-  return app.Logout()
+  if (appStore.hasLogin) return
+  return appStore.Logout()
 }

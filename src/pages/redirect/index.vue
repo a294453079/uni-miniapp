@@ -26,9 +26,9 @@ onLoad(() => {
   }
   else {
     setTimeout(() => {
-      const { app } = userStore()
-      console.log('app', app);
-      if (app.hasLogin) {
+      const { appStore } = userStore()
+      console.log('app', appStore);
+      if (appStore.hasLogin) {
         uni.switchTab({
           url: '/pages/index/index'
         })

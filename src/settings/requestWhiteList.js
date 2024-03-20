@@ -5,7 +5,8 @@ const list = [
   // '/paas/paasuser/(getWxMiniUserPhone|getWxNewPhoneNoInfo|userNameExist)',
   // '/wpc-return-visit/config/getTenantIdByCountyId',
   // '/paas/paasposition(.*)'
-  '/oauth-server/login/token'
+  // '/oauth-server/login/token',
+  '/oauth-server/oauth/publicKey'
 ]
 
 export default list

@@ -47,9 +47,9 @@ console.log('fetcher',fetcher);
   baseURL: apiUrl,
   dataType: 'json',
   timeout: 60 * 1000,
-  header: {
-    Authorization: `Basic Z3pub25neWV6aGVueGluZ2RhaTo0NWE1NWZhNTUwNmI5Y2Y2ZTcyOTQ1MGQ2MjU4MGYxNQ==`
-  },
+  // header: {
+  //   Authorization: `Basic ${token}`
+  // },
   fetcher
 })
  

@@ -1,4 +1,3 @@
-
 import { showModal } from '@/utils'
 
 import { IGNORE_ERROR } from '../const'
@@ -10,34 +9,32 @@ export default function (instance) {
   const apply = () => {
     return new Promise((resolve, reject) => {
       respId = instance.interceptors.response.use((response) => {
-        const { isReturnNativeResponse = false, isTransformResponse = true } =
-          response.config
-
+        const { isReturnNativeResponse = false, isTransformResponse = true } = response.config
+        console.log('result响应', response.data)
         // 返回原始响应内容
         if (isReturnNativeResponse) {
-          console.log('返回原始响应');
-          resolve(response);
+          console.log('返回原始响应')
+          resolve(response)
           return response
         }
 
         // 不处理返回内容时
         if (!isTransformResponse) {
-          console.log('不处理返回内容');
-          resolve(response.data);
+          console.log('不处理返回内容')
+          resolve(response.data)
           return response.data
         }
 
         // 没有正确的返回响应内容
         if (!response.data) {
-          console.log('没有正确的返回响应内容');
+          console.log('没有正确的返回响应内容')
           response.errMsg = '请求出错，请稍候重试！'
           return Promise.reject(response)
         }
 
-        const { code, data: result, success } = response.data
-
-        if (success && code === 0) {
-          resolve(response.data);
+        const { code, data: result } = response.data
+        if (code === 0) {
+          resolve(response.data)
           return response.data
         }
 
@@ -45,13 +42,8 @@ export default function (instance) {
       })
       respId2 = instance.interceptors.response.use(undefined, (error) => {
         const { config, errMsg, data, statusCode } = error
-
         // 忽略相关处理
-        if (
-          error[IGNORE_ERROR] ||
-          config.ignoreHandleError ||
-          statusCode === 400
-        ) {
+        if (error[IGNORE_ERROR] || config.ignoreHandleError || statusCode === 400) {
           return Promise.reject(error)
         }
 
@@ -95,12 +87,11 @@ export default function (instance) {
         showModal({
           title: '请求错误提示',
           content: msgText,
-          showCancel: false
+          showCancel: false,
         })
         return Promise.reject(error)
       })
     })
-
   }
 
   const eject = () => {
@@ -112,6 +103,6 @@ export default function (instance) {
 
   return {
     apply,
-    eject
+    eject,
   }
 }

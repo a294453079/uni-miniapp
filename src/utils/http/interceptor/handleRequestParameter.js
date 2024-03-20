@@ -5,14 +5,11 @@ import { reqUrlMatch } from '@/settings'
 export default function (instance) {
   let reqId
   const apply = () => {
-    console.log('进来吧22');
     reqId = instance.interceptors.request.use((config) => {
-      console.log('params拦截层',config);
+      console.log('params拦截层', reqUrlMatch(config.url));
       if (reqUrlMatch(config.url)) return config
-
       const { joinParamsToUrl = false, ignoreParameter = [] } = config
-
-   
+      let extraData = {}
       if (ignoreParameter !== true) {
         const keys = !Array.isArray(ignoreParameter)
           ? []
@@ -37,7 +34,6 @@ export default function (instance) {
         ),
         (o) => isUndefined(o) || isNull(o)
       )
-
       if (
         joinParamsToUrl ||
         ['get', 'delete', 'head', 'options', 'trace'].includes(
@@ -55,7 +51,7 @@ export default function (instance) {
           (o) => isUndefined(o) || isNull(o)
         )
       }
-
+      console.log('正常返回',config);
       return config
     })
   }

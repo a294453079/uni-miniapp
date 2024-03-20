@@ -27,7 +27,7 @@
 import moduleTitle from '@/components/moduleTitle.vue'
 import daySchedule from '@/components/daySchedule.vue'
 import { http } from '@/utils'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 const uToastRef = ref(null)
 let dayClassCoursesByStudentPropsList = ref([])
 
@@ -51,10 +51,7 @@ const getListDayClassCoursesByClass = async () => {
 onMounted(async () => {
   await getListDayClassCoursesByClass()
 })
-console.log(11111111, res.obj);
-if (res.code == 0) {
-  dayClassCoursesByStudentList.value = res.obj
-}
+
 
 
 onBeforeMount(() => {

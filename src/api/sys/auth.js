@@ -16,9 +16,11 @@ export function registerAccount(data) {
 
 /* 小程序账号登录 */
 export function loginByAccount (data, token) {
-  return http.post(AuthApi.Login, data, {
+  const {userNameLoginReq} = data
+  return http.post(AuthApi.Login, {...userNameLoginReq,encryption:true}, {
     header: token ? { 'blade-auth': `bearer ${token}` } : {},
     ignoreCheckToken: true,
+    joinParamsToUrl: true,
     ignoreHandleError: true
   })
 }

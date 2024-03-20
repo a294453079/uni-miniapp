@@ -2,8 +2,8 @@ import {
 	appStore
 } from "./modules/app.js"
 
-const useStore = (instance)=>({
-		app: appStore(instance),
+const useStore = ()=>({
+		appStore: appStore(),
 })
 
 
@@ -12,8 +12,8 @@ export default useStore;
  * 用法
  * 	import useStore from "@/store/index.js"
 	const {
-		app
+		appStore
 	} = useStore();
 	
-	let app = app.appIndex
+	let app = appStore.appIndex
  */

@@ -6,7 +6,7 @@ import { AsyncPromise } from '@/utils/asyncPromise'
 import { verificationToken } from "@/utils/helper/storeHelper.js"
 import userStore from "@/stores/index.js"
 import { IGNORE_ERROR } from '../const'
-
+import { showModal } from '@/utils'
 export default function (instance) {
   let reqId
   let respId
@@ -14,7 +14,7 @@ export default function (instance) {
   let isRefreshing = false // 当前是否在请求刷新 Token
 
   let requestQueue = [] // 将在请求刷新 Token 中的请求暂存起来，等刷新 Token 后再重新请求
-  const {app} = userStore();
+  const {appStore} = userStore();
 
 //  const appStore = appStore()
 //   console.log('hahahahhaha',appStore)
@@ -42,6 +42,7 @@ export default function (instance) {
     if (isRefreshing) {
       const Promise = new AsyncPromise()
       requestQueue.push(Promise)
+      console.log('刷新时候存请求',requestQueue);
       return Promise.promise
     }
 
@@ -49,7 +50,7 @@ export default function (instance) {
     // 发起刷新 Token 请求，成功或失败都将执行队列中的请求
 
     try {
-      await app.Login()
+      await appStore.Login()
       executeQueue()
     } catch (e) {
       executeQueue(e)
@@ -76,7 +77,7 @@ export default function (instance) {
       const code = verificationToken()
       const { checkAuth } = useGlobalSetting()
       if (checkAuth && code < 0) {
-        app.Logout()
+        appStore.Logout()
         return Promise.reject({
           message: 'Unauthorized, Login required',
           config,
@@ -92,17 +93,26 @@ export default function (instance) {
       return config
     })
     respId = instance.interceptors.response.use(undefined, (error) => {
-      const { config, statusCode } = error
+      console.log('token响应层',error);
+      const { config, statusCode ,data} = error
       const { checkAuth } = useGlobalSetting()
 
       // 处理401错误
       if (statusCode === 401) {
         if (checkAuth) {
-          app.Logout()
+          appStore.Logout()
           return Promise.reject(merge(error, { [IGNORE_ERROR]: true }))
         } else {
           return refreshToken().then(() => http(config))
         }
+      }
+
+      if (data.code === 400) {
+         showModal({
+          title: '提示',
+          content: data.msg,
+          showCancel: false,
+        })
       }
 
       return Promise.reject(error)
