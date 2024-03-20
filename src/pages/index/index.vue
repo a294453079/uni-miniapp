@@ -18,103 +18,100 @@
     </view>
     <view class="mt-16px">
       <moduleTitle title="学生课表" />
-      <daySchedule
-        :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList"
-        :isShowMore="true"
-      />
+      <daySchedule :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList" :isShowMore="true" />
     </view>
   </view>
 </template>
 
 <script setup>
-  import moduleTitle from '@/components/moduleTitle.vue'
-  import daySchedule from '@/components/daySchedule.vue'
-  import { http } from '@/utils'
-  import { ref, onMounted } from 'vue'
-  const uToastRef = ref(null)
-  let dayClassCoursesByStudentPropsList = ref([])
+import moduleTitle from '@/components/moduleTitle.vue'
+import daySchedule from '@/components/daySchedule.vue'
+import { http } from '@/utils'
+import { ref, onMounted } from 'vue'
+const uToastRef = ref(null)
+let dayClassCoursesByStudentPropsList = ref([])
 
-  // 获取首页课表
-  const getListDayClassCoursesByClass = async () => {
-    const res = await http.get({
-      url: '/app-teach/classCourses/listDayClassCoursesByClass',
-      params: {
-        schoolId: '64428937560064000',
-        semesterId: '376447209173975053',
-        classId: '449227900294791393',
-        date: '2024-03-19',
-      },
-    })
-    if (res.code == 0) {
-      dayClassCoursesByStudentPropsList.value = res.obj
-    }
-  }
-
-  onMounted(async () => {
-    await getListDayClassCoursesByClass()
+// 获取首页课表
+const getListDayClassCoursesByClass = async () => {
+  const res = await http.get({
+    url: '/app-teach/classCourses/listDayClassCoursesByClass',
+    data: {
+      schoolId: '64428937560064000',
+      semesterId: '376447209173975053',
+      classId: '449227900294791393',
+      date: '2024-03-19',
+    },
   })
-
-  // 跳转详情
-  const handleDetailClick = (type) => {
-    if (type == 'live-broadcast') {
-      uToastRef.value.show({
-        message: '程序猿们已经在加紧开发，请期待此功能',
-      })
-    } else if (type == 'school-timetable') {
-      uni.navigateTo({
-        url: '/pages/index/schedule/index',
-      })
-    } else {
-      uni.navigateTo({
-        url: '/pages/practice/detail',
-      })
-    }
+  if (res.code == 0) {
+    dayClassCoursesByStudentPropsList.value = res.obj
   }
+}
+
+onMounted(async () => {
+  await getListDayClassCoursesByClass()
+})
+
+// 跳转详情
+const handleDetailClick = (type) => {
+  if (type == 'live-broadcast') {
+    uToastRef.value.show({
+      message: '程序猿们已经在加紧开发，请期待此功能',
+    })
+  } else if (type == 'school-timetable') {
+    uni.navigateTo({
+      url: '/pages/index/schedule/index',
+    })
+  } else {
+    uni.navigateTo({
+      url: '/pages/practice/detail',
+    })
+  }
+}
 </script>
 <style scoped lang="scss">
-  .content {
-    height: 100vh;
-    background: #f8f8f8;
+.content {
+  height: 100vh;
+  background: #f8f8f8;
 
-    .heater {
-      height: 149px;
-      color: #fff;
-      font-size: 20px;
+  .heater {
+    height: 149px;
+    color: #fff;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    background: #00a0ff;
+  }
+
+  .tabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 118px;
+    border-radius: 16px;
+    background: #fff;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin: -43px 16px 0 16px;
+
+    view {
       display: flex;
       align-items: center;
-      padding-left: 20px;
-      background: #00a0ff;
-    }
+      flex-direction: column;
+      cursor: pointer;
 
-    .tabs {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 118px;
-      border-radius: 16px;
-      background: #fff;
-      padding: 0 20px;
-      box-sizing: border-box;
-      margin: -43px 16px 0 16px;
+      image {
+        width: 55px;
+        height: 55px;
+      }
 
-      view {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        cursor: pointer;
-
-        image {
-          width: 55px;
-          height: 55px;
-        }
-
-        text {
-          color: #474747;
-          font-size: 15px;
-          line-height: 16px;
-          margin-top: 6px;
-        }
+      text {
+        color: #474747;
+        font-size: 15px;
+        line-height: 16px;
+        margin-top: 6px;
       }
     }
   }
+}
 </style>

@@ -16,11 +16,6 @@ export default function (instance) {
   let requestQueue = [] // 将在请求刷新 Token 中的请求暂存起来，等刷新 Token 后再重新请求
   const {appStore} = userStore();
 
-//  const appStore = appStore()
-//   console.log('hahahahhaha',appStore)
-  // const { app } = appStore();
-  // console.log('app1-', store);
-  
   // 执行暂存起来的请求
   const executeQueue = (error) => {
     for (const promise of requestQueue) {
@@ -68,6 +63,7 @@ export default function (instance) {
       // 退出登陆时单独处理
       if (config.url === AuthApi.Logout) {
         config.header = {
+           Authorization: `Bearer ${appStore.getToken}`,
           // 'blade-auth': `bearer ${app.getToken}`,
           ...config.header,
         }
@@ -86,7 +82,7 @@ export default function (instance) {
         await refreshToken()
       }
       config.header = {
-        //  'blade-auth': `Bearer ${app.getToken}`,
+        Authorization: `Bearer ${appStore.getToken}`,
         ...config.header,
       }
       

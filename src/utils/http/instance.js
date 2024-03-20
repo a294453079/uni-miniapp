@@ -54,11 +54,10 @@ console.log('fetcher',fetcher);
 })
  
 setTimeout(() => {
-
-  // handleInterceptorLoading(requestInstance)
-  // handleRequestToken(requestInstance)
-  // handleRequestParameter(requestInstance)
-  // handleRespResult(requestInstance)
+  handleInterceptorLoading(requestInstance)
+  handleRequestToken(requestInstance)
+  handleRequestParameter(requestInstance)
+  handleRespResult(requestInstance)
 }, 0)
 
 // handleInterceptorLoading(requestInstance)

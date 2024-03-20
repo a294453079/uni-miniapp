@@ -127,7 +127,7 @@ const handleLogin = async () => {
         },
         loginType: 1
       })
-      appStore.hasLogin = false
+      // appStore.hasLogin = false
       uni.switchTab({
         url: '/pages/index/index'
       })
