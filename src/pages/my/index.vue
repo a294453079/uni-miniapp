@@ -2,18 +2,18 @@
   <view>
     <u-toast ref="uToastRef"></u-toast>
     <view class="header">
-      <img class="w-56px h-56px mr-10px" src="@/static/my/user-logo.png" alt="" />
+      <img class="w-112rpx h-112rpx mr-20rpx" src="@/static/my/user-logo.png" alt="" />
       <view class="flex flex-col flex-1" style="color: #fff">
         <view class="flex items-center justify-between">
-          <text class="text-22px font-bold">郑和美</text>
+          <text class="text-44rpx font-bold">郑和美</text>
           <img
-            class="w-20px h-20px"
+            class="w-40rpx h-40rpx"
             @click="settingDetail"
             src="@/static/my/setting_icon.png"
             alt=""
           />
         </view>
-        <text class="mt-15px text-15px">广州市西关外国语学校-学生</text>
+        <text class="mt-30rpx text-30rpx">广州市西关外国语学校-学生</text>
       </view>
     </view>
     <view class="user-info">
@@ -24,16 +24,16 @@
         @click="showToast(index)"
       >
         <view>
-          <img class="w-30px h-30px mr-10px" :src="item.icon" alt="" />
+          <img class="w-60rpx h-60rpx mr-20rpx" :src="item.icon" alt="" />
           <text>{{ item.name }}</text>
         </view>
         <img
-          class="w-14px h-14px cursor-pointer"
+          class="w-28rpx h-28rpx cursor-pointer"
           v-if="!item.phone"
           src="@/static/my/arrow-right.png"
           alt=""
         />
-        <text v-else class="text-12px leading-16px mr-7px">{{ item.phone }}</text>
+        <text v-else class="text-24rpx leading-32rpx mr-14rpx">{{ item.phone }}</text>
       </view>
     </view>
   </view>
@@ -86,22 +86,22 @@
 
 <style scoped lang="scss">
   .header {
-    height: 236px;
+    height: 472rpx;
     background: #00a0ff;
     display: flex;
     align-items: center;
-    padding: 0 16px 0 20px;
+    padding: 0 32rpx 0 40rpx;
     display: flex;
     align-items: center;
   }
   .user-info {
     background: #fff;
-    border-radius: 8px;
-    margin: -40px 20px 0 20px;
-    box-shadow: 0px 3px 8px 0px rgba(11, 69, 111, 0.16);
+    border-radius: 16rpx;
+    margin: -80rpx 40rpx 0 40rpx;
+    box-shadow: 0rpx 6rpx 16rpx 0rpx rgba(11, 69, 111, 0.16);
     .card-list {
-      height: 80px;
-      padding: 0 14px 0 16px;
+      height: 160rpx;
+      padding: 0 28rpx 0 32rpx;
       box-sizing: border-box;
       display: flex;
       align-items: center;
@@ -112,8 +112,8 @@
         align-items: center;
         text {
           color: #474747;
-          font-size: 15px;
-          line-height: 16px;
+          font-size: 30rpx;
+          line-height: 32rpx;
           font-weight: bold;
         }
       }

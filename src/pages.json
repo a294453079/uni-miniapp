@@ -114,7 +114,7 @@
           "style": {
             "navigationBarTitleText": "客服电话"
           }
-        }
+        },
         {
           "path": "setting",
           "style": {
@@ -124,12 +124,14 @@
       ]
     },
     {
-      "root": "pages/index/schedule",
+      "root": "pages/schedule",
       "pages": [
         {
           "path": "index",
           "style": {
-            "navigationBarTitleText": "课程表"
+            "navigationBarTitleText": "",
+            "navigationStyle": "custom",
+            "navigationBarTextStyle": "white"
           }
         }
       ]
