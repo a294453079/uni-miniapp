@@ -3,29 +3,29 @@
       <view class="calendar-cont">
         <view class="calendar-header">
           <view class="ehader-left">
-            <text class="month text-22px">{{ month }}月</text>
-            <text class="year text-12px ml-10px">{{ currentYear }}</text>
+            <text class="month text-44rpx">{{ month }}月</text>
+            <text class="year text-24rpx ml-20rpx">{{ currentYear }}</text>
           </view>
-          <view class="text-16px flex items-center" v-show="isShowExpandCalendar">
+          <view class="text-32rpx flex items-center" v-show="isShowExpandCalendar">
             <img
               @click="prev"
-              class="cursor-pointer w-16px h-16px"
+              class="cursor-pointer w-32rpx h-32rpx"
               src="@/static/practice/prev-icon.png"
               alt=""
             />
             <img
               @click="next"
-              class="cursor-pointer w-16px h-16px ml-15px"
+              class="cursor-pointer w-32rpx h-32rpx ml-30rpx"
               src="@/static/practice/next-icon.png"
               alt=""
             />
           </view>
         </view>
-        <view class="calendar-body" :class="isShowExpandCalendar ? '' : 'h-60px overflow-hidden'">
+        <view class="calendar-body" :class="isShowExpandCalendar ? '' : 'h-120rpx overflow-hidden'">
           <view class="calendar-table">
             <view class="thead">
               <view width="30" v-for="(item, index) in week" :key="index" class="th">
-                <view class="text-12px">{{ item.date }}</view>
+                <view class="text-24rpx">{{ item.date }}</view>
               </view>
             </view>
             <view class="tbody">
@@ -39,17 +39,17 @@
                     ]"
                     class="flex items-center justify-center"
                   >
-                    <text class="text-15px">{{ item.day }}</text>
+                    <text class="text-30rpx">{{ item.day }}</text>
                     <!-- <text
                       v-if="item.name"
-                      class="text-12px w-50px absolute bottom-2px"
+                      class="text-24rpx w-100rpx absolute bottom-4rpx"
                       style="transform: scale(0.8); background: #00a0ff"
                       >{{ item.name }}</text
                     >
                     <text
                       :style="{
-                        top: item.name ? '-2px' : '',
-                        right: item.name ? '3px' : '',
+                        top: item.name ? '-4rpx' : '',
+                        right: item.name ? '6rpx' : '',
                       }"
                       v-if="item.isXiu || item.isWork"
                       :class="[{ xiu: item.isXiu }, { work: item.isWork }]"
@@ -415,9 +415,9 @@
       .calendar-cont {
         background: #00a0ff;
         position: relative;
-        padding: 60px 20px 10px 20px;
+        padding: 120rpx 40rpx 20rpx 40rpx;
         .calendar-header {
-          height: 54px;
+          height: 108rpx;
           display: flex;
           display: flex;
           align-items: center;
@@ -437,7 +437,7 @@
             .select-month {
               display: flex;
               > div {
-                border: 1px solid rgb(235, 238, 245);
+                border: 2rpx solid rgb(235, 238, 245);
                 cursor: pointer;
               }
               :nth-child(2) {
@@ -449,7 +449,7 @@
         }
         .calendar-body {
           background: #00a0ff;
-          border-radius: 10px 10px 10px 10px;
+          border-radius: 20rpx;
           box-sizing: border-box;
           .calendar-table {
             width: 100%;
@@ -460,27 +460,27 @@
             .th {
               padding: 0;
               color: #fff;
-              width: 22px;
-              height: 22px;
+              width: 44rpx;
+              height: 44rpx;
               display: flex;
               align-items: center;
               justify-content: center;
-              margin-bottom: 2px;
+              margin-bottom: 4rpx;
             }
             .tr {
-              height: 30px;
-              margin: 4px 0 6px 0;
+              height: 60rpx;
+              margin: 8rpx 0 12rpx 0;
               display: flex;
               justify-content: space-between;
               // .is-today {
               //   color: rgb(64, 158, 255) !important;
               // }
               .is-selected {
-                width: 22px;
-                height: 22px;
+                width: 44rpx;
+                height: 44rpx;
                 background: #fff !important;
                 border-radius: 50% !important;
-                box-shadow: 1px 1px 1px 0px rgba(48, 17, 63, 0.25);
+                box-shadow: 2rpx 2rpx 2rpx 0rpx rgba(48, 17, 63, 0.25);
                 color: #00a0ff !important;
               }
               .prev {
@@ -494,14 +494,14 @@
                 align-items: center;
                 justify-content: center;
                 padding: 0;
-                height: 22px;
-                width: 22px;
+                height: 44rpx;
+                width: 44rpx;
                 text-align: center;
                 cursor: pointer;
                 font-weight: bold;
                 view {
-                  height: 22px;
-                  width: 22px;
+                  height: 44rpx;
+                  width: 44rpx;
                   display: flex;
                   justify-content: center;
                   align-items: center;
@@ -512,17 +512,17 @@
                   .xiu {
                     color: #81c885;
                     position: absolute;
-                    font-size: 12px;
-                    right: -2px;
-                    top: -3px;
+                    font-size: 24rpx;
+                    right: -4rpx;
+                    top: -6rpx;
                     transform: scale(0.5);
                   }
                   .work {
                     position: absolute;
                     color: #ff9c6e;
-                    font-size: 12px;
-                    right: -2px;
-                    top: -3px;
+                    font-size: 24rpx;
+                    right: -4rpx;
+                    top: -6rpx;
                     transform: scale(0.5);
                   }
                 }
@@ -535,15 +535,15 @@
           }
         }
         .unfold-board {
-          width: 34px;
-          height: 4px;
+          width: 68rpx;
+          height: 8rpx;
           background: #bcdfff;
-          border-radius: 18px;
+          border-radius: 36rpx;
           cursor: pointer;
           position: absolute;
-          bottom: 3px;
+          bottom: 6rpx;
           left: 50%;
-          margin-left: -17px;
+          margin-left: -34rpx;
         }
       }
     }

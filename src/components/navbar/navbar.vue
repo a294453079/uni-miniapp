@@ -6,7 +6,7 @@
         {{ title }}
 
         <view class="nav-btn-back">
-          <u-icon name="arrow-left" size="36rpx" color="#1f1f1f" @click="handleNavBack" />
+          <u-icon name="arrow-left" size="36rpx" color="#fff" @click="handleNavBack" />
         </view>
       </view>
       <view v-else class="nav-content" :style="[navContent, contentStyle]">
@@ -94,7 +94,6 @@ const handleNavBack = () => {
   text-align: center;
   font-size: $uni-font-size-base;
   color: $uni-text-color;
-
   position: relative;
 
   .nav-btn-back {

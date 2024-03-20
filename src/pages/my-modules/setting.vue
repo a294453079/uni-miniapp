@@ -3,11 +3,11 @@
     <view class="setting">
       <view>
         <text>用户协议</text>
-        <img class="w-14px h-14px cursor-pointer" src="@/static/my/arrow-right.png" alt="" />
+        <img class="w-28rpx h-28rpx cursor-pointer" src="@/static/my/arrow-right.png" alt="" />
       </view>
       <view>
         <text>隐私政策</text>
-        <img class="w-14px h-14px cursor-pointer" src="@/static/my/arrow-right.png" alt="" />
+        <img class="w-28rpx h-28rpx cursor-pointer" src="@/static/my/arrow-right.png" alt="" />
       </view>
     </view>
     <view class="logout">退出登录</view>
@@ -18,7 +18,7 @@
 
 <style scoped lang="scss">
   .setting-card {
-    padding: 16px;
+    padding: 32rpx;
     box-sizing: border-box;
     background: #f9faff;
     height: 100vh;
@@ -26,19 +26,19 @@
       display: flex;
       flex-direction: column;
       background: #fff;
-      padding: 0 12px;
+      padding: 0 24rpx;
       box-sizing: border-box;
-      border-radius: 8px;
+      border-radius: 16rpx;
       view {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        height: 48px;
-        border-bottom: 1px solid #e5e5e5;
+        height: 96rpx;
+        border-bottom: 2rpx solid #e5e5e5;
         text {
           color: #333;
-          font-size: 15px;
-          line-height: 16px;
+          font-size: 30rpx;
+          line-height: 32rpx;
         }
       }
       view:last-child {
@@ -47,18 +47,18 @@
     }
     .logout {
       color: #333;
-      font-size: 16px;
-      line-height: 16px;
+      font-size: 32rpx;
+      line-height: 32rpx;
       cursor: pointer;
-      border-radius: 28px;
+      border-radius: 56rpx;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #fff;
-      height: 56px;
+      height: 112rpx;
       position: fixed;
       width: 91.5%;
-      bottom: 66px;
+      bottom: 132rpx;
     }
   }
 </style>

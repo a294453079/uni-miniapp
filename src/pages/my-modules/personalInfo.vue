@@ -10,7 +10,7 @@
         <text>18751234578</text>
       </view>
     </view>
-    <view class="info mt-16px">
+    <view class="info mt-32rpx">
       <view>
         <text>姓名</text>
         <text>常晓明</text>
@@ -20,7 +20,7 @@
         <text>未设置</text>
       </view>
     </view>
-    <view class="info mt-16px">
+    <view class="info mt-32rpx">
       <view>
         <text>学校</text>
         <text>广东省广州中学</text>
@@ -49,7 +49,7 @@
 
 <style scoped lang="scss">
   .user-info {
-    padding: 16px;
+    padding: 32rpx;
     box-sizing: border-box;
     background: #f9faff;
     height: 100vh;
@@ -57,24 +57,24 @@
       display: flex;
       flex-direction: column;
       background: #fff;
-      padding: 0 12px;
+      padding: 0 24rpx;
       box-sizing: border-box;
-      border-radius: 8px;
+      border-radius: 16rpx;
       view {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        height: 48px;
-        border-bottom: 1px solid #e5e5e5;
+        height: 96rpx;
+        border-bottom: 2rpx solid #e5e5e5;
         text:nth-child(1) {
           color: #B0B8C7;
-          font-size: 15px;
-          line-height: 16px;
+          font-size: 30rpx;
+          line-height: 32rpx;
         }
         text:nth-child(2) {
           color: #333;
-          font-size: 15px;
-          line-height: 16px;
+          font-size: 30rpx;
+          line-height: 32rpx;
         }
       }
       view:last-child {
