@@ -17,9 +17,9 @@
             @change="change"></up-input>
         </view>
         <view class="mb-72rpx">
-          <u-checkbox-group v-model="rememberMe" placement="column" @change="groupChange">
+          <u-checkbox-group v-model="rememberMe" placement="column" @change="rememberChange">
             <u-checkbox shape="circle" labelSize="28rpx" :customStyle="{ marginBottom: '8px' }" :key="index"
-              :label="radioContent.label" :name="radioContent.name" @change="radioChange">
+              :label="radioContent.label" :name="radioContent.name">
             </u-checkbox>
           </u-checkbox-group>
         </view>
@@ -29,8 +29,8 @@
         </view>
         <view class="flex items-center">
           <view>
-            <u-checkbox-group v-model="readValue" placement="column" @change="groupChange">
-              <u-checkbox :customStyle="{ marginBottom: '8px' }" :key="index" label="" name="1" @change="radioChange">
+            <u-checkbox-group v-model="readValue" placement="column" @change="agreeChange">
+              <u-checkbox :customStyle="{ marginBottom: '8px' }" :key="index" label="" name="1">
               </u-checkbox>
             </u-checkbox-group>
           </view>
@@ -98,7 +98,10 @@ let uToastRef = shallowRef('')
 
 const { appStore } = userStore();
 
-const groupChange = (params) => {
+const rememberChange = (params) => {
+  rememberMe.value = params
+}
+const agreeChange = (params) => {
   readValue.value = params
 }
 
