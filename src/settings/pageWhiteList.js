@@ -18,7 +18,6 @@ export function pageUrlMatch(url) {
 }
 
 export function currentPageMatch () {
-  console.log('现在',getCurrentPage());
   const { route } = getCurrentPage()
   return pageUrlMatch(route)
 }

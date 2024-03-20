@@ -75,7 +75,7 @@ export function toPromise(
   fn,
   options
 ) {
-  console.log('转promise');
+  console.log('转promise',options);
   return new Promise((resolve, reject) => {
     fn.call(null, { ...options, success: resolve, fail: reject })
   })

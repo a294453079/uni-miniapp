@@ -5,8 +5,9 @@ import { reqUrlMatch } from '@/settings'
 export default function (instance) {
   let reqId
   const apply = () => {
-    console.log('进来吧');
+    console.log('进来吧22');
     reqId = instance.interceptors.request.use((config) => {
+      console.log('params拦截层',config);
       if (reqUrlMatch(config.url)) return config
 
       const { joinParamsToUrl = false, ignoreParameter = [] } = config

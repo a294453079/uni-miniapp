@@ -60,7 +60,7 @@ export default function (instance) {
 
   const apply = () => {
     reqId = instance.interceptors.request.use(async (config) => {
-      console.log('请求发出',config);
+      console.log('token拦截层', config);
       if (reqUrlMatch(config.url) || config.ignoreCheckToken) {
         return config
       }

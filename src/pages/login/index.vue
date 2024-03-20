@@ -48,17 +48,6 @@ import { shallowRef } from 'vue'
 import { http } from '@/utils'
 import navbar from '@/components/navbar/navbar.vue';
 import userStore from "@/stores/index.js"
-const getDataList = async () => {
-  const res = await http.get({
-    url: '/app-teach/classCourses/listDayClassCoursesByClass',
-    params: {
-      schoolId: '64428937560064000',
-      semesterId: '376447209173975053',
-      classId: '449227900294791393',
-      date: '2024-03-19',
-    },
-  })
-}
 
 const radioContent = {
   label: '记住密码',
@@ -143,7 +132,6 @@ const handleLogin = async () => {
     }
   }
 }
-getDataList()
 // uni.request({
 //   url: 'https://portal.dev.zhongteng.tech/api/app-teach/classCourses/listDayClassCoursesByClass',
 //   header: {

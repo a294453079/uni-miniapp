@@ -11,33 +11,56 @@ const { apiUrl } = useGlobalSetting()
 
 export const fetcher = new Fetcher()
 
+console.log('fetcher',fetcher);
 
-let ajaxObj = {}
+// let ajaxObj = {}
+// const requestInstance = new Proxy(ajaxObj, {
+//   get: () => {
+//     console.log('read',getRequestInstance());
+//     return getRequestInstance()
+//   },
+// });
+// const getRequestInstance = () => {
+//   if (!Object.keys(ajaxObj).length) {
+//     ajaxObj = Ajax.create({
+//       baseURL: apiUrl,
+//       dataType: 'json',
+//       timeout: 60 * 1000,
+//       header: {
+//         Authorization: `Bearer 2df167e8-2b56-4c6c-a34d-fdf923e1b02e`
+//       },
+//       fetcher
+//     })
+//     ajaxObj.interceptors.request.use((config) => {
+//       console.log('------', config);
+//       return config
+//     })
+//     handleInterceptorLoading(ajaxObj)
+//     handleRequestToken(ajaxObj)
+//     handleRequestParameter(ajaxObj) 
+//     handleRespResult(ajaxObj)
+//     return ajaxObj
+//   }
+//   return ajaxObj
+// }
+  const requestInstance = Ajax.create({
+  baseURL: apiUrl,
+  dataType: 'json',
+  timeout: 60 * 1000,
+  header: {
+    Authorization: `Basic Z3pub25neWV6aGVueGluZ2RhaTo0NWE1NWZhNTUwNmI5Y2Y2ZTcyOTQ1MGQ2MjU4MGYxNQ==`
+  },
+  fetcher
+})
+ 
+setTimeout(() => {
 
-let requestInstance = new Proxy(ajaxObj, {
-  get: () => {
-    return getRequestInstance()
-  }
-});
-  const getRequestInstance = () => {
-  if (!Object.keys(ajaxObj).length) {
-    ajaxObj = Ajax.create({
-      baseURL: apiUrl,
-      dataType: 'json',
-      timeout: 60 * 1000,
-      header: {
-        Authorization: `Bearer 2df167e8-2b56-4c6c-a34d-fdf923e1b02e`
-      },
-      fetcher
-    })
-    //handleInterceptorLoading(ajaxObj)
-    handleRequestToken(ajaxObj)
-    handleRequestParameter(ajaxObj) 
-    handleRespResult(ajaxObj)
-    return ajaxObj
-  }
-  return ajaxObj
-}
+  handleInterceptorLoading(requestInstance)
+  handleRequestToken(requestInstance)
+  handleRequestParameter(requestInstance)
+  handleRespResult(requestInstance)
+}, 0)
+
 // handleInterceptorLoading(requestInstance)
 // setTimeout(() => {
 //   handleRequestToken(requestInstance)

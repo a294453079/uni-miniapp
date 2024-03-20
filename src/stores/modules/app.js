@@ -39,6 +39,7 @@ export const appStore = defineStore('app', {
         },
         params,
       )
+      console.log(params,'-----');
       /**企微专用 */
       // const isQyWxLogin = get(params, 'thirdLoginReq.thirdAppType') === 2
       const { code } = await toPromise(uni.login)
