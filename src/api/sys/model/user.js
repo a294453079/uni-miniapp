@@ -5,10 +5,18 @@ import { http } from '@/utils'
 
 
 const UserApi = {
-  info : '/wpc-return-visit/tdapolicerelatives/personInfo'
+  info : '/user-server/users/getUserInfo'
 }
 
 /* 获取我的用户信息 */
-export async function getUserInfo() {
-  return await http.get(UserApi.info)
+export async function getUserInfo(data) {
+  return await http.get(UserApi.info,data)
+}
+/**获取班级信息 */
+export async function getStudentClassInfo(data) {
+  return await http.get('/app-teach/student/getStudentClass',data)
+}
+/**获取学期信息 */
+export async function getSemesterInfo(data) {
+  return await http.get('/app-teach/samples/semester/list',data)
 }

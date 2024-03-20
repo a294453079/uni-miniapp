@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import { get, merge, set } from 'lodash-es'
+import { get, merge, set, cloneDeep } from 'lodash-es'
 import { reqUrlMatch, useGlobalSetting } from '@/settings'
 import { getBaseInfo, loginByAccount, logout } from '@/api/sys/auth'
 import { currentPageMatch } from '@/settings'
 import { toPromise } from '@/utils'
 import { JSEncrypt } from 'jsencrypt'
 import { getPublicKey } from '@/api/sys/service'
-import { getUserInfo } from '@/api/sys/model/user'
+import { getUserInfo, getStudentClassInfo, getSemesterInfo } from '@/api/sys/model/user'
 export const userInfoStore = defineStore(
   'userInfo',
   {
@@ -24,6 +24,12 @@ export const userInfoStore = defineStore(
         authInfo: {},
         /**学生信息 */
         userInfo: {},
+        /**班级信息 */
+        classInfo: {},
+        /**学期信息 */
+        semesterInfo: {},
+        /**角色列表 */
+        userPartRroList: {},
         /**详细用户信息 */
         authUserInfo: {},
         lastUpdateTime: 0,
@@ -35,6 +41,15 @@ export const userInfoStore = defineStore(
       },
       getUserInfo() {
         return this.userInfo
+      },
+      getClassInfo() {
+        return this.classInfo
+      },
+      getSemesterInfo() {
+        return this.semesterInfo
+      },
+      getUserPartRroList() {
+        return this.userPartRroList
       },
     },
     actions: {
@@ -67,6 +82,8 @@ export const userInfoStore = defineStore(
         const result = await loginByAccount(params, token)
         console.log('登录信息返回', result)
         this.authInfo = result.data
+
+        await this.requestUserInfo()
         console.log('账号登录信息', this.authInfo)
         // 当账号密码登录时，设置用户为已登录状态
         if (!checkAuth || params?.userNameLoginReq) {
@@ -134,8 +151,24 @@ export const userInfoStore = defineStore(
       },
 
       async requestUserInfo() {
-        const { data } = await getUserInfo()
-        this.userInfo = data
+        const { data } = await getUserInfo({ token: this.getToken })
+        console.log(data, '用户信息')
+        /**储存角色列表 */
+        this.userPartRroList = data.userPartRroList
+        let userInfoClone = cloneDeep(data)
+        console.log('复制', userInfoClone)
+        delete userInfoClone.userPartRroList
+        /**角色列表中匹配 */
+        const studentInfo = data.userPartRroList.find((item) => item.id == data.studentId)
+        this.userInfo = { ...studentInfo, ...userInfoClone }
+        /**查询班级信息 */
+        const classRes = await getStudentClassInfo({ studentId: this.userInfo.studentId })
+        console.log('班级信息', classRes)
+        this.classInfo = classRes.obj
+        /**查询学期信息 */
+        const semester = await getSemesterInfo({ schoolId: this.userInfo?.orgId })
+        const currentSemester = semester.obj.find((item) => item.current == 1)
+        this.semesterInfo = currentSemester
         return data
       },
     },
