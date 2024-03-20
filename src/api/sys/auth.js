@@ -17,7 +17,7 @@ export function registerAccount(data) {
 /* 小程序账号登录 */
 export function loginByAccount (data, token) {
   const {userNameLoginReq} = data
-  return http.post(AuthApi.Login, {...userNameLoginReq,encryption:true}, {
+  return http.post(AuthApi.Login, {...userNameLoginReq,encryption:true,type:'wx'}, {
     header: token ? { 'blade-auth': `bearer ${token}` } : {},
     ignoreCheckToken: true,
     joinParamsToUrl: true,
@@ -29,7 +29,8 @@ export function loginByAccount (data, token) {
 export function logout(data) {
   return http.post(AuthApi.Logout, data, {
     joinParamsToUrl: true,
-    ignoreHandleError: true
+    ignoreHandleError: true,
+    ignoreCheckToken:true
   })
 }
 
