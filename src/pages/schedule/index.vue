@@ -38,57 +38,81 @@
             <text>{{ dayTime }}</text>
           </view>
         </view>
-        <view class="sticky" v-if="scheduleTabsactive == 1">
+        <view class="sticky items-center" v-if="scheduleTabsactive == 1">
           <view class="date flex-1" @click="isShowHCalendar = true">
             <img class="w-40rpx h-40rpx" src="@/static/schedule/date-icon.png" alt="" />
-            <text>第七周 2023年 10-09 至 10-15</text>
+            <text>{{ weekTime }}</text>
           </view>
-          <img class="w-48rpx h-48rpx ml-42rpx" src="@/static/schedule/tip-icon.png" alt="">
+          <img
+            @click="isShowWeekScheduleTip = true"
+            class="w-48rpx h-48rpx ml-42rpx mr-12px"
+            src="@/static/schedule/tip-icon.png"
+            alt=""
+          />
         </view>
-        <u-popup :show="isShowHCalendar">
+        <!-- 周课表状态提示弹框 -->
+        <u-popup :show="isShowWeekScheduleTip" round="32rpx">
+          <view class="week-schedule-tip">
+            <view class="close">
+              <text>图表解释</text>
+              <img
+                class="w-48rpx h-48rpx"
+                @click="isShowWeekScheduleTip = false"
+                src="@/static/calendar/close-icon.png"
+                alt=""
+              />
+            </view>
+            <view class="tip-label">
+              <view class="mt-32rpx">
+                <text></text>
+                <text class="text-30rpx leading-32rpx ml-16rpx">时间已过</text>
+              </view>
+              <view class="mx-80rpx mt-32rpx">
+                <text></text>
+                <text class="text-30rpx leading-32rpx ml-16rpx">下节课</text>
+              </view>
+              <view class="mt-32rpx">
+                <text class="triangle">
+                  <text></text>
+                </text>
+                <text class="text-30rpx leading-32rpx ml-16rpx">出勤</text>
+              </view>
+              <view class="mt-48rpx">
+                <text class="triangle">
+                  <text style="border-top: 16rpx solid #f66969"></text>
+                </text>
+                <text class="text-30rpx leading-32rpx ml-16rpx">缺勤</text>
+              </view>
+              <view class="ml-140rpx mt-48rpx">
+                <text class="triangle">
+                  <text style="border-top: 16rpx solid #40cc8a"></text>
+                </text>
+                <text class="text-30rpx leading-32rpx ml-16rpx">请假</text>
+              </view>
+            </view>
+          </view>
+        </u-popup>
+        <!-- 日历弹窗 -->
+        <u-popup :show="isShowHCalendar" round="32rpx">
           <view>
-            <hCalendar @changeDay="changeDay" @closeDay="isShowHCalendar = false" />
+            <hCalendar
+              :key="componentsKey"
+              :scheduleTabsactive="scheduleTabsactive"
+              @changeDay="changeDay"
+              @weekChange="weekChange"
+              @closeDay="isShowHCalendar = false"
+            />
           </view>
         </u-popup>
       </u-sticky>
-
+      <!-- 日课表 -->
       <daySchedule
-        v-if="scheduleTabsactive == 0"
+        v-show="scheduleTabsactive == 0"
         :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList"
         :isShowMore="false"
       />
-      <weekSchedule v-if="scheduleTabsactive == 1" />
-      <span v-if="scheduleTabsactive == 0">
-        周课程表周课程表周课程表周课程表周 课程表周课程表周课程表周课程表周课程表周课程表周
-        课程表周课程表周课程表周课程表周课程表周课程表周课程表周
-        课程表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程
-        表周课程表周课程表周课程表周课程表周课程表周课程表周课程表
-        周课程表周课程表周课程表周课程表周课程表周课程表周课程表周
-      </span>
+      <!-- 周课表 -->
+      <weekSchedule v-show="scheduleTabsactive == 1" :classCoursesWeekList="classCoursesWeekList" />
     </view>
   </view>
 </template>
@@ -101,7 +125,7 @@
   import dayjs from 'dayjs'
   import { http } from '@/utils'
   import { ref, onMounted } from 'vue'
-
+  const userInfo = JSON.parse(uni.getStorageSync('userInfo'))
   const scheduleTabs = ['日课程表', '周课程表']
   const dateTabs = [
     {
@@ -117,20 +141,24 @@
       date: dayjs().add(1, 'day').format('YYYY-MM-DD'),
     },
   ]
+  const componentsKey = ref(0) // 用于刷新组件
   const scheduleTabsactive = ref(0) // 课表高亮
   const dateTabsActive = ref(1) // 日期高亮
-  const dayClassCoursesByStudentPropsList = ref([])
+  const dayClassCoursesByStudentPropsList = ref([]) // 日课表
+  const classCoursesWeekList = ref([]) // 周课表
   const isShowHCalendar = ref(false) // 日期高亮
   const dayTime = ref(dayjs().format('YYYY-MM-DD')) // 日期高亮
+  const isShowWeekScheduleTip = ref(false) // 周课表提示弹框
+  const weekTime = ref('') // 周课表日期
 
   // 获取日课表数据
   const getListDayClassCoursesByClass = async (date) => {
     const res = await http.get({
       url: '/app-teach/classCourses/listDayClassCoursesByClass',
-      params: {
-        schoolId: '64428937560064000',
-        semesterId: '376447209173975053',
-        classId: '449227900294791393',
+      data: {
+        schoolId: userInfo.userInfo.orgId,
+        semesterId: userInfo.semesterInfo.id,
+        classId: userInfo.classInfo.id,
         date,
       },
     })
@@ -139,30 +167,65 @@
     }
   }
 
+  // 获取周课表数据
+  const getListWeekClassCoursesByClass = async (startDate, endDate) => {
+    const res = await http.get({
+      url: '/app-teach/classCourses/listWeekClassCoursesByClass',
+      data: {
+        classId: userInfo.classInfo.id,
+        studentId: userInfo.userInfo.studentId,
+        schoolId: userInfo.userInfo.orgId,
+        semesterId: userInfo.semesterInfo.id,
+        startDate,
+        endDate,
+      },
+    })
+    console.log(res.obj)
+    if (res.code == 0) {
+      classCoursesWeekList.value = res.obj
+    }
+  }
+
   onMounted(async () => {
     await getListDayClassCoursesByClass(dayjs().format('YYYY-MM-DD'))
   })
   // 切换课表tabs
-  const changeScheduleTabs = (index) => {
+  const changeScheduleTabs = async (index) => {
+    if (scheduleTabsactive.value == index) return
+    dayTime.value = dayjs().format('YYYY-MM-DD')
     scheduleTabsactive.value = index
+    dateTabsActive.value = 1
+    componentsKey.value++
+    if (index == 0) {
+      await getListDayClassCoursesByClass(dayjs().format('YYYY-MM-DD'))
+    }
   }
   // 切换日期tabs
   const changeDateTabs = async (item, index) => {
+    if (dateTabsActive.value == index) return
     dateTabsActive.value = index
     dayTime.value = item.date
     await getListDayClassCoursesByClass(item.date)
   }
   // 保存日期
   const changeDay = async (e) => {
-    const index = dateTabs.findIndex((item) => item.date === e.time)
-    if (index !== -1) {
-      dateTabsActive.value = index
-    } else {
-      dateTabsActive.value = 999
+    // 日课表
+    if (scheduleTabsactive.value == 0) {
+      const index = dateTabs.findIndex((item) => item.date === e.item.time)
+      if (index !== -1) {
+        dateTabsActive.value = index
+      } else {
+        dateTabsActive.value = 999
+      }
+      dayTime.value = e.item.time
+      await getListDayClassCoursesByClass(e.item.time)
     }
-    dayTime.value = e.time
     isShowHCalendar.value = false
-    await getListDayClassCoursesByClass(e.time)
+  }
+
+  const weekChange = async (item) => {
+    weekTime.value = item.time
+    await getListWeekClassCoursesByClass(item.startDate, item.endDate)
   }
 </script>
 <style scoped lang="scss">
@@ -211,11 +274,11 @@
       background: #fff;
       border-radius: 60rpx 60rpx 0rpx 0rpx;
       .sticky {
-        height: 148rpx;
         background: #fff;
         padding-top: 40rpx;
         z-index: 1;
         display: flex;
+        padding-bottom: 20rpx;
         box-sizing: border-box;
         .date-tabs {
           width: 360rpx;
@@ -255,6 +318,60 @@
             font-size: 30rpx;
             color: #333;
             line-height: 32rpx;
+          }
+        }
+      }
+      .week-schedule-tip {
+        padding: 32rpx;
+        box-sizing: border-box;
+        .close {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          text {
+            font-size: 34rpx;
+            color: #333;
+            line-height: 48rpx;
+          }
+        }
+        .tip-label {
+          display: flex;
+          flex-wrap: wrap;
+          view {
+            display: flex;
+            align-items: center;
+            text {
+              color: #666;
+            }
+          }
+          view:nth-child(1) {
+            text:nth-child(1) {
+              width: 48rpx;
+              height: 48rpx;
+              background: #f7f8fa;
+              border: 2rpx solid #e5e5e5;
+            }
+          }
+          view:nth-child(2) {
+            text:nth-child(1) {
+              width: 48rpx;
+              height: 48rpx;
+              background: #fff7eb;
+              border: 2rpx solid #ff9500;
+            }
+          }
+          .triangle {
+            width: 48rpx;
+            height: 48rpx;
+            background: #f7f8fa;
+            border: 2rpx solid #e5e5e5;
+            text {
+              position: absolute;
+              width: 0;
+              height: 0;
+              border-right: 16rpx solid transparent;
+              border-top: 16rpx solid #00a0ff;
+            }
           }
         }
       }

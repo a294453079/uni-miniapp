@@ -1,5 +1,5 @@
 <template>
-  <view class="user-info">
+  <view class="user-info" v-if="studentInfo != null">
     <view class="info">
       <view>
         <text>账号类型</text>
@@ -7,45 +7,64 @@
       </view>
       <view>
         <text>账号</text>
-        <text>18751234578</text>
+        <text>{{ studentInfo.account || '未设置' }}</text>
       </view>
     </view>
     <view class="info mt-32rpx">
       <view>
         <text>姓名</text>
-        <text>常晓明</text>
+        <text>{{ studentInfo.userName || '未设置' }}</text>
       </view>
       <view>
         <text>性别</text>
-        <text>未设置</text>
+        <text>{{ studentInfo.sex == 1 ? '男' : studentInfo.sex == 2 ? '女' : '未设置' }}</text>
       </view>
     </view>
     <view class="info mt-32rpx">
       <view>
         <text>学校</text>
-        <text>广东省广州中学</text>
+        <text>{{ studentInfo.orgName || '未设置' }}</text>
       </view>
       <view>
         <text>班级</text>
-        <text>七年级2班</text>
+        <text>{{ studentInfo.className || '未设置' }}</text>
       </view>
       <view>
         <text>学号</text>
-        <text>002</text>
+        <text>{{ studentInfo.studentNumber || '未设置'}}</text>
       </view>
-      <view>
+      <!-- <view>
         <text>考号</text>
-        <text>未设置</text>
-      </view>
+        <text>{{ userInfo.examNumber || '未设置'}}</text>
+      </view> -->
       <view>
         <text>学籍号</text>
-        <text>G20220928010110</text>
+        <text>{{ studentInfo.countryUniqueCode || '未设置' }}</text>
       </view>
     </view>
   </view>
 </template>
 
-<script setup></script>
+<script setup>
+  import { http } from '@/utils'
+  import { onMounted, ref } from 'vue'
+  const { userInfo } = JSON.parse(uni.getStorageSync('userInfo'))
+  let studentInfo = ref(null)
+  // 下节课信息
+  const getBasicInfo = async () => {
+    const res = await http.get({
+      url: '/user-server/users/getBasicInfo',
+      data: {},
+    })
+    if (res.code == 0) {
+      studentInfo.value = res.data
+    }
+  }
+
+  onMounted(async () => {
+    await getBasicInfo()
+  })
+</script>
 
 <style scoped lang="scss">
   .user-info {
@@ -67,7 +86,7 @@
         height: 96rpx;
         border-bottom: 2rpx solid #e5e5e5;
         text:nth-child(1) {
-          color: #B0B8C7;
+          color: #b0b8c7;
           font-size: 30rpx;
           line-height: 32rpx;
         }

@@ -25,7 +25,8 @@
 
 <script setup>
 import moduleTitle from '@/components/moduleTitle.vue'
-import daySchedule from '@/components/daySchedule.vue'
+import daySchedule from '@/components/schedule/daySchedule.vue'
+import dayjs from 'dayjs'
 import { http } from '@/utils'
 import { ref, onMounted } from 'vue'
 const uToastRef = ref(null)
@@ -39,7 +40,7 @@ const getListDayClassCoursesByClass = async () => {
       schoolId: '64428937560064000',
       semesterId: '376447209173975053',
       classId: '449227900294791393',
-      date: '2024-03-19',
+      date: dayjs().format('YYYY-MM-DD'),
     },
   })
   if (res.code == 0) {
@@ -59,7 +60,7 @@ const handleDetailClick = (type) => {
     })
   } else if (type == 'school-timetable') {
     uni.navigateTo({
-      url: '/pages/index/schedule/index',
+      url: '/pages/schedule/index',
     })
   } else {
     uni.navigateTo({
