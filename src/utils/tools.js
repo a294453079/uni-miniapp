@@ -243,3 +243,11 @@ export function ToChinese(num) {
   }
   return NumberToChinese(num);
 }
+
+export function getFileImgUrl(fileFormat) {
+  const { formatList } = JSON.parse(uni.getStorageSync('userInfo'))
+  let urlList = formatList.filter((item) => item.formats.indexOf(fileFormat) !== -1)
+  if (urlList.length > 0) {
+    return '/static/practice/fileIcon/' + urlList[0].imgUrl
+  }
+}

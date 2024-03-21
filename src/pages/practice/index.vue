@@ -1,75 +1,168 @@
 <template>
   <view class="practice">
+    <u-toast ref="uToastRef"></u-toast>
     <calendar @changeDay="changeDay" />
     <view>
-      <view v-for="(item, index) in 2" :key="index" class="practice-list">
+      <view v-for="(item, index) in practiceList" :key="index" class="practice-list">
         <view class="practice-box">
-          <img class="w-104rpx h-102rpx mr-30rpx" src="@/static/practice/practice-icon.png" alt="" />
+          <img
+            class="w-104rpx h-102rpx mr-30rpx"
+            src="@/static/practice/practice-icon.png"
+            alt=""
+          />
           <view class="info">
-            <text class="practice-name">二次函数课后作业</text>
-            <view>今日练习：2 </view>
+            <text class="practice-name">{{ item.name }}</text>
+            <view>今日练习：{{ item.workReleaseOutDTOList.length }}</view>
           </view>
         </view>
-        <view v-for="(j, idx) in 2" :key="idx" class="homework-list">
+        <view v-for="(j, idx) in item.workReleaseOutDTOList" :key="idx" class="homework-list">
           <view class="homework-info">
-            <!-- <img class="w-80rpx h-80rpx mr-24rpx" :src="getModuleTypeIcon(j.contentType, j.fileFormat)" alt="" /> -->
-            <img class="w-80rpx h-80rpx mr-24rpx" src="@/static/practice/fileIcon/discuss-icon.png" alt="" />
+            <img
+              class="w-80rpx h-80rpx mr-24rpx"
+              :src="getModuleTypeIcon(j.contentType, j.fileFormat)"
+              alt=""
+            />
             <view class="info">
-              <text class="homework-name">二次函数课后作业</text>
+              <text class="homework-name">{{ j.name }}</text>
               <view>
-                <text class="font-bold leading-32rpx text-24rpx">第二节</text>
-                <text class="ml-20rpx font-bold leading-32rpx text-24rpx">语文</text>
+                <text class="font-bold leading-32rpx text-24rpx" v-if="j.section"
+                  >第{{ ToChinese(j.section) }}节</text
+                >
+                <text class="ml-20rpx font-bold leading-32rpx text-24rpx">{{
+                  item.courseName
+                }}</text>
               </view>
             </view>
-            <img class="w-104rpx h-74rpx right-0 top-0 absolute" src="@/static/practice/online-icon.png" alt="">
+            <!-- 作答 -->
+            <img
+              v-if="j.contentType == 1"
+              class="w-104rpx h-74rpx right-0 top-0 absolute"
+              src="@/static/practice/questionnaire-icon.png"
+              alt=""
+            />
+            <!-- 附件上传 -->
+            <img
+              v-if="j.submitType == 1"
+              class="w-104rpx h-74rpx right-0 top-0 absolute"
+              src="@/static/practice/attachment-upload-icon.png"
+              alt=""
+            />
+            <!-- 线下提交 -->
+            <img
+              v-if="j.submitType == 2"
+              class="w-104rpx h-74rpx right-0 top-0 absolute"
+              src="@/static/practice/offline-icon.png"
+              alt=""
+            />
+            <!-- 线上学习 -->
+            <img
+              v-if="j.submitType == 3"
+              class="w-104rpx h-74rpx right-0 top-0 absolute"
+              src="@/static/practice/online-icon.png"
+              alt=""
+            />
           </view>
-          <view class="homework-btn">
-            <text>查看详情</text>
+          <view class="homework-btn" @click="handleSeePracticeDetail(j)">
+            <text>{{
+              j.contentType == 1
+                ? '开始作答'
+                : j.submitType == 1 || j.submitType == 3
+                ? '去完成'
+                : '查看详情'
+            }}</text>
           </view>
         </view>
       </view>
     </view>
   </view>
 </template>
-<script>
+<script setup>
+  // app-teach/samples/workRelease/pageStudentWorkRelease
   import calendar from './calendar.vue'
-  export default {
-    components: {
-      calendar,
-    },
-    data() {
-      return {}
-    },
-    created() {},
-    mounted() {},
-    methods: {
-      /** 选中日期 */
-      changeDay(e) {
-        console.log('根据选中的日期获取最新数据', e);
+  import dayjs from 'dayjs'
+  import { ToChinese, getFileImgUrl } from '@/utils/tools'
+  import { http } from '@/utils'
+  import { ref, onMounted } from 'vue'
+  const { userInfo } = JSON.parse(uni.getStorageSync('userInfo'))
+  const practiceList = ref([])
+  const formatList = ref([])
+  const uToastRef = ref(null)
+  // 获取练习列表数据
+  const getPageStudentWorkRelease = async (date) => {
+    const res = await http.post({
+      url: '/app-teach/samples/workRelease/pageStudentWorkRelease',
+      data: {
+        studentId: userInfo.id,
+        endDate: date,
+        startDate: date,
+        current: 1,
+        pageSize: 10,
       },
-      getModuleTypeIcon(moduleType, fileFormat) {
-        const moduleTypeIcons = {
-          1: require('@/static/practice/fileIcon/paper-icon.png'),
-          2: require('@/static/practice/fileIcon/web-icon.png'),
-          5: require('@/static/practice/fileIcon/vote-icon.png'),
-          6: require('@/static/practice/fileIcon/questioning-icon.png'),
-          7: require('@/static/practice/fileIcon/discuss-icon.png'),
-          8: require('@/static/practice/fileIcon/questionnaire-icon.png'),
-        }
+    })
+    console.log(res.obj)
+    if (res.code == 0) {
+      practiceList.value = res.obj.records
+    }
+  }
+  // 获取图片类型数据
+  const getFileFormatsList = async (date) => {
+    const res = await http.post({
+      url: '/resource-center/fileFormats/list',
+      data: {
+        id: '',
+        name: '',
+        formats: '',
+        imgUrl: '',
+        status: 1,
+        sort: '',
+      },
+    })
+    console.log(res)
+    if (res.code == 0) {
+      formatList.value = res.data
+    }
+  }
 
-        if (moduleType in moduleTypeIcons) {
-          return moduleTypeIcons[moduleType]
-        } else {
-          return this.imgUrl(fileFormat)
-        }
-      },
-      imgUrl(type) {
-        let urlList = this.formatList.filter((item) => item.formats.indexOf(type) !== -1)
-        if (urlList.length > 0) {
-          return require('@/static/practice/fileIcon/' + urlList[0].imgUrl)
-        }
-      },
-    },
+  onMounted(async () => {
+    await getFileFormatsList()
+    await getPageStudentWorkRelease(dayjs().format('YYYY-MM-DD'))
+  })
+
+  /** 查看练习详情 */
+  const handleSeePracticeDetail = (item) => {
+    const urgentContentTypes = ['1', '5', '6', '7', '8']
+    if (urgentContentTypes.includes(item.contentType)) {
+      uToastRef.value.show({
+        message: '详情页已经在加急开发中了哟',
+      })
+    } else {
+      uni.navigateTo({
+        url: `/components/practiceDetail/detail?id=${item.homeworkStudentId}`,
+      })
+    }
+    console.log(item)
+  }
+
+  /** 选中日期 */
+  const changeDay = (e) => {
+    console.log('根据选中的日期获取最新数据', e)
+  }
+
+  const getModuleTypeIcon = (moduleType, fileFormat) => {
+    const moduleTypeIcons = {
+      1: '/static/practice/fileIcon/paper-icon.png',
+      2: '/static/practice/fileIcon/web-icon.png',
+      5: '/static/practice/fileIcon/vote-icon.png',
+      6: '/static/practice/fileIcon/questioning-icon.png',
+      7: '/static/practice/fileIcon/discuss-icon.png',
+      8: '/static/practice/fileIcon/questionnaire-icon.png',
+    }
+
+    if (moduleType in moduleTypeIcons) {
+      return moduleTypeIcons[moduleType]
+    } else {
+      return getFileImgUrl(fileFormat)
+    }
   }
 </script>
 

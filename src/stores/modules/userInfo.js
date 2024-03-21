@@ -7,6 +7,7 @@ import { toPromise } from '@/utils'
 import { JSEncrypt } from 'jsencrypt'
 import { getPublicKey } from '@/api/sys/service'
 import { getUserInfo, getStudentClassInfo, getSemesterInfo } from '@/api/sys/model/user'
+import { http } from '@/utils'
 export const userInfoStore = defineStore(
   'userInfo',
   {
@@ -39,6 +40,8 @@ export const userInfoStore = defineStore(
         /**详细用户信息 */
         authUserInfo: {},
         lastUpdateTime: 0,
+        // 图片类型列表
+        formatList: []
       }
     },
     getters: {
@@ -193,8 +196,27 @@ export const userInfoStore = defineStore(
         const semester = await getSemesterInfo({ schoolId: this.userInfo?.orgId })
         const currentSemester = semester.obj.find((item) => item.current == 1)
         this.semesterInfo = currentSemester
+        await this.getFormatList()
         return data
       },
+
+      async getFormatList() {
+        const res = await http.post({
+          url: '/resource-center/fileFormats/list',
+          data: {
+            id: '',
+            name: '',
+            formats: '',
+            imgUrl: '',
+            status: 1,
+            sort: '',
+          },
+        })
+        console.log(res)
+        if (res.code == 0) {
+          this.formatList = res.data
+        }
+      }
     },
   },
   /**持久化方式2*/
