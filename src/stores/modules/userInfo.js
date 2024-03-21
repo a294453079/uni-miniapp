@@ -18,6 +18,12 @@ export const userInfoStore = defineStore(
         publicKey: '',
         /**是否已登录 hasLogin */
         hasLogin: false,
+        /**是否记住密码 */
+        rememberMe: false,
+        /**账号名称 */
+        username: '',
+        /** 用户密码 */
+        password: '',
         /**token */
         // getToken: '2df167e8-2b56-4c6c-a34d-fdf923e1b02e',
         /**用户信息 token*/
@@ -66,20 +72,34 @@ export const userInfoStore = defineStore(
           },
           params,
         )
-        console.log(params, '-----')
+        let userNamePassword = {}
         /**企微专用 */
         // const isQyWxLogin = get(params, 'thirdLoginReq.thirdAppType') === 2
         const { code } = await toPromise(uni.login)
         // set(params, 'thirdLoginReq.code', code) 设置第三方授权登录请求参数所用
         if (Object.keys(params?.userNameLoginReq).length) {
-          const { userName, password } = params.userNameLoginReq
-          console.log('password', password)
+          const { username, password } = params.userNameLoginReq
           await this.getPublicKeyInfo()
-          params.userNameLoginReq.password = this.encryptDate(this.publicKey, password)
-          console.log('参数', this.publicKey, password)
+          const encryptedPassword = this.encryptDate(this.publicKey, password)
+          userNamePassword = {
+            ...params,
+            userNameLoginReq: {
+              username,
+              password: encryptedPassword,
+            },
+          }
         }
         /**账号登录 */
-        const result = await loginByAccount(params, token)
+        const result = await loginByAccount(userNamePassword, token)
+        this.rememberMe = params.rememberMe
+        /**记住密码 */
+        if (this.rememberMe) {
+          this.username = params.userNameLoginReq.username
+          this.password = params.userNameLoginReq.password
+        } else {
+          this.username = ''
+          this.password = ''
+        }
         console.log('登录信息返回', result)
         this.authInfo = result.data
 
@@ -103,11 +123,8 @@ export const userInfoStore = defineStore(
             console.warn('登出失败', e)
           }
         }
-
         this.resetState()
-
         const { checkAuth } = useGlobalSetting() //白名单时使用
-
         checkAuth && !currentPageMatch() && uni.reLaunch({ url: '/pages/login/index' })
       },
       async afterLogin(isRest = false) {

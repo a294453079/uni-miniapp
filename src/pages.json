@@ -135,6 +135,18 @@
           }
         }
       ]
+    },
+    {
+      "root": "pages/classReview",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
     }
   
   ]

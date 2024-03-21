@@ -97,6 +97,9 @@ let password = shallowRef('')
 let uToastRef = shallowRef('')
 
 const { userInfoStore } = userStore();
+rememberMe.value = userInfoStore.rememberMe ? ['1'] : []
+account.value = userInfoStore.username || ''
+password.value = userInfoStore.password || ''
 
 const rememberChange = (params) => {
   rememberMe.value = params
@@ -125,7 +128,7 @@ const handleLogin = async () => {
           username: account.value,
           password: password.value
         },
-        loginType: 1
+        rememberMe: rememberMe.value.length ? true : false
       })
       // userInfoStore.hasLogin = false
       uni.switchTab({

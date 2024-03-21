@@ -64,7 +64,7 @@ const handleDetailClick = (type) => {
     })
   } else {
     uni.navigateTo({
-      url: '/pages/practice/detail',
+      url: '/pages/classReview/index',
     })
   }
 }
