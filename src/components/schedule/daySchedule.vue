@@ -68,6 +68,8 @@
     dayClassCoursesByStudentPropsList: Array, // 课表数据
   })
 
+  const userInfo = JSON.parse(uni.getStorageSync('userInfo'))
+
   let remainingTime = ref('-')
   let countdownTimer = ref(null)
   let nextCoureseData = ref(null) // 下节课信息
@@ -76,16 +78,16 @@
   // 下节课信息
   const getNextCoursesAndLessonsByTeacher = async () => {
     const res = await http.get({
-      url: '/app-teach/index/getNextCoursesAndLessonsByTeacher',
-      params: {
-        schoolId: '64428937560064000',
-        semesterId: '376447209173975053',
-        teacherId: '64429946877378560',
+      url: '/app-teach/student/getNextCoursesAndLessonsByClass',
+      data: {
+        schoolId: userInfo.userInfo.orgId,
+        semesterId: userInfo.semesterInfo.id,
+        classId: userInfo.classInfo.id,
       },
     })
-    if (res.obj.courses) {
-      nextClassCoursesId = res.obj.courses.classCoursesId
-      nextCoureseData = res.obj.courses.date
+    if (res.obj) {
+      nextClassCoursesId = res.obj.classCoursesId
+      nextCoureseData = res.obj.date
     }
   }
 
@@ -95,17 +97,19 @@
 
   console.log(dayjs().format('YYYY-MM-DD HH:mm:ss'))
 
-  let dayClassCoursesByStudentList = [
-    { name: '上午', scheduleData: [] },
-    { name: '下午', scheduleData: [] },
-    { name: '晚上', scheduleData: [] },
-    { name: '其他', scheduleData: [] },
-  ]
+  let dayClassCoursesByStudentList = []
 
   // 使用watch来观察props的变化
   watch(
     () => props.dayClassCoursesByStudentPropsList,
     (newData, oldData) => {
+      dayClassCoursesByStudentList = [
+        { name: '上午', scheduleData: [] },
+        { name: '下午', scheduleData: [] },
+        { name: '晚上', scheduleData: [] },
+        { name: '其他', scheduleData: [] },
+      ]
+
       // 循环处理课程表不同时间段的数据
       props.dayClassCoursesByStudentPropsList.forEach((item) => {
         if (item.classScheduleType !== 3) {
@@ -357,7 +361,7 @@
         bottom: 24rpx;
         text {
           color: #00a0ff;
-          font-size: 24px;
+          font-size: 24rpx;
           line-height: 24rpx;
           margin-right: 12rpx;
         }
