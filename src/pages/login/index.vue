@@ -11,10 +11,12 @@
             :customStyle="inputCustomStyle" shape='circle' v-model="account" @change="change"></up-input>
         </view>
         <view class="mb-50rpx">
-          <up-input :prefixIconStyle="prefixIconStyle" prefix-icon="/static/login/password.png"
-            suffixIcon="/static/login/seePassword.png" :suffixIconStyle="suffixIconStyle" placeholder="请输入密码"
-            :customStyle="inputCustomStyle" shape='circle' :password="invisible" v-model="password"
-            @change="change"></up-input>
+          <up-input :prefixIconStyle="prefixIconStyle" prefix-icon="/static/login/password.png" placeholder="请输入密码"
+            :customStyle="inputCustomStyle" :password="!showPassword" shape='circle' v-model="password" @cli="change">
+            <template #suffix>
+              <img :style="suffixIconStyle" :src="suffixIcon" @click="changeSeePassword" />
+            </template>
+          </up-input>
         </view>
         <view class="mb-72rpx">
           <u-checkbox-group v-model="rememberMe" placement="column" @change="rememberChange">
@@ -73,8 +75,8 @@ const prefixIconStyle = {
   alignItems: 'center',
 }
 const suffixIconStyle = {
-  width: '28rpx',
-  height: '17rpx',
+  width: '32rpx',
+  height: '18rpx',
   // marginRight: '40rpx',
   display: 'flex',
   alignItems: 'center',
@@ -89,9 +91,10 @@ const buttonCustomStyle = {
   fontSize: '32rpx',
   color: '#ffffff',
 }
+let showPassword = shallowRef(false)
+let suffixIcon = shallowRef('/static/login/invisiblePassword.png')
 let rememberMe = shallowRef([])
 let readValue = shallowRef([])
-let invisible = shallowRef(true)
 let account = shallowRef('')
 let password = shallowRef('')
 let uToastRef = shallowRef('')
@@ -106,6 +109,14 @@ const rememberChange = (params) => {
 }
 const agreeChange = (params) => {
   readValue.value = params
+}
+const changeSeePassword = (params) => {
+  showPassword.value = !showPassword.value
+  if (!showPassword.value) {
+    suffixIcon.value = '/static/login/invisiblePassword.png'
+  } else {
+    suffixIcon.value = '/static/login/seePassword.png'
+  }
 }
 
 const showToast = (params) => {

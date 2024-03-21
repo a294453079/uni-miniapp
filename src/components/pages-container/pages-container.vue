@@ -65,6 +65,7 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  /**滚动到底部加载下一页 */
   scrollToLowerAllow: {
     type: Boolean,
     default: false
@@ -73,23 +74,39 @@ const props = defineProps({
     type: Object,
     default: () => ({})
   },
+  customHeight: {
+    type: Number,
+    default: 0
+  }
 })
 
 const pageLoading = computed(() => {
-  return this.loading
+  return props.loading
 })
 
 const containerStyle = ref({
   minHeight: '100vh'
 })
 
+// if (Object.keys(props.customHeight).length) {
+//   containerStyle.value = { ...props.customHeight }
+// }
 onBeforeMount(() => {
-  if (this.hasCustomNavbar) {
+  if (props.hasCustomNavbar) {
     const { statusBarHeight = 24 } = getSystemSetting()
+    console.log('状态栏', statusBarHeight);
     const { top, bottom } = getMenuButtonBoundingRect()
-    // this.containerStyle = {
-    //   height: `calc(100vh - ${top - statusBarHeight + bottom}px)`
-    // }
+    console.log('胶囊', top, bottom)
+
+    if (props.customHeight) {
+      containerStyle.value = {
+        height: `calc(100vh - ${top - statusBarHeight + bottom + props.customHeight}px)`
+      }
+    } else {
+      containerStyle.value = {
+        height: `calc(100vh - ${top - statusBarHeight + bottom}px)`
+      }
+    }
   }
 })
 
@@ -113,10 +130,10 @@ const refresherRefresh = (() => {
 })
 
 const scrollToUpper = (() => {
-  if (!this.scrollToUpperAllow) return
+  if (!props.scrollToUpperAllow) return
   if (scrollState.value.isHandle) return
   scrollState.value.isHandle = true
-
+  /**刷新 */
   emit('scrollToUpper', async () => {
     await sleep(300)
     scrollState.value.isHandle = false
@@ -124,7 +141,8 @@ const scrollToUpper = (() => {
 })
 
 const scrollToLower = (() => {
-  if (!this.scrollToLowerAllow) return
+  /**加载 */
+  if (!props.scrollToLowerAllow) return
   if (scrollState.value.isHandle) return
   scrollState.value.isHandle = true
 

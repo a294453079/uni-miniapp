@@ -51,7 +51,7 @@ export default function (instance) {
           (o) => isUndefined(o) || isNull(o)
         )
       }
-      console.log('正常返回',config);
+      console.log('正常返回');
       return config
     })
   }

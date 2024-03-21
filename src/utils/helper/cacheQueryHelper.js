@@ -31,11 +31,14 @@ export function getMenuButtonBoundingRect(
 
   let cacheData = uni.getStorageSync(CACHE_KEY.MENU_BUTTON_BOUNDING)
   if (isRefresh || !cacheData) {
+    console.log('进11111111111');
     cacheData = uni.getMenuButtonBoundingClientRect()
     uni.setStorageSync(CACHE_KEY.MENU_BUTTON_BOUNDING, cacheData)
     return cacheData
   } else {
+      console.log('进22222222222');
     const result = uni.getMenuButtonBoundingClientRect()
+    console.log(result,'--',cacheData);
     if (!isEqual(cacheData, result)) {
       uni.setStorageSync(CACHE_KEY.MENU_BUTTON_BOUNDING, result)
     }

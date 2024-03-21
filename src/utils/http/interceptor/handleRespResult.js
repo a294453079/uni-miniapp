@@ -10,7 +10,7 @@ export default function (instance) {
     return new Promise((resolve, reject) => {
       respId = instance.interceptors.response.use((response) => {
         const { isReturnNativeResponse = false, isTransformResponse = true } = response.config
-        console.log('result响应', response.data)
+        console.log('result响应')
         // 返回原始响应内容
         if (isReturnNativeResponse) {
           console.log('返回原始响应')

@@ -9,7 +9,7 @@ export default function (instance) {
   const apply = () => {
     let activeId
     reqId = instance.interceptors.request.use((config) => {
-      console.log('loading拦截层',config);
+      console.log('loading拦截层');
       activeId = loadingInstance.show(config.loading)
       return config
     })
