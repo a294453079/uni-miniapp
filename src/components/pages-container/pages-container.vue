@@ -2,10 +2,10 @@
   <view class="pages-container" :style="[containerStyle]">
     <Loading :loading="pageLoading" :type="loadingType" :text="loadingText" :text-style="loadingTextStyle"
       :context-style="loadingContextStyle" :is-full="scrollContainer">
-      <scroll-view v-if="scrollContainer" scroll-y class="scroll-container" :style="[scrollStyle]" scroll-anchoring
+      <scroll-view v-if="scrollContainer" scroll-y class="scroll-container" :style="[containerStyle]" scroll-anchoring
         :refresher-enabled="scrollRefresher" :refresher-triggered="scrollState.refreshStatus"
         refresher-background="#F7F7F8" @refresherrefresh="refresherRefresh" @scrolltolower="scrollToLower"
-        @scrolltoupper="scrollToUpper" @refresherpulling="refresherpulling">
+        @scrolltoupper="scrollToUpper">
         <slot></slot>
       </scroll-view>
       <slot v-else></slot>
@@ -118,53 +118,47 @@ const scrollState = ref({
   isHandle: false
 })
 const emit = defineEmits(['onRefresh', 'scrollToUpper', 'scrollToLower'])
-const refresherRefresh = (() => {
-  console.log('自定义下拉刷新');
+const refresherRefresh = (async () => {
+  console.log('自定义下拉刷新', scrollState.value)
+  // 是否正在操作);
   if (scrollState.value.isHandle) return
   scrollState.value.isHandle = true
   scrollState.value.refreshStatus = true
 
-  emit('onRefresh', async () => {
-    await sleep(300)
-    scrollState.value.refreshStatus = false
-    scrollState.value.isHandle = false
-  })
+  emit('onRefresh')
+  await sleep(300)
+  scrollState.value.refreshStatus = false
+  scrollState.value.isHandle = false
 })
 
-const scrollToUpper = (() => {
+
+const scrollToUpper = (async () => {
   console.log('滚动到顶部');
   if (!props.scrollToUpperAllow) return
   if (scrollState.value.isHandle) return
   scrollState.value.isHandle = true
   /**刷新 */
-  emit('scrollToUpper', async () => {
-    await sleep(300)
-    scrollState.value.isHandle = false
-  })
+  emit('scrollToUpper')
+  await sleep(300)
+  scrollState.value.isHandle = false
 })
 
-const scrollToLower = (() => {
+
+const scrollToLower = (async () => {
   console.log('滚动到底部');
   /**加载 */
   if (!props.scrollToLowerAllow) return
   if (scrollState.value.isHandle) return
   scrollState.value.isHandle = true
 
-  emit('scrollToLower', async () => {
-    await sleep(300)
-    scrollState.value.isHandle = false
-  })
+  emit('scrollToLower')
+  await sleep(300)
+  scrollState.value.isHandle = false
+  console.log('滚动到底部22222');
 })
 
-const refresherpulling = (() => {
-  console.log('刷新aaa');
-})
-const refresherrestore = (() => {
-  console.log('复位');
-})
-const refresherabort = (() => {
-  console.log('终止');
-})
+
+
 </script>
 
 <style lang="scss">
@@ -177,5 +171,8 @@ const refresherabort = (() => {
 .scroll-container {
   box-sizing: border-box;
   height: 100%;
+
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 </style>

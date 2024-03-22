@@ -32,8 +32,8 @@
       </view>
     </view>
 
-    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="97" scrollContainer :scrollToUpperAllow="true"
-      :scrollRefresher="true" scrollToLowerAllow @scrollToLower="onNextPage" @scrollToUpper="onRefreshPage">
+    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="97" scrollContainer scrollRefresher
+      scrollToLowerAllow @scrollToLower="onNextPage" @onRefresh="onRefreshPage">
       <view class="listStyle">
         <view class="listItemStyle" v-for="item in pageList" :key="item.classCoursesHistoryId">
           <view class="titleStyle">
@@ -142,11 +142,12 @@ const getData = async (reset = false) => {
   return result
 }
 const onNextPage = () => {
-  getData().finally(uni.stopPullDownRefresh)
+  getData()
 }
 const onRefreshPage = () => {
+  console.log('刷新页面');
   uni.showLoading()
-  getData().finally(uni.stopPullDownRefresh)
+  getData(true)
 }
 
 onReachBottom(() => {
