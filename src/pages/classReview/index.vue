@@ -32,10 +32,10 @@
       </view>
     </view>
 
-    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="97" scrollContainer scrollToUpperAllow
-      scrollToLowerAllow @scrollToLower="onNextPage">
+    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="97" scrollContainer :scrollToUpperAllow="true"
+      :scrollRefresher="true" scrollToLowerAllow @scrollToLower="onNextPage" @scrollToUpper="onRefreshPage">
       <view class="listStyle">
-        <view class="listItemStyle" v-for="item in courseList" :key="item.classCoursesHistoryId">
+        <view class="listItemStyle" v-for="item in pageList" :key="item.classCoursesHistoryId">
           <view class="titleStyle">
             {{ item.subjectName }}
             <span class="subtitle ml-12rpx mr-6rpx">/</span>
@@ -43,7 +43,7 @@
           </view>
           <viw class="classInfo">
             <view class="mr-6rpx">第{{ item.weekNumber }}周</view>
-            <view>{{ item.week }}{{ item.periodTime }}第{{ item.section }}节</view>
+            <view>{{ item.week }}{{ item.periodTime }}第{{ ToChinese(item.section) }}节</view>
             <view>（{{ item.date }}）</view>
           </viw>
         </view>
@@ -54,14 +54,16 @@
 </template>
 
 <script setup>
-import { onLoad } from '@dcloudio/uni-app'
+import { ToChinese } from '@/utils/tools'
+import { onLoad, onReachBottom, onPullDownRefresh } from '@dcloudio/uni-app'
 import { getSemesterInfo } from '@/api/sys/model/user'
 import dayjs from 'dayjs'
 import { cloneDeep } from 'lodash-es'
 import PagesContainer from '@/components/pages-container/pages-container.vue'
 import navbar from '@/components/navbar/navbar.vue';
-import { shallowRef, reactive, ref } from 'vue'
+import { shallowRef, reactive, ref, computed } from 'vue'
 import { getClassCoursesHistory, getCourseBySchoolId } from './service'
+import { usePagination } from '@/utils/usePagination.js'
 import userStore from "@/stores/index.js"
 const { userInfoStore } = userStore();
 const pageLoading = shallowRef(false)
@@ -71,7 +73,10 @@ const showCalendar = shallowRef(false)
 const mode = shallowRef('range');
 const semesterData = reactive({ year: '请选择学期', id: '' })
 const courseData = reactive({ name: '全部学科', id: '' })
-const courseList = ref([])
+// const courseList = ref([])
+const pageList = computed(() => {
+  return pageData.payload.data
+})
 const form = reactive({
   semesterId: '',
   studentId: userInfoStore.userInfo.studentId,
@@ -80,8 +85,6 @@ const form = reactive({
   courseId: '',
   startDate: '',
   endDate: '',
-  pageSize: 10,
-  current: 1
 })
 const semesterColumns = ref([
   [{
@@ -122,18 +125,38 @@ const handleSemesterConfirm = (e) => {
 const handleSemesterCancel = () => {
   showSemester.value = !showSemester.value
 }
-const onNextPage = () => {
-  console.log('底部刷新');
-}
+const pageData = usePagination(getClassCoursesHistory)
 
 onLoad(async () => {
+  uni.showLoading()
   await getSemesterList()
   await getPageCourseBySchoolId()
   form.courseId = courseColumns.value[0][0].id
   form.semesterId = semesterColumns.value[0][0].id
   semesterData.year = semesterColumns.value[0][0].year
-  await getPageClassCoursesHistory()
+  getData(true)
 })
+const getData = async (reset = false) => {
+  uni.hideLoading()
+  const result = await pageData.run(reset, form)
+  return result
+}
+const onNextPage = () => {
+  getData().finally(uni.stopPullDownRefresh)
+}
+const onRefreshPage = () => {
+  uni.showLoading()
+  getData().finally(uni.stopPullDownRefresh)
+}
+
+onReachBottom(() => {
+  uni.showLoading()
+  getData()
+  console.log('分割线底部------------');
+})
+
+
+
 const getSemesterList = async () => {
   console.log(userInfoStore.userInfo.orgId);
   const { obj } = await getSemesterInfo({
@@ -154,11 +177,11 @@ const getPageCourseBySchoolId = async () => {
   })
   courseColumns.value = [obj]
 }
-const getPageClassCoursesHistory = async () => {
-  const { obj } = await getClassCoursesHistory(form)
-  console.log('课堂回顾列表', obj);
-  courseList.value = obj.records
-}
+// const getPageClassCoursesHistory = async () => {
+//   const { obj } = await getClassCoursesHistory(form)
+//   console.log('课堂回顾列表', obj);
+//   courseList.value = obj.records
+// }
 
 // const minDate = dayjs().subtract(3, 'year').startOf('year');
 // const maxDate = dayjs().add(3, 'year').startOf('year');

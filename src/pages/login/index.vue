@@ -134,6 +134,7 @@ const handleLogin = async () => {
       title: '登录中...'
     })
     try {
+      console.log('lkkk', userInfoStore);
       await userInfoStore.Login({
         userNameLoginReq: {
           username: account.value,

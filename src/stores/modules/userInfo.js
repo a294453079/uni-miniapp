@@ -76,6 +76,7 @@ export const userInfoStore = defineStore(
         /**企微专用 */
         // const isQyWxLogin = get(params, 'thirdLoginReq.thirdAppType') === 2
         const { code } = await toPromise(uni.login)
+        console.log('code',code);
         // set(params, 'thirdLoginReq.code', code) 设置第三方授权登录请求参数所用
         if (Object.keys(params?.userNameLoginReq).length) {
           const { username, password } = params.userNameLoginReq
