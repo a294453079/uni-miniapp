@@ -109,7 +109,7 @@
       <daySchedule
         v-show="scheduleTabsactive == 0"
         :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList"
-        :isShowMore="false"
+        :isShowMore="false" class="flex-1 flex"
       />
       <!-- 周课表 -->
       <weekSchedule v-show="scheduleTabsactive == 1" :classCoursesWeekList="classCoursesWeekList" />
@@ -273,6 +273,8 @@
       margin-top: 30rpx;
       background: #fff;
       border-radius: 60rpx 60rpx 0rpx 0rpx;
+      display: flex;
+      flex-direction: column;
       .sticky {
         background: #fff;
         padding-top: 40rpx;

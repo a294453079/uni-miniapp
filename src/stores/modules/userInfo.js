@@ -7,6 +7,7 @@ import { toPromise } from '@/utils'
 import { JSEncrypt } from 'jsencrypt'
 import { getPublicKey } from '@/api/sys/service'
 import { getUserInfo, getStudentClassInfo, getSemesterInfo } from '@/api/sys/model/user'
+import { http } from '@/utils'
 export const userInfoStore = defineStore(
   'userInfo',
   {
@@ -39,6 +40,9 @@ export const userInfoStore = defineStore(
         /**详细用户信息 */
         authUserInfo: {},
         lastUpdateTime: 0,
+        formatList: [], // 文件格式列表
+        fileStorageInfo: {}, // 文件存储信息
+        uploadMethodInfo: {}, // 文件上传方式
       }
     },
     getters: {
@@ -194,7 +198,61 @@ export const userInfoStore = defineStore(
         const semester = await getSemesterInfo({ schoolId: this.userInfo?.orgId })
         const currentSemester = semester.obj.find((item) => item.current == 1)
         this.semesterInfo = currentSemester
+        await this.getFormatList()
+        await this.getUploadMethod()
         return data
+      },
+      /** 获取文件格式列表 */
+      async getFormatList() {
+        const res = await http.post({
+          url: '/resource-center/fileFormats/list',
+          data: {
+            id: '',
+            name: '',
+            formats: '',
+            imgUrl: '',
+            status: 1,
+            sort: '',
+          },
+        })
+        if (res.code == 0) {
+          this.formatList = res.data
+        }
+      },
+      /** 获取文件上传方式 */
+      async getUploadMethod() {
+        const res = await http.get({
+          url: '/file-server/fileUpload/getUploadMethod',
+          data: {},
+        })
+        if (res.code == 0) {
+          this.uploadMethodInfo = res.data
+          if(res.data == 'cos') {
+            await this.getCosInfo()
+          } else if(res.data == 'minio') {
+            await this.getMinioInfo()
+          }
+        }
+      },
+      /** 获取cos存储信息 */
+      async getCosInfo() {
+        const res = await http.get({
+          url: '/file-server/cos/getCosInfo',
+          data: {},
+        })
+        if (res.code == 0) {
+          this.fileStorageInfo = res.data
+        }
+      },
+      /** 获取minio存储信息 */
+      async getMinioInfo() {
+        const res = await http.get({
+          url: '/file-server/minio/getMinioInfo',
+          data: {},
+        })
+        if (res.code == 0) {
+          this.fileStorageInfo = res.data
+        }
       },
     },
   },

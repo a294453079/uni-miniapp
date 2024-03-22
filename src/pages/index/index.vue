@@ -1,6 +1,12 @@
 <template>
   <u-toast ref="uToastRef"></u-toast>
-  <view class="content">
+  <view class="content flex flex-col">
+    <image
+      src="/static/blueBg2.png"
+      :style="{ height: '297rpx !important' }"
+      class="bg-image"
+      mode="aspectFill"
+    />
     <view class="heater">智慧课堂</view>
     <view class="tabs">
       <view @click="handleDetailClick('live-broadcast')">
@@ -16,103 +22,119 @@
         <text>课堂回顾</text>
       </view>
     </view>
-    <view class="mt-16px">
+    <view class="mt-16px flex-1 flex flex-col">
       <moduleTitle title="学生课表" />
-      <daySchedule :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList" :isShowMore="true" />
+      <div
+        class="px-32rpx mt-32rpx flex-1"
+        style="background: #fff; border-radius: 32rpx 32rpx 0 0"
+      >
+        <daySchedule
+          :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList"
+          :isShowMore="true"
+        />
+      </div>
     </view>
   </view>
 </template>
 
 <script setup>
-import moduleTitle from '@/components/moduleTitle.vue'
-import daySchedule from '@/components/schedule/daySchedule.vue'
-import dayjs from 'dayjs'
-import { http } from '@/utils'
-import { ref, onMounted } from 'vue'
-const uToastRef = ref(null)
-let dayClassCoursesByStudentPropsList = ref([])
+  import moduleTitle from '@/components/moduleTitle.vue'
+  import daySchedule from '@/components/schedule/daySchedule.vue'
+  import dayjs from 'dayjs'
+  import { http } from '@/utils'
+  import { ref, onMounted } from 'vue'
+  const uToastRef = ref(null)
+  let dayClassCoursesByStudentPropsList = ref([])
 
-// 获取首页课表
-const getListDayClassCoursesByClass = async () => {
-  const res = await http.get({
-    url: '/app-teach/classCourses/listDayClassCoursesByClass',
-    data: {
-      schoolId: '64428937560064000',
-      semesterId: '376447209173975053',
-      classId: '449227900294791393',
-      date: dayjs().format('YYYY-MM-DD'),
-    },
+  // 获取首页课表
+  const getListDayClassCoursesByClass = async () => {
+    const res = await http.get({
+      url: '/app-teach/classCourses/listDayClassCoursesByClass',
+      data: {
+        schoolId: '64428937560064000',
+        semesterId: '376447209173975053',
+        classId: '449227900294791393',
+        date: dayjs().format('YYYY-MM-DD'),
+      },
+    })
+    if (res.code == 0) {
+      dayClassCoursesByStudentPropsList.value = res.obj
+    }
+  }
+
+  onMounted(async () => {
+    await getListDayClassCoursesByClass()
   })
-  if (res.code == 0) {
-    dayClassCoursesByStudentPropsList.value = res.obj
-  }
-}
 
-onMounted(async () => {
-  await getListDayClassCoursesByClass()
-})
-
-// 跳转详情
-const handleDetailClick = (type) => {
-  if (type == 'live-broadcast') {
-    uToastRef.value.show({
-      message: '程序猿们已经在加紧开发，请期待此功能',
-    })
-  } else if (type == 'school-timetable') {
-    uni.navigateTo({
-      url: '/pages/schedule/index',
-    })
-  } else {
-    uni.navigateTo({
-      url: '/pages/classReview/index',
-    })
+  // 跳转详情
+  const handleDetailClick = (type) => {
+    if (type == 'live-broadcast') {
+      uToastRef.value.show({
+        message: '程序猿们已经在加紧开发，请期待此功能',
+      })
+    } else if (type == 'school-timetable') {
+      uni.navigateTo({
+        url: '/pages/schedule/index',
+      })
+    } else {
+      uni.navigateTo({
+        url: '/pages/classReview/index',
+      })
+    }
   }
-}
 </script>
 <style scoped lang="scss">
-.content {
-  height: 100vh;
-  background: #f8f8f8;
-
-  .heater {
-    height: 149px;
-    color: #fff;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    padding-left: 20px;
-    background: #00a0ff;
-  }
-
-  .tabs {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 118px;
-    border-radius: 16px;
-    background: #fff;
-    padding: 0 20px;
-    box-sizing: border-box;
-    margin: -43px 16px 0 16px;
-
-    view {
+  .content {
+    height: 100vh;
+    background: #f8f8f8;
+    .bg-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .heater {
+      height: 149px;
+      color: #fff;
+      font-size: 20px;
       display: flex;
       align-items: center;
-      flex-direction: column;
-      cursor: pointer;
+      padding-left: 20px;
+      z-index: 2;
+    }
 
-      image {
-        width: 55px;
-        height: 55px;
-      }
+    .tabs {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 118px;
+      border-radius: 16px;
+      background: #fff;
+      padding: 0 20px;
+      box-sizing: border-box;
+      margin: -43px 16px 0 16px;
+      z-index: 2;
 
-      text {
-        color: #474747;
-        font-size: 15px;
-        line-height: 16px;
-        margin-top: 6px;
+      view {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        cursor: pointer;
+
+        image {
+          width: 55px;
+          height: 55px;
+        }
+
+        text {
+          color: #474747;
+          font-size: 15px;
+          line-height: 16px;
+          margin-top: 6px;
+        }
       }
     }
   }
-}
 </style>

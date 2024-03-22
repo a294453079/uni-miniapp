@@ -43,6 +43,22 @@
         "navigationStyle": "custom",
         "navigationBarTextStyle": "white"
 			}
+		},
+    {
+			"path": "components/practiceDetail/detail",
+			"style": {
+				"navigationBarTitleText": "",
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white"
+			}
+		},
+    {
+			"path": "components/fileView",
+			"style": {
+				"navigationBarTitleText": "",
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white"
+			}
 		}
 
 	],

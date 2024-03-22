@@ -1,5 +1,8 @@
 <template>
-  <view class="mt-32rpx" style="background: #fff; border-radius: 32rpx">
+  <view
+    style="background: #fff; border-radius: 32rpx;width: 100%;"
+    v-if="dayClassCoursesByStudentList.length != 0"
+  >
     <view v-for="(item, index) in dayClassCoursesByStudentList" :key="index" class="schedule">
       <!-- 更多 -->
       <view class="more" v-if="index == 0 && isShowMore" @click="handleMoreScheduleClick">
@@ -57,9 +60,13 @@
       </view>
     </view>
   </view>
+  <div v-else class="flex-1 flex flex-col items-center pt-174rpx">
+    <hEmpty text="暂无课程安排" />
+  </div>
 </template>
 
 <script setup>
+  import hEmpty from '@/components/common/h-empty.vue'
   import dayjs from 'dayjs'
   import { http } from '@/utils'
   import { defineProps, watch, ref, onMounted } from 'vue'
@@ -259,13 +266,13 @@
 <style scoped lang="scss">
   .schedule {
     background: #fff;
-    padding: 0 32rpx;
+    // padding: 0 32rpx;
     position: relative;
     .more {
       display: flex;
       align-items: center;
       position: absolute;
-      right: 28rpx;
+      right: 0;
       top: 40rpx;
       text {
         color: #474747;
