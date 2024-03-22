@@ -9,18 +9,26 @@
       }"
     ></navbar>
     <view class="content">
-      <view class="header" v-if="HomeworkDetailInfo != null">
+      <view class="header" v-if="homeworkDetailInfo != null">
         <view class="info">
-          <img class="w-84rpx h-84rpx mr-44rpx" :src="getFileImgUrl(HomeworkDetailInfo.fileFormat)" alt="" />
+          <img
+            class="w-84rpx h-84rpx mr-44rpx"
+            :src="getModuleTypeIcon(homeworkDetailInfo.contentType, homeworkDetailInfo.fileFormat)"
+            alt=""
+          />
           <view>
-            <text>{{ HomeworkDetailInfo.resourceName }}</text>
-            <text>附件上传</text>
+            <text class="text-ellipsis">{{
+              homeworkDetailInfo.resourceName || homeworkDetailInfo.webName
+            }}</text>
+            <text v-if="homeworkDetailInfo.submitType">{{
+              getSubmitType(homeworkDetailInfo.submitType)
+            }}</text>
           </view>
         </view>
         <view class="btn">
-          <text>预览</text>
-          <text></text>
-          <text>下载</text>
+          <text @click="previewResources">预览</text>
+          <text v-if="homeworkDetailInfo.contentType != 2"></text>
+          <text v-if="homeworkDetailInfo.contentType != 2" @click="downloadFile(homeworkDetailInfo.resourceUrl)">下载</text>
         </view>
       </view>
     </view>
@@ -28,16 +36,11 @@
 </template>
 <script setup>
   import navbar from '@/components/navbar/navbar.vue'
-  import dayjs from 'dayjs'
-  import { ToChinese, getFileImgUrl } from '@/utils/tools'
+  import { getModuleTypeIcon, downloadFile } from '@/utils/tools'
   import { onLoad } from '@dcloudio/uni-app'
   import { http } from '@/utils'
-  import { ref, onMounted } from 'vue'
-  const { userInfo } = JSON.parse(uni.getStorageSync('userInfo'))
-  const practiceList = ref([])
-  const formatList = ref([])
-  const uToastRef = ref(null)
-  const HomeworkDetailInfo = ref(null)
+  import { ref } from 'vue'
+  const homeworkDetailInfo = ref(null)
   onLoad(async (e) => {
     // 获取练习列表
     await getHomeworkDetail(e.id)
@@ -52,8 +55,33 @@
     })
     console.log(res)
     if (res.code == 0) {
-      HomeworkDetailInfo.value = res.obj
+      homeworkDetailInfo.value = res.obj
     }
+  }
+
+  const getSubmitType = (type) => {
+    let submitType = ['附件上传', '线下提交', '线上学习']
+    return submitType[type - 1] || ''
+  }
+  // 预览
+  const previewResources = () => {
+    let obj = {}
+    let type = 1
+    // 网址
+    if (homeworkDetailInfo.value.resourceType === 2) {
+      obj = { webUrl: homeworkDetailInfo.value.webUrl }
+      type = 3
+    } else {
+      // 课件文件
+      obj = {
+        resourceUrl: homeworkDetailInfo.value.resourceUrl,
+        fileFormat: homeworkDetailInfo.value.fileFormat,
+      }
+    }
+    let data = JSON.stringify(obj)
+    uni.navigateTo({
+      url: '/components/fileView?data=' + encodeURIComponent(data) + '&type=' + type,
+    })
   }
 </script>
 
@@ -86,6 +114,9 @@
               color: #333;
               line-height: 30rpx;
               font-weight: bold;
+              overflow: hidden;
+              white-space: nowrap;
+              width: 500rpx;
             }
             text:nth-child(2) {
               margin-top: 20rpx;

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { compact, map } from 'lodash-es'
+import { http } from '@/utils'
 
 /**
  * 将字符串转对象
@@ -13,11 +14,7 @@ import { compact, map } from 'lodash-es'
  *  parseStrObjByFor(obj, mark)
  *  ==>{gId:3608300022,e:1,ed:1,tId:9}
  */
-export function parseStrToObj(
-  inputStr,
-  mark = '&',
-  connector = '='
-) {
+export function parseStrToObj(inputStr, mark = '&', connector = '=') {
   if (!inputStr.includes(mark) || !inputStr.includes(connector)) {
     try {
       return JSON.parse(inputStr)
@@ -33,7 +30,7 @@ export function parseStrToObj(
       const [key, value] = cur.split(connector)
       key && (pre[key] = value)
       return pre
-    }, {} )
+    }, {})
 }
 
 /** 获取当前页面地址 */
@@ -49,18 +46,14 @@ export function getCurrentPage() {
  * @param noNum 是否不含数字
  * @returns {string} 随机字符串
  */
-export function randomUUid(len = 12, noNum = false){
-  const chars = `ABCDEFGHIJKMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz${
-    noNum ? '' : '0123456789'
-  }`
+export function randomUUid(len = 12, noNum = false) {
+  const chars = `ABCDEFGHIJKMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz${noNum ? '' : '0123456789'}`
   let str = ''
   for (let i = 0; i < len; i++) {
     str += chars.charAt(Math.floor(Math.random() * chars.length))
   }
   return str
 }
-
-
 
 /**
  * 回调函数转 promise 函数
@@ -71,10 +64,7 @@ export function randomUUid(len = 12, noNum = false){
  * const { code } = await toPromise(uni.login, { timeout: 1000 });
  * console.log(code);
  */
-export function toPromise(
-  fn,
-  options
-) {
+export function toPromise(fn, options) {
   return new Promise((resolve, reject) => {
     fn.call(null, { ...options, success: resolve, fail: reject })
   })
@@ -85,16 +75,14 @@ export function toPromise(
  * @param {string | string[]} TmpIds 要检查的模板消息Id
  * @returns {Promise<boolean[]>}
  */
-export async function checkTmpSubscriptionStatus(
-  TmpIds
-) {
+export async function checkTmpSubscriptionStatus(TmpIds) {
   if (typeof TmpIds === 'string') {
     TmpIds = [TmpIds]
   }
   const {
-    subscriptionsSetting: { mainSwitch, itemSettings }
+    subscriptionsSetting: { mainSwitch, itemSettings },
   } = await toPromise(uni.getSetting, {
-    withSubscriptions: true
+    withSubscriptions: true,
   })
   if (!mainSwitch || !itemSettings) return Array(TmpIds.length).fill(false)
 
@@ -125,9 +113,7 @@ export function delPathPrefix(path) {
 }
 
 export function delPathSuffix(path) {
-  return path.endsWith('/')
-    ? delPathSuffix(path.substring(0, path.length - 2))
-    : path
+  return path.endsWith('/') ? delPathSuffix(path.substring(0, path.length - 2)) : path
 }
 
 export function buildRoutePath(...paths) {
@@ -143,10 +129,7 @@ export function buildRoutePath(...paths) {
  * @param noTime
  * @returns {string}
  */
-export function semanticTime(
-  date,
-  noTime = false
-) {
+export function semanticTime(date, noTime = false) {
   const instance = dayjs(date)
   const nowInstance = dayjs()
   if (instance.year() !== nowInstance.year()) {
@@ -177,71 +160,94 @@ export function getThisInstance(Recordable, name) {
 }
 
 export function ToChinese(num) {
-  let currNum = num;
-  var chnNumChar = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
-  var chnUnitSection = ["", "万", "亿", "万亿", "亿亿"];
-  var chnUnitChar = ["", "十", "百", "千"];
+  let currNum = num
+  var chnNumChar = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九']
+  var chnUnitSection = ['', '万', '亿', '万亿', '亿亿']
+  var chnUnitChar = ['', '十', '百', '千']
 
   function SectionToChinese(section) {
-    var strIns = "",
-      chnStr = "";
-    var unitPos = 0;
-    var zero = true;
+    var strIns = '',
+      chnStr = ''
+    var unitPos = 0
+    var zero = true
 
     if (currNum >= 10 && currNum < 20) {
-      var v = section % 10;
+      var v = section % 10
       if (v == 0) {
-        chnStr = chnUnitChar[1];
+        chnStr = chnUnitChar[1]
       } else {
-        chnStr = chnUnitChar[1] + chnNumChar[v];
+        chnStr = chnUnitChar[1] + chnNumChar[v]
       }
-      return chnStr;
+      return chnStr
     }
     while (section > 0) {
-      var v = section % 10;
+      var v = section % 10
       if (v === 0) {
         if (!zero) {
-          zero = true;
-          chnStr = chnNumChar[v] + chnStr;
+          zero = true
+          chnStr = chnNumChar[v] + chnStr
         }
       } else {
-        zero = false;
-        strIns = chnNumChar[v];
-        strIns += chnUnitChar[unitPos];
-        chnStr = strIns + chnStr;
+        zero = false
+        strIns = chnNumChar[v]
+        strIns += chnUnitChar[unitPos]
+        chnStr = strIns + chnStr
       }
-      unitPos++;
-      section = Math.floor(section / 10);
+      unitPos++
+      section = Math.floor(section / 10)
     }
-    return chnStr;
+    return chnStr
   }
 
   function NumberToChinese(num) {
-    var unitPos = 0;
-    var strIns = "",
-      chnStr = "";
-    var needZero = false;
+    var unitPos = 0
+    var strIns = '',
+      chnStr = ''
+    var needZero = false
 
     if (num === 0) {
-      return chnNumChar[0];
+      return chnNumChar[0]
     }
 
     while (num > 0) {
-      var section = num % 10000;
+      var section = num % 10000
       if (needZero) {
-        chnStr = chnNumChar[0] + chnStr;
+        chnStr = chnNumChar[0] + chnStr
       }
-      strIns = SectionToChinese(section);
-      strIns += section !== 0 ? chnUnitSection[unitPos] : chnUnitSection[0];
-      chnStr = strIns + chnStr;
-      needZero = section < 1000 && section > 0;
-      num = Math.floor(num / 10000);
-      unitPos++;
+      strIns = SectionToChinese(section)
+      strIns += section !== 0 ? chnUnitSection[unitPos] : chnUnitSection[0]
+      chnStr = strIns + chnStr
+      needZero = section < 1000 && section > 0
+      num = Math.floor(num / 10000)
+      unitPos++
     }
 
-    return chnStr;
+    return chnStr
   }
-  return NumberToChinese(num);
+  return NumberToChinese(num)
+}
+
+/**
+ * 文件icon图标回显
+ * @param {*} moduleType 活动模块类型
+ * @param {*} fileFormat 文件格式
+ * @returns
+ */
+export function getModuleTypeIcon(moduleType, fileFormat) {
+  const moduleTypeIcons = {
+    1: '/static/practice/fileIcon/paper-icon.png',
+    2: '/static/practice/fileIcon/web-icon.png',
+    5: '/static/practice/fileIcon/vote-icon.png',
+    6: '/static/practice/fileIcon/questioning-icon.png',
+    7: '/static/practice/fileIcon/discuss-icon.png',
+    8: '/static/practice/fileIcon/questionnaire-icon.png',
+  }
+
+  if (moduleType in moduleTypeIcons) {
+    return moduleTypeIcons[moduleType]
+  } else {
+    return getFileImgUrl(fileFormat)
+  }
 }
 
 export function getFileImgUrl(fileFormat) {
@@ -250,4 +256,63 @@ export function getFileImgUrl(fileFormat) {
   if (urlList.length > 0) {
     return '/static/practice/fileIcon/' + urlList[0].imgUrl
   }
+}
+
+// 文件url半路径加密
+export async function getEncryptFilePathURL(resourceUrl) {
+  const { uploadMethodInfo, fileStorageInfo } = JSON.parse(uni.getStorageSync('userInfo'))
+  let fileUrls = {
+    cos: '/file-server/cos/presignedGetObject',
+    minio: '/file-server/minio/getObjUrl',
+  }
+  const res = await http.get({
+    url: fileUrls[uploadMethodInfo],
+    data: {
+      bucketName: fileStorageInfo.bucketName,
+      objectName: resourceUrl,
+    },
+  })
+  return res.data || ''
+}
+
+// 文件下载
+export async function downloadFile(url) {
+  uni.downloadFile({
+		url: await getEncryptFilePathURL(url) , //下载地址，后端接口获取的链接
+		success: (data) => {
+			console.log(data.tempFilePath)
+			console.log(JSON.stringify(data))
+			if (data.statusCode === 200) {
+				uni.saveFile({ //文件保存到本地
+					tempFilePath: data.tempFilePath, //临时路径
+					success: function(res) {
+						console.log("下载成功"+res.savedFilePath)
+						console.log(JSON.stringify(res))
+						uni.showToast({
+							icon: 'none',
+							mask: true,
+							title: '文件已保存!', 
+							duration: 3000,
+						});
+						uni.openDocument({
+							//fileType: 'docx',
+							showMenu:true, //关键点,可以转发到微信
+							filePath: res.savedFilePath,
+							success: function(res) {
+								console.log('打开文档成功');
+							}
+						});
+					}
+				});
+			}
+		},
+		fail: (err) => {
+			console.log(err);
+			uni.showToast({
+				icon: 'none',
+				mask: true,
+				title: '失败请重新下载',
+			});
+		},
+	});
 }

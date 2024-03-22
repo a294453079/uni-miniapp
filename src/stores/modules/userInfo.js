@@ -40,8 +40,9 @@ export const userInfoStore = defineStore(
         /**详细用户信息 */
         authUserInfo: {},
         lastUpdateTime: 0,
-        // 图片类型列表
-        formatList: []
+        formatList: [], // 文件格式列表
+        fileStorageInfo: {}, // 文件存储信息
+        uploadMethodInfo: {}, // 文件上传方式
       }
     },
     getters: {
@@ -197,9 +198,10 @@ export const userInfoStore = defineStore(
         const currentSemester = semester.obj.find((item) => item.current == 1)
         this.semesterInfo = currentSemester
         await this.getFormatList()
+        await this.getUploadMethod()
         return data
       },
-
+      /** 获取文件格式列表 */
       async getFormatList() {
         const res = await http.post({
           url: '/resource-center/fileFormats/list',
@@ -212,11 +214,45 @@ export const userInfoStore = defineStore(
             sort: '',
           },
         })
-        console.log(res)
         if (res.code == 0) {
           this.formatList = res.data
         }
-      }
+      },
+      /** 获取文件上传方式 */
+      async getUploadMethod() {
+        const res = await http.get({
+          url: '/file-server/fileUpload/getUploadMethod',
+          data: {},
+        })
+        if (res.code == 0) {
+          this.uploadMethodInfo = res.data
+          if(res.data == 'cos') {
+            await this.getCosInfo()
+          } else if(res.data == 'minio') {
+            await this.getMinioInfo()
+          }
+        }
+      },
+      /** 获取cos存储信息 */
+      async getCosInfo() {
+        const res = await http.get({
+          url: '/file-server/cos/getCosInfo',
+          data: {},
+        })
+        if (res.code == 0) {
+          this.fileStorageInfo = res.data
+        }
+      },
+      /** 获取minio存储信息 */
+      async getMinioInfo() {
+        const res = await http.get({
+          url: '/file-server/minio/getMinioInfo',
+          data: {},
+        })
+        if (res.code == 0) {
+          this.fileStorageInfo = res.data
+        }
+      },
     },
   },
   /**持久化方式2*/

@@ -39,7 +39,7 @@
                     ]"
                     class="flex items-center justify-center"
                   >
-                    <text class="text-30rpx">{{ item.day }}</text>
+                    <text class="text-30rpx">{{ item.isToday ? '今' : item.day }}</text>
                     <!-- <text
                       v-if="item.name"
                       class="text-24rpx w-100rpx absolute bottom-4rpx"
@@ -176,6 +176,7 @@
         /** 展开日历 */
         expandCalendarClick() {
           this.isShowExpandCalendar = !this.isShowExpandCalendar
+          this.$emit('expandCalendarClick', this.isShowExpandCalendar)
         },
         getCurrentDate() {
           const currentDate = new Date()
@@ -266,6 +267,8 @@
               }`,
             })
           }
+
+          isWeek = isWeek - 1
   
           /** 上月数据 */
           if (isNotFirstMonday) {
@@ -413,9 +416,8 @@
   <style lang="scss" scoped>
     .calendar {
       .calendar-cont {
-        background: #00a0ff;
         position: relative;
-        padding: 120rpx 40rpx 20rpx 40rpx;
+        padding: 160rpx 40rpx 20rpx 40rpx;
         .calendar-header {
           height: 108rpx;
           display: flex;
@@ -448,7 +450,6 @@
           }
         }
         .calendar-body {
-          background: #00a0ff;
           border-radius: 20rpx;
           box-sizing: border-box;
           .calendar-table {
