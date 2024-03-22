@@ -1,5 +1,6 @@
 <template>
   <view>
+    <image src="/static/blueBg2.png" class="bg-image" mode="top" />
     <u-toast ref="uToastRef"></u-toast>
     <view class="header">
       <img
@@ -43,6 +44,7 @@
   </view>
 </template>
 <script setup>
+  import navbar from '@/components/navbar/navbar.vue'
   import { ref } from 'vue'
   const uToastRef = ref(null)
   const { userInfo } = JSON.parse(uni.getStorageSync('userInfo'))
@@ -99,12 +101,21 @@
 </script>
 
 <style scoped lang="scss">
+  .bg-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 472rpx !important;
+    z-index: -1;
+    pointer-events: none;
+  }
   .header {
-    height: 472rpx;
-    background: #00a0ff;
+    // height: 472rpx;
+    // background: #00a0ff;
     display: flex;
     align-items: center;
-    padding: 0 32rpx 0 40rpx;
+    padding: 186rpx 32rpx 0 40rpx;
     display: flex;
     align-items: center;
   }
@@ -112,7 +123,7 @@
   .user-info {
     background: #fff;
     border-radius: 16rpx;
-    margin: -80rpx 40rpx 0 40rpx;
+    margin: 90rpx 40rpx 0 40rpx;
     box-shadow: 0rpx 6rpx 16rpx 0rpx rgba(11, 69, 111, 0.16);
 
     .card-list {

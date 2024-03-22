@@ -1,0 +1,224 @@
+<template>
+  <view class="class-review-detail">
+    <image src="/static/blueBg2.png" class="bg-image" mode="top" />
+    <navbar
+      title="课堂回顾详情"
+      :titleStyle="{
+        color: '#fff',
+        fontSize: '36rpx',
+      }"
+    ></navbar>
+    <view class="content">
+      <moduleTitle title="基本信息" />
+      <view class="class-review-info">
+        <view class="name">
+          <text>语文</text>
+          <text>/</text>
+          <text>陈小新</text>
+        </view>
+        <div class="time"> 课节：第7周 星期一 (2023-10-09)上午 第3节 </div>
+        <div class="chapter">教材章节：--</div>
+      </view>
+      <view class="mt-68rpx">
+        <moduleTitle title="课堂资源" />
+        <view v-for="(item, index) in 3" :key="index" class="classroom-resources">
+          <view>
+            <img class="w-48rpx h-48rpx" src="" alt="" />
+            <text>全球文化多样性推动文…</text>
+          </view>
+          <text class="btn">查看</text>
+        </view>
+        <div class="mt-60rpx">
+          <moduleTitle title="课堂实录" />
+        </div>
+        <div class="course-video">
+          <view v-for="(item, index) in 3" :key="index" class="course-video-list">
+            <img class="img" src="" alt="" />
+            <text>曾老师的语文线上直…</text>
+          </view>
+        </div>
+        <moduleTitle title="课堂板书" />
+      </view>
+    </view>
+  </view>
+</template>
+<script setup>
+  import moduleTitle from '@/components/moduleTitle.vue'
+  import navbar from '@/components/navbar/navbar.vue'
+  import { getModuleTypeIcon, downloadFile } from '@/utils/tools'
+  import { onLoad } from '@dcloudio/uni-app'
+  import { http } from '@/utils'
+  import { ref } from 'vue'
+  const homeworkDetailInfo = ref(null)
+  onLoad(async (e) => {
+    // 获取课堂回顾详情数据
+    await getClassCoursesHistoryResourceList(e.classCoursesHistoryId)
+    // 获取课堂实录数据
+    await getTeachResources(e.classCoursesHistoryId)
+  })
+  // 获取课堂回顾详情数据
+  const getClassCoursesHistoryResourceList = async (classCoursesHistoryId) => {
+    const res = await http.get({
+      url: '/app-teach/classCoursesHistoryResource/getClassCoursesHistoryResourceList',
+      data: {
+        classCoursesHistoryId,
+      },
+    })
+    console.log(res)
+    if (res.code == 0) {
+      homeworkDetailInfo.value = res.obj
+    }
+  }
+  // 获取课堂实录数据
+  const getTeachResources = async (chId) => {
+    const res = await http.get({
+      url: '/app-teach/classCoursesHistory/getTeachResources',
+      data: {
+        chId,
+      },
+    })
+    console.log(res)
+    if (res.code == 0) {
+    }
+  }
+
+  // 预览
+  const previewResources = () => {
+    let obj = {}
+    let type = 1
+    // 网址
+    if (homeworkDetailInfo.value.resourceType === 2) {
+      obj = { webUrl: homeworkDetailInfo.value.webUrl }
+      type = 3
+    } else {
+      // 课件文件
+      obj = {
+        resourceUrl: homeworkDetailInfo.value.resourceUrl,
+        fileFormat: homeworkDetailInfo.value.fileFormat,
+      }
+    }
+    let data = JSON.stringify(obj)
+    uni.navigateTo({
+      url: '/components/fileView?data=' + encodeURIComponent(data) + '&type=' + type,
+    })
+  }
+</script>
+
+<style lang="scss" scoped>
+  .class-review-detail {
+    .bg-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .content {
+      padding: 48rpx 32rpx 48rpx 0;
+      height: calc(100vh - 256rpx);
+      box-sizing: border-box;
+      background: #f8f8f8;
+      overflow: auto;
+      .class-review-info {
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 252rpx;
+        border-radius: 32rpx;
+        margin-left: 32rpx;
+        padding: 0 40rpx;
+        box-sizing: border-box;
+        margin-top: 32rpx;
+        .name {
+          display: flex;
+          align-content: center;
+          text:nth-child(1) {
+            font-size: 40rpx;
+            color: #333;
+            line-height: 34rpx;
+            font-weight: bold;
+          }
+          text:nth-child(2) {
+            margin: 0 12rpx;
+            line-height: 40rpx;
+            font-size: 30rpx;
+            color: #b0b8c7;
+          }
+          text:nth-child(3) {
+            font-size: 30rpx;
+            color: #b0b8c7;
+            line-height: 40rpx;
+          }
+        }
+        .time {
+          font-size: 28rpx;
+          color: #666;
+          line-height: 32rpx;
+          margin-top: 32rpx;
+        }
+        .chapter {
+          font-size: 28rpx;
+          color: #666;
+          line-height: 32rpx;
+          margin-top: 20rpx;
+        }
+      }
+      .classroom-resources {
+        background: #fff;
+        height: 112rpx;
+        border-radius: 32rpx;
+        margin-top: 32rpx;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-left: 32rpx;
+        padding: 0 40rpx;
+        box-sizing: border-box;
+        view {
+          display: flex;
+          align-items: center;
+          text {
+            font-size: 30rpx;
+            color: #253b63;
+            line-height: 32rpx;
+            margin-left: 16rpx;
+          }
+        }
+        .btn {
+          font-size: 30rpx;
+          color: #00a0ff;
+          line-height: 32rpx;
+          font-weight: bold;
+        }
+      }
+      .course-video {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-bottom: 64rpx;
+        .course-video-list {
+          width: 328rpx;
+          display: flex;
+          flex-direction: column;
+          margin-left: 30rpx;
+          margin-top: 32rpx;
+          .img {
+            width: 100%;
+            height: 183rpx;
+            background: red;
+            border-radius: 16rpx;
+          }
+          text {
+            font-size: 30rpx;
+            color: #333;
+            line-height: 32rpx;
+            margin-top: 18rpx;
+          }
+        }
+      }
+    }
+  }
+</style>

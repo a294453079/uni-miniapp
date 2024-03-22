@@ -35,7 +35,7 @@
     <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="97" scrollContainer scrollRefresher
       scrollToLowerAllow @scrollToLower="onNextPage" @onRefresh="onRefreshPage">
       <view class="listStyle">
-        <view class="listItemStyle" v-for="item in pageList" :key="item.classCoursesHistoryId">
+        <view class="listItemStyle" v-for="item in pageList" :key="item.classCoursesHistoryId" @click="hangleDetail(item)">
           <view class="titleStyle">
             {{ item.subjectName }}
             <span class="subtitle ml-12rpx mr-6rpx">/</span>
@@ -189,6 +189,13 @@ const getPageCourseBySchoolId = async () => {
 const handleConfirmCalendar = (e) => {
   console.log('确定日历', e);
   showCalendar.value = false
+}
+// 查看详情
+const hangleDetail = (e) => {
+  console.log('查看详情', e.classCoursesHistoryId);
+  uni.navigateTo({
+    url: '/pages/classReview/detail?classCoursesHistoryId=' + e.classCoursesHistoryId,
+  })
 }
 
 

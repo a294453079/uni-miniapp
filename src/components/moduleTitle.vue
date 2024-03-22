@@ -16,15 +16,15 @@
   .content {
     display: flex;
     align-items: center;
-    padding-left: 16px;
+    padding-left: 32rpx;
     .title {
       color: #474747;
-      margin-left: 5px;
-      line-height: 25px;
+      margin-left: 10rpx;
+      line-height: 50rpx;
     }
     .borders {
-      width: 3px;
-      height: 15px;
+      width: 6rpx;
+      height: 30rpx;
       background: #00a0ff;
     }
   }

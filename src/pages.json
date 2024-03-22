@@ -60,7 +60,6 @@
         "navigationBarTextStyle": "white"
 			}
 		}
-
 	],
    "tabBar": {
     "color": "#A9B5CB",
@@ -157,6 +156,13 @@
       "pages": [
         {
           "path": "index",
+          "style": {
+            "navigationBarTitleText": "",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "detail",
           "style": {
             "navigationBarTitleText": "",
             "navigationStyle": "custom"
