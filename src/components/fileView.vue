@@ -1,7 +1,7 @@
 <template>
   <image src="/static/blueBg2.png" class="bg-image" mode="top" />
   <navbar
-    title="练习内容"
+    :title="title"
     :titleStyle="{
       color: '#fff',
       fontSize: '36rpx',
@@ -71,8 +71,10 @@
   const resourceType = ref(0) // 资源类型
   const resourceInfo = ref(null) // 资源信息
   const resourceUrl = ref('') // 资源地址
+  const title = ref('练习内容') // 资源名称
 
   onLoad(async (e) => {
+    title.value = e.title
     resourceType.value = e.type
     resourceInfo.value = JSON.parse(decodeURIComponent(e.data))
     isVideoView.value = unVideoViewList.value.indexOf(resourceInfo.value.fileFormat) === -1 || false

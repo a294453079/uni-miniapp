@@ -30,9 +30,9 @@
             }}</text>
           </view>
           <div v-if="handleClassCoursesFn(o.classCoursesId, o.date)" class="status">
-            <span v-if="remainingTime == '-'"></span>
-            <span v-else-if="!remainingTime">进行中</span>
-            <span v-else>倒计时 {{ remainingTime }}</span>
+            <text v-if="remainingTime == '-'"></text>
+            <text v-else-if="!remainingTime">进行中</text>
+            <text v-else>倒计时 {{ remainingTime }}</text>
           </div>
           <div v-else>
             <text class="status" v-if="o.classCoursesHistoryId">已上课</text>
@@ -42,14 +42,10 @@
           </div>
 
           <!--state 1进行中 2未开始 3已完成 4已过期-->
-          <view v-if="o.liveBroadcastClassId && (o.broadcastState == 1 || o.broadcastState == 2)">
-            <span>加入直播</span>
-            <!-- <el-button type="primary" v-if="o.broadcastState == 1" @click="handleLive(o)"
-                >加入直播</el-button
-              >
-              <el-button plain v-else-if="o.broadcastState == 2" @click="handleLive(o)"
-                >加入直播</el-button
-              > -->
+          <view v-if="o.liveBroadcastClassId && (o.broadcastState == 1 || o.broadcastState == 2)" class="live-broadcast-btn">
+            <text v-if="o.broadcastState == 1" @click="handleLive(o)">正在直播中</text>
+            <text v-else-if="o.broadcastState == 2" @click="handleLive(o)">直播课堂已开启</text>
+            <img class="w-10rpx h-24rpx" src="@/static/home/live-broadcast-right-arrow.png" alt="" />
           </view>
           <view class="course-review-btn" v-else-if="o.classCoursesHistoryId" @click="hangleCourseDetail(o.classCoursesHistoryId)">
             <!-- @click="goCourseDetail(o.classCoursesHistoryId)" -->
@@ -268,6 +264,12 @@
       url: '/pages/classReview/detail?classCoursesHistoryId=' + classCoursesHistoryId,
     })
   }
+  // 预览直播
+  const handleLive = (e) => {
+    uni.navigateTo({
+      url: '/components/trtcView?liveBroadcastClassId=' + e.liveBroadcastClassId,
+    })
+  }
 </script>
 <style scoped lang="scss">
   .schedule {
@@ -374,6 +376,27 @@
         bottom: 24rpx;
         text {
           color: #00a0ff;
+          font-size: 24rpx;
+          line-height: 24rpx;
+          margin-right: 12rpx;
+        }
+      }
+      .live-broadcast-btn {
+        padding: 0 20rpx;
+        box-sizing: border-box;
+        height: 56rpx;
+        background: #fff;
+        border-radius: 32rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: absolute;
+        right: 32rpx;
+        bottom: 24rpx;
+        box-shadow: 0rpx 20rpx 32rpx 0rpx rgba(93,203,160,0.3);
+        text {
+          color: #388C7E;
           font-size: 24rpx;
           line-height: 24rpx;
           margin-right: 12rpx;

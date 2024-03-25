@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, ref, onBeforeMount, defineEmits } from 'vue'
+import { computed, defineProps, ref, onBeforeMount, defineEmits, watch } from 'vue'
 import Loading from '@/components/loading/loading.vue'
 import { sleep } from '@/utils/helper/uniHelper'
 import {
@@ -92,7 +92,8 @@ const containerStyle = ref({
 // if (Object.keys(props.customHeight).length) {
 //   containerStyle.value = { ...props.customHeight }
 // }
-onBeforeMount(() => {
+
+const initCustomHeight = () => {
   if (props.hasCustomNavbar) {
     const { statusBarHeight = 24 } = getSystemSetting()
     console.log('状态栏', statusBarHeight);
@@ -109,6 +110,15 @@ onBeforeMount(() => {
       }
     }
   }
+}
+
+
+onBeforeMount(() => {
+  initCustomHeight()
+})
+
+watch(() => props.customHeight, (newVal) => {
+  initCustomHeight()
 })
 
 const scrollState = ref({

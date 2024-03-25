@@ -28,7 +28,11 @@
         <view class="btn">
           <text @click="previewResources">预览</text>
           <text v-if="homeworkDetailInfo.contentType != 2"></text>
-          <text v-if="homeworkDetailInfo.contentType != 2" @click="downloadFile(homeworkDetailInfo.resourceUrl)">下载</text>
+          <text
+            v-if="homeworkDetailInfo.contentType != 2"
+            @click="downloadFile(homeworkDetailInfo.resourceUrl)"
+            >下载</text
+          >
         </view>
       </view>
     </view>
@@ -80,7 +84,9 @@
     }
     let data = JSON.stringify(obj)
     uni.navigateTo({
-      url: '/components/fileView?data=' + encodeURIComponent(data) + '&type=' + type,
+      url: `/components/fileView?data=${encodeURIComponent(data)}&type=${type}&title=${
+        homeworkDetailInfo.value.resourceName || homeworkDetailInfo.value.webName
+      }`,
     })
   }
 </script>
