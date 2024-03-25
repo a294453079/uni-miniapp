@@ -10,3 +10,11 @@ export async function getCourseBySchoolId(data) {
     joinParamsToUrl:true
   })
 }
+/**课堂回顾详情 classCoursesHistoryId */
+export async function getClassCoursesHistoryDetail(data) {
+  return await http.get('/app-teach/classCoursesHistory/getBaseData', data)
+}
+/**课堂回顾详情 classCoursesHistoryId */
+export async function getClassCoursesHistoryDetail(data) {
+  return await http.get('/app-teach/classCoursesHistory/getBaseData', data)
+}
