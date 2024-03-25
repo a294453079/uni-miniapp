@@ -27,8 +27,9 @@
         <view class="select_text">2023-10-09</view>
         <view class="lineDateStyle">|</view>
         <img class="w-44rpx h-44rpx" src="@/static/classReview/calendar.png" @click="showCalendar = true">
-        <up-calendar :show="showCalendar" :mode="mode" @confirm="handleConfirmCalendar" @close="showCalendar = false"
-          monthNum="72"></up-calendar>
+        <!-- <up-calendar :show="showCalendar" :mode="mode" @confirm="handleConfirmCalendar" @close="showCalendar = false"
+          monthNum="72"></up-calendar> -->
+
       </view>
     </view>
 
@@ -50,7 +51,13 @@
         </view>
       </view>
     </PagesContainer>
-
+    <!-- 日历弹窗 -->
+    <u-popup :show="showCalendar" round="32rpx">
+      <view>
+        <hCalendar :scheduleTabsactive="scheduleTabsactive" @changeDay="changeDay" @weekChange="weekChange"
+          :selectedActiveList="calendarList" @closeDay="showCalendar = false" />
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -65,12 +72,12 @@ import navbar from '@/components/navbar/navbar.vue';
 import { shallowRef, reactive, ref, computed } from 'vue'
 import { getClassCoursesHistory, getCourseBySchoolId } from './service'
 import { usePagination } from '@/utils/usePagination.js'
+import hCalendar from '@/components/common/h-calendar.vue'
 import userStore from "@/stores/index.js"
 const { userInfoStore } = userStore();
 const pageLoading = shallowRef(false)
 const showSubject = shallowRef(false)
 const showSemester = shallowRef(false)
-const showCalendar = shallowRef(false)
 const mode = shallowRef('range');
 const semesterData = reactive({ year: '请选择学期', id: '' })
 const courseData = reactive({ name: '全部学科', id: '' })
@@ -78,6 +85,10 @@ const courseData = reactive({ name: '全部学科', id: '' })
 const pageList = computed(() => {
   return pageData.payload.data
 })
+const showCalendar = shallowRef(false)
+const calendarList = shallowRef([{ timeStamp: dayjs(userInfoStore.semesterInfo?.createdate).unix() * 1000 }, { timeStamp: dayjs(userInfoStore.semesterInfo?.enddate).unix() * 1000 }])
+const scheduleTabsactive = shallowRef(2) // 课表高亮
+const dateTabsActive = ref(1) // 日期高亮
 const form = reactive({
   semesterId: '',
   studentId: userInfoStore.userInfo.studentId,
@@ -126,6 +137,22 @@ const handleSemesterConfirm = (e) => {
 const handleSemesterCancel = () => {
   showSemester.value = !showSemester.value
 }
+
+// 保存日期
+const changeDay = async (e) => {
+  console.log('----', e);
+  console.log('list', calendarList.value)
+  if (calendarList.value.length === 2) {
+    calendarList.value = []
+  }
+  calendarList.value.push(e.item.time)
+  // if (calendarList.value.length === 2) {
+  //   showCalendar.value = false
+  // }
+
+  // showCalendar.value = false
+}
+
 const pageData = usePagination(getClassCoursesHistory)
 
 onLoad(async () => {

@@ -1,13 +1,10 @@
 <template>
   <view class="class-review-detail">
     <image src="/static/blueBg2.png" class="bg-image" mode="top" />
-    <navbar
-      title="课堂回顾详情"
-      :titleStyle="{
-        color: '#fff',
-        fontSize: '36rpx',
-      }"
-    ></navbar>
+    <navbar title="课堂回顾详情" :titleStyle="{
+      color: '#fff',
+      fontSize: '36rpx',
+    }"></navbar>
     <view class="content">
       <moduleTitle title="基本信息" />
       <view class="class-review-info" v-if="homeworkDetailInfo != null">
@@ -43,194 +40,191 @@
   </view>
 </template>
 <script setup>
-  import moduleTitle from '@/components/moduleTitle.vue'
-  import navbar from '@/components/navbar/navbar.vue'
-  import { getModuleTypeIcon, downloadFile } from '@/utils/tools'
-  import { onLoad } from '@dcloudio/uni-app'
-  import { http } from '@/utils'
-  import { ref } from 'vue'
-  const homeworkDetailInfo = ref(null)
-  onLoad(async (e) => {
-    await getClassCoursesHistoryResourceList(e.classCoursesHistoryId)
-    await getTeachResources(e.classCoursesHistoryId)
-    await getBaseData(e.classCoursesHistoryId)
-  })
-  // 获取课堂资源数据
-  const getClassCoursesHistoryResourceList = async (classCoursesHistoryId) => {
-    const res = await http.get({
-      url: '/app-teach/classCoursesHistoryResource/getClassCoursesHistoryResourceList',
-      data: {
-        classCoursesHistoryId,
-      },
-    })
-    console.log(111111111111, res)
-    if (res.code == 0) {
-      //   homeworkDetailInfo.value = res.obj
-    }
-  }
-  // 获取课堂实录、板书数据
-  const getTeachResources = async (chId) => {
-    const res = await http.get({
-      url: '/app-teach/classCoursesHistory/getTeachResources',
-      data: {
-        chId,
-      },
-    })
-    console.log(2222222222222, res)
-    if (res.code == 0) {
-    }
-  }
-  // 获取详情基本信息数据
-  const getBaseData = async (chId) => {
-    const res = await http.get({
-      url: '/app-teach/classCoursesHistory/getBaseData',
-      data: {
-        chId,
-      },
-    })
-    console.log(3333333333, res)
-    if (res.code == 0) {
-      homeworkDetailInfo.value = res.obj
-    }
-  }
+import moduleTitle from '@/components/moduleTitle.vue'
+import navbar from '@/components/navbar/navbar.vue'
+import { getModuleTypeIcon, downloadFile } from '@/utils/tools'
+import { onLoad } from '@dcloudio/uni-app'
+import { http } from '@/utils'
+import { ref } from 'vue'
+import { getClassCoursesBaseData, getClassCoursesHistoryResourceList, getTeachResources } from './service'
+const homeworkDetailInfo = ref(null)
+onLoad(async (e) => {
+  await getResourceList(e.classCoursesHistoryId)
+  await getTeachResourcesDetail(e.classCoursesHistoryId)
+  await getBaseData(e.classCoursesHistoryId)
+})
+// 获取课堂资源数据
+const getResourceList = async (classCoursesHistoryId) => {
+  const res = await getClassCoursesHistoryResourceList({ classCoursesHistoryId })
+  console.log(111111111111, res)
+  homeworkDetailInfo.value = res?.obj
+}
+// 获取课堂实录、板书数据
+const getTeachResourcesDetail = async (chId) => {
+  const res = await getTeachResources({ chId })
+  console.log(2222222222222, res)
 
-  // 预览
-  const previewResources = () => {
-    let obj = {}
-    let type = 1
-    // 网址
-    if (homeworkDetailInfo.value.resourceType === 2) {
-      obj = { webUrl: homeworkDetailInfo.value.webUrl }
-      type = 3
-    } else {
-      // 课件文件
-      obj = {
-        resourceUrl: homeworkDetailInfo.value.resourceUrl,
-        fileFormat: homeworkDetailInfo.value.fileFormat,
-      }
+}
+// 获取详情基本信息数据
+const getBaseData = async (chId) => {
+  const res = await getClassCoursesBaseData({ chId })
+  console.log(3333333333, res)
+  homeworkDetailInfo.value = res.obj
+}
+
+// 预览
+const previewResources = () => {
+  let obj = {}
+  let type = 1
+  // 网址
+  if (homeworkDetailInfo.value.resourceType === 2) {
+    obj = { webUrl: homeworkDetailInfo.value.webUrl }
+    type = 3
+  } else {
+    // 课件文件
+    obj = {
+      resourceUrl: homeworkDetailInfo.value.resourceUrl,
+      fileFormat: homeworkDetailInfo.value.fileFormat,
     }
-    let data = JSON.stringify(obj)
-    uni.navigateTo({
-      url: '/components/fileView?data=' + encodeURIComponent(data) + '&type=' + type,
-    })
   }
+  let data = JSON.stringify(obj)
+  uni.navigateTo({
+    url: '/components/fileView?data=' + encodeURIComponent(data) + '&type=' + type,
+  })
+}
 </script>
 
 <style lang="scss" scoped>
-  .class-review-detail {
-    .bg-image {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: -1;
-      pointer-events: none;
-    }
-    .content {
-      padding: 48rpx 32rpx 48rpx 0;
-      height: calc(100vh - 256rpx);
+.class-review-detail {
+  .bg-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .content {
+    padding: 48rpx 32rpx 48rpx 0;
+    height: calc(100vh - 256rpx);
+    box-sizing: border-box;
+    background: #f8f8f8;
+    overflow: auto;
+
+    .class-review-info {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 252rpx;
+      border-radius: 32rpx;
+      margin-left: 32rpx;
+      padding: 0 40rpx;
       box-sizing: border-box;
-      background: #f8f8f8;
-      overflow: auto;
-      .class-review-info {
-        background: #fff;
+      margin-top: 32rpx;
+
+      .name {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        height: 252rpx;
-        border-radius: 32rpx;
-        margin-left: 32rpx;
-        padding: 0 40rpx;
-        box-sizing: border-box;
-        margin-top: 32rpx;
-        .name {
-          display: flex;
-          align-content: center;
-          text:nth-child(1) {
-            font-size: 40rpx;
-            color: #333;
-            line-height: 34rpx;
-            font-weight: bold;
-          }
-          text:nth-child(2) {
-            margin: 0 12rpx;
-            line-height: 40rpx;
-            font-size: 30rpx;
-            color: #b0b8c7;
-          }
-          text:nth-child(3) {
-            font-size: 30rpx;
-            color: #b0b8c7;
-            line-height: 40rpx;
-          }
-        }
-        .time {
-          font-size: 28rpx;
-          color: #666;
-          line-height: 32rpx;
-          margin-top: 32rpx;
-        }
-        .chapter {
-          font-size: 28rpx;
-          color: #666;
-          line-height: 32rpx;
-          margin-top: 20rpx;
-        }
-      }
-      .classroom-resources {
-        background: #fff;
-        height: 112rpx;
-        border-radius: 32rpx;
-        margin-top: 32rpx;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-left: 32rpx;
-        padding: 0 40rpx;
-        box-sizing: border-box;
-        view {
-          display: flex;
-          align-items: center;
-          text {
-            font-size: 30rpx;
-            color: #253b63;
-            line-height: 32rpx;
-            margin-left: 16rpx;
-          }
-        }
-        .btn {
-          font-size: 30rpx;
-          color: #00a0ff;
-          line-height: 32rpx;
+        align-content: center;
+
+        text:nth-child(1) {
+          font-size: 40rpx;
+          color: #333;
+          line-height: 34rpx;
           font-weight: bold;
         }
+
+        text:nth-child(2) {
+          margin: 0 12rpx;
+          line-height: 40rpx;
+          font-size: 30rpx;
+          color: #b0b8c7;
+        }
+
+        text:nth-child(3) {
+          font-size: 30rpx;
+          color: #b0b8c7;
+          line-height: 40rpx;
+        }
       }
-      .course-video {
+
+      .time {
+        font-size: 28rpx;
+        color: #666;
+        line-height: 32rpx;
+        margin-top: 32rpx;
+      }
+
+      .chapter {
+        font-size: 28rpx;
+        color: #666;
+        line-height: 32rpx;
+        margin-top: 20rpx;
+      }
+    }
+
+    .classroom-resources {
+      background: #fff;
+      height: 112rpx;
+      border-radius: 32rpx;
+      margin-top: 32rpx;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-left: 32rpx;
+      padding: 0 40rpx;
+      box-sizing: border-box;
+
+      view {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        margin-bottom: 64rpx;
-        .course-video-list {
-          width: 328rpx;
-          display: flex;
-          flex-direction: column;
-          margin-left: 30rpx;
-          margin-top: 32rpx;
-          .img {
-            width: 100%;
-            height: 183rpx;
-            background: red;
-            border-radius: 16rpx;
-          }
-          text {
-            font-size: 30rpx;
-            color: #333;
-            line-height: 32rpx;
-            margin-top: 18rpx;
-          }
+
+        text {
+          font-size: 30rpx;
+          color: #253b63;
+          line-height: 32rpx;
+          margin-left: 16rpx;
+        }
+      }
+
+      .btn {
+        font-size: 30rpx;
+        color: #00a0ff;
+        line-height: 32rpx;
+        font-weight: bold;
+      }
+    }
+
+    .course-video {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 64rpx;
+
+      .course-video-list {
+        width: 328rpx;
+        display: flex;
+        flex-direction: column;
+        margin-left: 30rpx;
+        margin-top: 32rpx;
+
+        .img {
+          width: 100%;
+          height: 183rpx;
+          background: red;
+          border-radius: 16rpx;
+        }
+
+        text {
+          font-size: 30rpx;
+          color: #333;
+          line-height: 32rpx;
+          margin-top: 18rpx;
         }
       }
     }
   }
+}
 </style>
