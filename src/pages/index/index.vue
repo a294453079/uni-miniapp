@@ -22,16 +22,13 @@
         <text>课堂回顾</text>
       </view>
     </view>
-    <view class="mt-16px flex-1 flex flex-col">
+    <view class="mt-16px flex-1 flex flex-col z-2">
       <moduleTitle title="学生课表" />
       <div
         class="px-32rpx mt-32rpx flex-1"
         style="background: #fff; border-radius: 32rpx 32rpx 0 0"
       >
-        <daySchedule
-          :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList"
-          :isShowMore="true"
-        />
+        <daySchedule :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList" :isShowMore="true" />
       </div>
     </view>
   </view>
@@ -45,15 +42,16 @@
   import { ref, onMounted } from 'vue'
   const uToastRef = ref(null)
   let dayClassCoursesByStudentPropsList = ref([])
+  const { semesterInfo, classInfo, userInfo } = JSON.parse(uni.getStorageSync('userInfo'))
 
   // 获取首页课表
   const getListDayClassCoursesByClass = async () => {
     const res = await http.get({
       url: '/app-teach/classCourses/listDayClassCoursesByClass',
       data: {
-        schoolId: '64428937560064000',
-        semesterId: '376447209173975053',
-        classId: '449227900294791393',
+        schoolId: userInfo.orgId,
+        semesterId: semesterInfo.id,
+        classId: classInfo.id,
         date: dayjs().format('YYYY-MM-DD'),
       },
     })
@@ -85,10 +83,10 @@
 </script>
 <style scoped lang="scss">
   .content {
-    height: 100vh;
+    // height: 100vh;
     background: #f8f8f8;
     .bg-image {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
@@ -102,7 +100,7 @@
       display: flex;
       align-items: center;
       padding-left: 20px;
-      z-index: 2;
+      z-index: 1;
     }
 
     .tabs {

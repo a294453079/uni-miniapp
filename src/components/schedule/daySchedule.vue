@@ -51,7 +51,7 @@
                 >加入直播</el-button
               > -->
           </view>
-          <view class="course-review-btn" v-else-if="o.classCoursesHistoryId">
+          <view class="course-review-btn" v-else-if="o.classCoursesHistoryId" @click="hangleCourseDetail(o.classCoursesHistoryId)">
             <!-- @click="goCourseDetail(o.classCoursesHistoryId)" -->
             <text>课堂回顾</text>
             <img class="w-10rpx h-24rpx" src="@/static/home/right-arrow-active.png" alt="" />
@@ -260,6 +260,12 @@
   const handleMoreScheduleClick = () => {
     uni.navigateTo({
       url: '/pages/schedule/index',
+    })
+  }
+  // 查看课堂回顾详情
+  const hangleCourseDetail = (classCoursesHistoryId) => {
+    uni.navigateTo({
+      url: '/pages/classReview/detail?classCoursesHistoryId=' + classCoursesHistoryId,
     })
   }
 </script>
