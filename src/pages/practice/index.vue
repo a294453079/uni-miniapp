@@ -6,14 +6,13 @@
       class="bg-image"
       mode="aspectFill"
     />
-    <calendar :componentsKey="componentsKey" @changeDay="changeDay" @expandCalendarClick="expandCalendarClick" />
+    <calendar @changeDay="changeDay" @expandCalendarClick="expandCalendarClick" />
     <PagesContainer
       :loading="pageLoading"
       hasCustomNavbar
       :customHeight="isShowExpandCalendar ? 304 : 120"
       scrollContainer
       scrollRefresher
-      :key="componentsKey"
       scrollToLowerAllow
       @onRefresh="onRefreshPage"
     >
@@ -115,10 +114,9 @@
   import { http } from '@/utils'
   import { ref, shallowRef, onMounted } from 'vue'
   const { userInfo } = JSON.parse(uni.getStorageSync('userInfo'))
-  const practiceList = ref([])
-  const formatList = ref([])
-  const uToastRef = ref(null)
-  const componentsKey = ref(0)
+  const practiceList = ref([]) // 练习列表
+  const uToastRef = ref(null) // 提示
+  const date = ref(dayjs().format('YYYY-MM-DD')) // 传入日期
   const isShowExpandCalendar = ref(false)
   const pageLoading = shallowRef(false)
   // 获取练习列表数据
@@ -137,32 +135,12 @@
       practiceList.value = res.obj.records
     }
   }
-  // 获取图片类型数据
-  const getFileFormatsList = async (date) => {
-    const res = await http.post({
-      url: '/resource-center/fileFormats/list',
-      data: {
-        id: '',
-        name: '',
-        formats: '',
-        imgUrl: '',
-        status: 1,
-        sort: '',
-      },
-    })
-    console.log(res)
-    if (res.code == 0) {
-      formatList.value = res.data
-    }
-  }
   const onRefreshPage = () => {
-    componentsKey.value++
     uni.showLoading()
-    getPageStudentWorkRelease(dayjs().format('YYYY-MM-DD'))
+    getPageStudentWorkRelease(date.value)
   }
   onMounted(async () => {
-    await getFileFormatsList()
-    await getPageStudentWorkRelease(dayjs().format('YYYY-MM-DD'))
+    await getPageStudentWorkRelease(date.value)
   })
   /** 查看练习详情 */
   const handleSeePracticeDetail = (item) => {
@@ -179,7 +157,8 @@
   }
   /** 选中日期 */
   const changeDay = async (e) => {
-    await getPageStudentWorkRelease(e.time)
+    date.value = e.time
+    await getPageStudentWorkRelease(date.value)
   }
   /** 展开日历改变头部背景图片高度 */
   const expandCalendarClick = (e) => {
