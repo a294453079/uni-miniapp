@@ -1,5 +1,6 @@
 <template>
   <u-toast ref="uToastRef"></u-toast>
+
   <view class="content flex flex-col">
     <image
       src="/static/blueBg2.png"
@@ -23,26 +24,48 @@
       </view>
     </view>
     <view class="mt-16px flex-1 flex flex-col z-2">
-      <moduleTitle title="学生课表" />
-      <div
-        class="px-32rpx mt-32rpx flex-1"
-        style="background: #fff; border-radius: 32rpx 32rpx 0 0"
+      <PagesContainer
+        :loading="pageLoading"
+        hasCustomNavbar
+        :customHeight="160"
+        scrollContainer
+        scrollRefresher
+        scrollToLowerAllow
+        @onRefresh="onRefreshPage"
       >
-        <daySchedule :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList" :isShowMore="true" />
-      </div>
+        <moduleTitle title="学生课表" />
+        <div
+          class="px-32rpx mt-32rpx flex-1"
+          style="border-radius: 32rpx 32rpx 0 0;"
+          :style="{background: dayClassCoursesByStudentPropsList.length != 0 ? '#fff' : ''}"
+        >
+          <daySchedule
+            :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList"
+            :isShowMore="true"
+          />
+        </div>
+      </PagesContainer>
     </view>
   </view>
 </template>
 
 <script setup>
+  import PagesContainer from '@/components/pages-container/pages-container.vue'
   import moduleTitle from '@/components/moduleTitle.vue'
   import daySchedule from '@/components/schedule/daySchedule.vue'
   import dayjs from 'dayjs'
   import { http } from '@/utils'
-  import { ref, onMounted } from 'vue'
+  import { ref, shallowRef, onMounted } from 'vue'
   const uToastRef = ref(null)
   let dayClassCoursesByStudentPropsList = ref([])
+  const pageLoading = shallowRef(false)
   const { semesterInfo, classInfo, userInfo } = JSON.parse(uni.getStorageSync('userInfo'))
+
+  const onRefreshPage = () => {
+    console.log('刷新页面')
+    uni.showLoading()
+    getListDayClassCoursesByClass(true)
+  }
 
   // 获取首页课表
   const getListDayClassCoursesByClass = async () => {
@@ -134,5 +157,9 @@
         }
       }
     }
+  }
+
+  ::v-deep .scroll-container {
+    padding-bottom: 0rpx !important;
   }
 </style>

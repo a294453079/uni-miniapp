@@ -59,6 +59,14 @@
         "navigationStyle": "custom",
         "navigationBarTextStyle": "white"
 			}
+		},
+    {
+			"path": "components/trtcView",
+			"style": {
+				"navigationBarTitleText": "",
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white"
+			}
 		}
 	],
    "tabBar": {
