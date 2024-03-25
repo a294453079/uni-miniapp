@@ -10,14 +10,14 @@
     ></navbar>
     <view class="content">
       <moduleTitle title="基本信息" />
-      <view class="class-review-info">
+      <view class="class-review-info" v-if="homeworkDetailInfo != null">
         <view class="name">
-          <text>语文</text>
+          <text>{{ homeworkDetailInfo.courseName }}</text>
           <text>/</text>
-          <text>陈小新</text>
+          <text>{{ homeworkDetailInfo.teacherName }}</text>
         </view>
-        <div class="time"> 课节：第7周 星期一 (2023-10-09)上午 第3节 </div>
-        <div class="chapter">教材章节：--</div>
+        <div class="time"> 课节：{{ homeworkDetailInfo.name || '--' }} </div>
+        <div class="chapter">教材章节：{{ homeworkDetailInfo.versionChapterNameLink || '--' }}</div>
       </view>
       <view class="mt-68rpx">
         <moduleTitle title="课堂资源" />
@@ -51,12 +51,11 @@
   import { ref } from 'vue'
   const homeworkDetailInfo = ref(null)
   onLoad(async (e) => {
-    // 获取课堂回顾详情数据
     await getClassCoursesHistoryResourceList(e.classCoursesHistoryId)
-    // 获取课堂实录数据
     await getTeachResources(e.classCoursesHistoryId)
+    await getBaseData(e.classCoursesHistoryId)
   })
-  // 获取课堂回顾详情数据
+  // 获取课堂资源数据
   const getClassCoursesHistoryResourceList = async (classCoursesHistoryId) => {
     const res = await http.get({
       url: '/app-teach/classCoursesHistoryResource/getClassCoursesHistoryResourceList',
@@ -64,12 +63,12 @@
         classCoursesHistoryId,
       },
     })
-    console.log(res)
+    console.log(111111111111, res)
     if (res.code == 0) {
-      homeworkDetailInfo.value = res.obj
+      //   homeworkDetailInfo.value = res.obj
     }
   }
-  // 获取课堂实录数据
+  // 获取课堂实录、板书数据
   const getTeachResources = async (chId) => {
     const res = await http.get({
       url: '/app-teach/classCoursesHistory/getTeachResources',
@@ -77,8 +76,21 @@
         chId,
       },
     })
-    console.log(res)
+    console.log(2222222222222, res)
     if (res.code == 0) {
+    }
+  }
+  // 获取详情基本信息数据
+  const getBaseData = async (chId) => {
+    const res = await http.get({
+      url: '/app-teach/classCoursesHistory/getBaseData',
+      data: {
+        chId,
+      },
+    })
+    console.log(3333333333, res)
+    if (res.code == 0) {
+      homeworkDetailInfo.value = res.obj
     }
   }
 
