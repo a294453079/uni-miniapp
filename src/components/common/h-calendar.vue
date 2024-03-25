@@ -30,7 +30,7 @@
           </view>
           <view class="tbody">
             <view v-for="(val, inx) in datas" :key="inx" class="tr"
-              :style="{ background: selectCalendarCellDatas(val) ? '#EFFBF4' : pickerOptions(val) ? '#F5F7FA' : '' }">
+              :style="{ background: pickerOptions(val) ? '#F5F7FA' : '' }">
               <view class="td" v-for="(item, index) in val" :key="index" @click="changeDay(item, val)" :style="{
             background: selectCalendarCellSonStyle(item)
               ? '#EFFBF4'
@@ -730,7 +730,7 @@ export default {
 
           .tr {
             display: flex;
-            justify-content: space-between;
+            // justify-content: space-between;
 
             .is-selected {
               width: 80rpx;

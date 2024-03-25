@@ -23,7 +23,7 @@
             <img class="w-48rpx h-48rpx" :src="getModuleTypeIcon(item.contentType, item.fileFormat)" alt="" />
             <text class="w-336rpx truncate">{{ item.title }}</text>
           </view>
-          <text class="btn">查看</text>
+          <text class="btn" @click="previewResources">查看</text>
         </view>
         <div class="mt-60rpx">
           <moduleTitle title="课堂实录" />
@@ -31,7 +31,7 @@
         <div class="course-video">
           <view v-for="(item, index) in reachResourcesDetailList.filter(i => i.type == 1)" :key="index"
             class="course-video-list">
-            <video class="video" :src="videoUrl" initial-time="initial_time" alt=""></video>
+            <video class="video" :src="item.url" object-fit="cover" alt=""></video>
             <text class="truncate">{{ item.realFileName }}</text>
           </view>
         </div>
@@ -39,7 +39,7 @@
         <div class="course-video">
           <view v-for="(item, index) in reachResourcesDetailList.filter(i => i.type == 2)" :key="index"
             class="course-video-list">
-            <image class="img" :src="item.url" alt="" />
+            <image class="img" :src="item.url" alt="" @tap="preview(index)" />
             <text class="truncate">{{ item.realFileName }}</text>
           </view>
         </div>
@@ -59,7 +59,7 @@ import { getClassCoursesBaseData, getClassCoursesHistoryResourceList, getTeachRe
 const homeworkDetailInfo = ref(null)
 const resourceList = ref([])
 const reachResourcesDetailList = ref([])
-const videoUrl = ref('')
+
 onLoad(async (e) => {
   await getResourceList(e.classCoursesHistoryId)
   await getTeachResourcesDetail(e.classCoursesHistoryId)
@@ -88,26 +88,13 @@ const getBaseData = async (chId) => {
   homeworkDetailInfo.value = res.obj
 }
 
-/**获取本地视频资源 */
-
-uni.downloadFile({
-  url: 'https://file.test.zhongteng.tech/zhongtengziyuan/upload/64428937560064000/mp4/1711349339318AQlkrDToS03zMnGIEZU/074202de3b024ebead048ea74c203e8d-4c2b75bab2f98c834003f1a813fa87a3.mp4',
-  success: (res) => {
-    if (res.statusCode === 200) {
-      // 下载成功后，将本地路径设置给 videoSrc
-      console.log('成功啊', res.tempFilePath);
-      videoUrl.value = res.tempFilePath
-      return res.tempFilePath
-    } else {
-      console.error('下载视频失败');
-    }
-  },
-  fail: (err) => {
-    console.error('下载视频失败', err);
-  }
-});
-
-
+// 图片组
+const preview = (idx) => {
+  uni.previewImage({
+    current: idx,
+    urls: reachResourcesDetailList.value.filter(item => item.type == 2).map(e => e.url),
+  })
+}
 
 // 预览
 const previewResources = () => {

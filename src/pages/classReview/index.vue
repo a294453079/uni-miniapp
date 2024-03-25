@@ -25,9 +25,9 @@
         <u-icon v-else name="arrow-up" color="#B0B8C7" size="26rpx" @click="handleSemester"></u-icon>
       </view>
       <view class="selectFrom_item">
-        <view class="select_text">2023-10-09</view>
+        <view class="select_text">{{ timeList[0].time }}</view>
         <view class="select_date">至</view>
-        <view class="select_text">2023-10-09</view>
+        <view class="select_text">{{ timeList[1]?.time }}</view>
         <view class="lineDateStyle">|</view>
         <img class="w-44rpx h-44rpx" src="@/static/classReview/calendar.png" @click="showCalendar = true">
         <!-- <up-calendar :show="showCalendar" :mode="mode" @confirm="handleConfirmCalendar" @close="showCalendar = false"
@@ -38,7 +38,7 @@
 
     <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="128" scrollContainer scrollRefresher
       scrollToLowerAllow @scrollToLower="onNextPage" @onRefresh="onRefreshPage">
-      <view class="listStyle">
+      <view class="listStyle" v-if="pageList.length">
         <view class="listItemStyle" v-for="item in pageList" :key="item.classCoursesHistoryId"
           @click="hangleDetail(item)">
           <view class="titleStyle">
@@ -53,6 +53,9 @@
           </viw>
         </view>
       </view>
+      <view v-else class="empty">
+        <hEmpty text="暂无课堂回顾" />
+      </view>
     </PagesContainer>
     <!-- 日历弹窗 -->
     <u-popup :show="showCalendar" round="32rpx">
@@ -65,6 +68,7 @@
 </template>
 
 <script setup>
+import hEmpty from '@/components/common/h-empty.vue'
 import { ToChinese } from '@/utils/tools'
 import { onLoad, onReachBottom, onPullDownRefresh } from '@dcloudio/uni-app'
 import { getSemesterInfo } from '@/api/sys/model/user'
@@ -89,7 +93,17 @@ const pageList = computed(() => {
   return pageData.payload.data
 })
 const showCalendar = shallowRef(false)
-const calendarList = shallowRef([{ timeStamp: dayjs(userInfoStore.semesterInfo?.createdate).unix() * 1000 }, { timeStamp: dayjs(userInfoStore.semesterInfo?.enddate).unix() * 1000 }])
+const calendarList = shallowRef([
+  {
+    timeStamp: dayjs(userInfoStore.semesterInfo?.createdate).unix() * 1000,
+    time: userInfoStore.semesterInfo?.createdate
+  },
+  {
+    timeStamp: dayjs(userInfoStore.semesterInfo?.enddate).unix() * 1000,
+    time: userInfoStore.semesterInfo?.enddate
+  }])
+
+let timeList = shallowRef(cloneDeep(calendarList.value))
 const scheduleTabsactive = shallowRef(2) // 课表高亮
 const dateTabsActive = ref(1) // 日期高亮
 const form = reactive({
@@ -98,8 +112,8 @@ const form = reactive({
   schoolId: userInfoStore.userInfo.orgId,
   classId: userInfoStore.classInfo.id,
   courseId: '',
-  startDate: '',
-  endDate: '',
+  startDate: timeList.value[0].time,
+  endDate: timeList.value[1].time,
 })
 const semesterColumns = ref([
   [{
@@ -125,6 +139,7 @@ const handleSubjectConfirm = (e) => {
   courseData.name = e.value[0].name
   form.courseId = courseData.id
   showSubject.value = !showSubject.value
+  getData(true)
 }
 const handleSubjectCancel = () => {
   showSubject.value = !showSubject.value
@@ -136,6 +151,7 @@ const handleSemesterConfirm = (e) => {
   semesterData.year = e.value[0].year
   form.semesterId = semesterData.id
   showSemester.value = !showSemester.value
+  getData(true)
 }
 const handleSemesterCancel = () => {
   showSemester.value = !showSemester.value
@@ -143,16 +159,15 @@ const handleSemesterCancel = () => {
 
 // 保存日期
 const changeDay = async (e) => {
-  console.log('----', e);
-  console.log('list', calendarList.value)
   if (calendarList.value.length === 2) {
     calendarList.value = []
   }
-  calendarList.value.push(e.item.time)
-  // if (calendarList.value.length === 2) {
-  //   showCalendar.value = false
-  // }
+  calendarList.value.push(e.item)
 
+  if (calendarList.value.length === 2) {
+    showCalendar.value = false
+    timeList.value = cloneDeep(calendarList.value)
+  }
   // showCalendar.value = false
 }
 
@@ -164,6 +179,7 @@ onLoad(async () => {
   await getPageCourseBySchoolId()
   form.courseId = courseColumns.value[0][0].id
   form.semesterId = semesterColumns.value[0][0].id
+  console.log('学期', semesterColumns.value);
   semesterData.year = semesterColumns.value[0][0].year
   getData(true)
 })
@@ -196,6 +212,7 @@ const getSemesterList = async () => {
   })
   /**semester为1是下学期 0是上学期 */
   semesterColumns.value = [obj.map(item => ({
+    ...item,
     year: `${item.year + '学年'}${item.semester == 0 ? '上学期' : '下学期'}`
   }))]
 }
@@ -317,6 +334,13 @@ const hangleDetail = (e) => {
     width: 100%;
     z-index: -1;
     pointer-events: none;
+  }
+
+  .empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 </style>
