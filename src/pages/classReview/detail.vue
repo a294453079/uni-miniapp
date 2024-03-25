@@ -18,10 +18,10 @@
       </view>
       <view class="mt-68rpx">
         <moduleTitle title="课堂资源" />
-        <view v-for="(item, index) in 3" :key="index" class="classroom-resources">
+        <view v-for="(item, index) in resourceList" :key="index" class="classroom-resources">
           <view>
-            <img class="w-48rpx h-48rpx" src="" alt="" />
-            <text>全球文化多样性推动文…</text>
+            <img class="w-48rpx h-48rpx" :src="getModuleTypeIcon(item.contentType, item.fileFormat)" alt="" />
+            <text class="w-336rpx truncate">{{ item.title }}</text>
           </view>
           <text class="btn">查看</text>
         </view>
@@ -29,12 +29,20 @@
           <moduleTitle title="课堂实录" />
         </div>
         <div class="course-video">
-          <view v-for="(item, index) in 3" :key="index" class="course-video-list">
-            <img class="img" src="" alt="" />
-            <text>曾老师的语文线上直…</text>
+          <view v-for="(item, index) in reachResourcesDetailList.filter(i => i.type == 1)" :key="index"
+            class="course-video-list">
+            <video class="video" :src="videoUrl" initial-time="initial_time" alt=""></video>
+            <text class="truncate">{{ item.realFileName }}</text>
           </view>
         </div>
         <moduleTitle title="课堂板书" />
+        <div class="course-video">
+          <view v-for="(item, index) in reachResourcesDetailList.filter(i => i.type == 2)" :key="index"
+            class="course-video-list">
+            <image class="img" :src="item.url" alt="" />
+            <text class="truncate">{{ item.realFileName }}</text>
+          </view>
+        </div>
       </view>
     </view>
   </view>
@@ -42,12 +50,16 @@
 <script setup>
 import moduleTitle from '@/components/moduleTitle.vue'
 import navbar from '@/components/navbar/navbar.vue'
-import { getModuleTypeIcon, downloadFile } from '@/utils/tools'
+import { getModuleTypeIcon, downloadFile, getEncryptFilePathURL } from '@/utils/tools'
 import { onLoad } from '@dcloudio/uni-app'
 import { http } from '@/utils'
 import { ref } from 'vue'
+
 import { getClassCoursesBaseData, getClassCoursesHistoryResourceList, getTeachResources } from './service'
 const homeworkDetailInfo = ref(null)
+const resourceList = ref([])
+const reachResourcesDetailList = ref([])
+const videoUrl = ref('')
 onLoad(async (e) => {
   await getResourceList(e.classCoursesHistoryId)
   await getTeachResourcesDetail(e.classCoursesHistoryId)
@@ -56,14 +68,18 @@ onLoad(async (e) => {
 // 获取课堂资源数据
 const getResourceList = async (classCoursesHistoryId) => {
   const res = await getClassCoursesHistoryResourceList({ classCoursesHistoryId })
-  console.log(111111111111, res)
-  homeworkDetailInfo.value = res?.obj
+  resourceList.value = res?.obj
 }
 // 获取课堂实录、板书数据
 const getTeachResourcesDetail = async (chId) => {
   const res = await getTeachResources({ chId })
-  console.log(2222222222222, res)
+  const list = await Promise.all(res?.obj.map(async (item) => ({
+    ...item,
+    url: await getEncryptFilePathURL(item.url),
+  })))
 
+  reachResourcesDetailList.value = list
+  console.log('==00=======', reachResourcesDetailList.value);
 }
 // 获取详情基本信息数据
 const getBaseData = async (chId) => {
@@ -71,6 +87,27 @@ const getBaseData = async (chId) => {
   console.log(3333333333, res)
   homeworkDetailInfo.value = res.obj
 }
+
+/**获取本地视频资源 */
+
+uni.downloadFile({
+  url: 'https://file.test.zhongteng.tech/zhongtengziyuan/upload/64428937560064000/mp4/1711349339318AQlkrDToS03zMnGIEZU/074202de3b024ebead048ea74c203e8d-4c2b75bab2f98c834003f1a813fa87a3.mp4',
+  success: (res) => {
+    if (res.statusCode === 200) {
+      // 下载成功后，将本地路径设置给 videoSrc
+      console.log('成功啊', res.tempFilePath);
+      videoUrl.value = res.tempFilePath
+      return res.tempFilePath
+    } else {
+      console.error('下载视频失败');
+    }
+  },
+  fail: (err) => {
+    console.error('下载视频失败', err);
+  }
+});
+
+
 
 // 预览
 const previewResources = () => {
@@ -107,7 +144,7 @@ const previewResources = () => {
 
   .content {
     padding: 48rpx 32rpx 48rpx 0;
-    height: calc(100vh - 256rpx);
+    height: calc(100vh - 168rpx);
     box-sizing: border-box;
     background: #f8f8f8;
     overflow: auto;
@@ -213,7 +250,12 @@ const previewResources = () => {
         .img {
           width: 100%;
           height: 183rpx;
-          background: red;
+          border-radius: 16rpx;
+        }
+
+        .video {
+          width: 100%;
+          height: 183rpx;
           border-radius: 16rpx;
         }
 

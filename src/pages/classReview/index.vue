@@ -1,11 +1,14 @@
 <template>
   <view class="page">
+    <!-- <image src="/static/blueBg2.png" class="bg-image" mode="top" /> -->
+
     <view style="background:url('/static/blueBg2.png') no-repeat">
       <navbar title="课堂回顾" :titleStyle="{
         color: '#fff',
         fontSize: '36rpx',
         fontWeight: 'bold',
-      }"></navbar>
+      }">
+      </navbar>
     </view>
     <view class="selectFrom">
       <view class="selectFrom_item flex">
@@ -33,7 +36,7 @@
       </view>
     </view>
 
-    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="97" scrollContainer scrollRefresher
+    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="128" scrollContainer scrollRefresher
       scrollToLowerAllow @scrollToLower="onNextPage" @onRefresh="onRefreshPage">
       <view class="listStyle">
         <view class="listItemStyle" v-for="item in pageList" :key="item.classCoursesHistoryId"
@@ -307,7 +310,13 @@ const hangleDetail = (e) => {
   }
 
   .bg-image {
-    background: url('/static/blueBg2.png') no-repeat top #f9f9f9;
+    // background: url('/static/blueBg2.png') no-repeat top #f9f9f9;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+    pointer-events: none;
   }
 }
 </style>
