@@ -58,7 +58,7 @@
       </view>
     </PagesContainer>
     <!-- 日历弹窗 -->
-    <u-popup :show="showCalendar" round="32rpx">
+    <u-popup :show="showCalendar" round="32rpx" @close="showCalendar = false">
       <view>
         <hCalendar :scheduleTabsactive="scheduleTabsactive" @changeDay="changeDay" @weekChange="weekChange"
           :selectedActiveList="calendarList" @closeDay="showCalendar = false" />

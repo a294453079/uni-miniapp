@@ -22,7 +22,7 @@
       </view>
     </view>
     <!-- 周课表状态提示弹框 -->
-    <u-popup :show="isShowWeekScheduleTip" round="32rpx">
+    <u-popup :show="isShowWeekScheduleTip" @close="isShowWeekScheduleTip = false" round="32rpx">
       <view class="week-schedule-tip">
         <view class="close">
           <text>图表解释</text>
@@ -64,7 +64,7 @@
       </view>
     </u-popup>
     <!-- 日历弹窗 -->
-    <u-popup :show="isShowHCalendar" round="32rpx">
+    <u-popup :show="isShowHCalendar" round="32rpx" @close="isShowHCalendar = false">
       <view>
         <hCalendar
           :key="componentsKey"
