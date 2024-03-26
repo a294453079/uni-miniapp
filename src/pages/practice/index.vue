@@ -1,5 +1,5 @@
 <template>
-  <div class="practice">
+  <view class="practice">
     <image
       src="/static/blueBg2.png"
       :style="{ height: isShowExpandCalendar ? '800rpx !important' : '428rpx !important' }"
@@ -103,9 +103,11 @@
         </div>
       </view>
     </PagesContainer>
-  </div>
+  </view>
+  <tabbarShadow />
 </template>
 <script setup>
+  import tabbarShadow from '@/components/tabbar-shadow/tabbar-shadow.vue'
   import PagesContainer from '@/components/pages-container/pages-container.vue'
   import calendar from './calendar.vue'
   import hEmpty from '@/components/common/h-empty.vue'

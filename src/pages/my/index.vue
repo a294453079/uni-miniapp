@@ -42,9 +42,11 @@
       </view>
     </view>
   </view>
+  <tabbarShadow />
 </template>
 <script setup>
   import navbar from '@/components/navbar/navbar.vue'
+  import tabbarShadow from '@/components/tabbar-shadow/tabbar-shadow.vue'
   import { ref } from 'vue'
   const uToastRef = ref(null)
   const { userInfo } = JSON.parse(uni.getStorageSync('userInfo'))

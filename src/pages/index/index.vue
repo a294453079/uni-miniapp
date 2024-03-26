@@ -29,12 +29,14 @@
       </PagesContainer>
     </view>
   </view>
+  <tabbarShadow />
 </template>
 
 <script setup>
 import PagesContainer from '@/components/pages-container/pages-container.vue'
 import moduleTitle from '@/components/moduleTitle.vue'
 import daySchedule from '@/components/schedule/daySchedule.vue'
+import tabbarShadow from '@/components/tabbar-shadow/tabbar-shadow.vue'
 import dayjs from 'dayjs'
 import { http } from '@/utils'
 import { ref, shallowRef, onMounted, onBeforeMount } from 'vue'
