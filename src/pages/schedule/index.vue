@@ -21,7 +21,68 @@
         ></text>
       </view>
     </view>
-    <view class="content">
+    <!-- 周课表状态提示弹框 -->
+    <u-popup :show="isShowWeekScheduleTip" round="32rpx">
+      <view class="week-schedule-tip">
+        <view class="close">
+          <text>图表解释</text>
+          <img
+            class="w-48rpx h-48rpx"
+            @click="isShowWeekScheduleTip = false"
+            src="@/static/calendar/close-icon.png"
+            alt=""
+          />
+        </view>
+        <view class="tip-label">
+          <view class="mt-32rpx">
+            <text></text>
+            <text class="text-30rpx leading-32rpx ml-16rpx">时间已过</text>
+          </view>
+          <view class="mx-80rpx mt-32rpx">
+            <text></text>
+            <text class="text-30rpx leading-32rpx ml-16rpx">下节课</text>
+          </view>
+          <view class="mt-32rpx">
+            <text class="triangle">
+              <text></text>
+            </text>
+            <text class="text-30rpx leading-32rpx ml-16rpx">出勤</text>
+          </view>
+          <view class="mt-48rpx">
+            <text class="triangle">
+              <text style="border-top: 16rpx solid #f66969"></text>
+            </text>
+            <text class="text-30rpx leading-32rpx ml-16rpx">缺勤</text>
+          </view>
+          <view class="ml-140rpx mt-48rpx">
+            <text class="triangle">
+              <text style="border-top: 16rpx solid #40cc8a"></text>
+            </text>
+            <text class="text-30rpx leading-32rpx ml-16rpx">请假</text>
+          </view>
+        </view>
+      </view>
+    </u-popup>
+    <!-- 日历弹窗 -->
+    <u-popup :show="isShowHCalendar" round="32rpx">
+      <view>
+        <hCalendar
+          :key="componentsKey"
+          :scheduleTabsactive="scheduleTabsactive"
+          @changeDay="changeDay"
+          @weekChange="weekChange"
+          @closeDay="isShowHCalendar = false"
+        />
+      </view>
+    </u-popup>
+    <scroll-view
+      class="content"
+      @refresherrefresh="refresherRefresh"
+      :refresher-enabled="scheduleTabsactive == 1 ? false : true"
+      scroll-y
+      scroll-anchoring
+      :refresher-triggered="scrollState.refreshStatus"
+    >
       <u-sticky offset-top="0">
         <view class="sticky" v-if="scheduleTabsactive == 0">
           <view class="date-tabs">
@@ -50,70 +111,21 @@
             alt=""
           />
         </view>
-        <!-- 周课表状态提示弹框 -->
-        <u-popup :show="isShowWeekScheduleTip" round="32rpx">
-          <view class="week-schedule-tip">
-            <view class="close">
-              <text>图表解释</text>
-              <img
-                class="w-48rpx h-48rpx"
-                @click="isShowWeekScheduleTip = false"
-                src="@/static/calendar/close-icon.png"
-                alt=""
-              />
-            </view>
-            <view class="tip-label">
-              <view class="mt-32rpx">
-                <text></text>
-                <text class="text-30rpx leading-32rpx ml-16rpx">时间已过</text>
-              </view>
-              <view class="mx-80rpx mt-32rpx">
-                <text></text>
-                <text class="text-30rpx leading-32rpx ml-16rpx">下节课</text>
-              </view>
-              <view class="mt-32rpx">
-                <text class="triangle">
-                  <text></text>
-                </text>
-                <text class="text-30rpx leading-32rpx ml-16rpx">出勤</text>
-              </view>
-              <view class="mt-48rpx">
-                <text class="triangle">
-                  <text style="border-top: 16rpx solid #f66969"></text>
-                </text>
-                <text class="text-30rpx leading-32rpx ml-16rpx">缺勤</text>
-              </view>
-              <view class="ml-140rpx mt-48rpx">
-                <text class="triangle">
-                  <text style="border-top: 16rpx solid #40cc8a"></text>
-                </text>
-                <text class="text-30rpx leading-32rpx ml-16rpx">请假</text>
-              </view>
-            </view>
-          </view>
-        </u-popup>
-        <!-- 日历弹窗 -->
-        <u-popup :show="isShowHCalendar" round="32rpx">
-          <view>
-            <hCalendar
-              :key="componentsKey"
-              :scheduleTabsactive="scheduleTabsactive"
-              @changeDay="changeDay"
-              @weekChange="weekChange"
-              @closeDay="isShowHCalendar = false"
-            />
-          </view>
-        </u-popup>
       </u-sticky>
       <!-- 日课表 -->
       <daySchedule
         v-show="scheduleTabsactive == 0"
         :dayClassCoursesByStudentPropsList="dayClassCoursesByStudentPropsList"
-        :isShowMore="false" class="flex-1 flex"
+        :isShowMore="false"
+        class="flex-1 flex"
       />
       <!-- 周课表 -->
-      <weekSchedule v-show="scheduleTabsactive == 1" :classCoursesWeekList="classCoursesWeekList" />
-    </view>
+      <weekSchedule
+        ref="weekScheduleRef"
+        v-show="scheduleTabsactive == 1"
+        :classCoursesWeekList="classCoursesWeekList"
+      />
+    </scroll-view>
   </view>
 </template>
 
@@ -123,6 +135,7 @@
   import daySchedule from '@/components/schedule/daySchedule.vue'
   import weekSchedule from '@/components/schedule/weekSchedule.vue'
   import dayjs from 'dayjs'
+  import { sleep } from '@/utils/helper/uniHelper'
   import { http } from '@/utils'
   import { ref, onMounted } from 'vue'
   const userInfo = JSON.parse(uni.getStorageSync('userInfo'))
@@ -150,6 +163,27 @@
   const dayTime = ref(dayjs().format('YYYY-MM-DD')) // 日期高亮
   const isShowWeekScheduleTip = ref(false) // 周课表提示弹框
   const weekTime = ref('') // 周课表日期
+  const startDate = ref('') // 周课表开始时间
+  const endDate = ref('') // 周课表截至时间
+  const scrollState = ref({
+    refreshStatus: false, // 当前下拉刷新状态
+    isHandle: false, // 是否正在操作
+  })
+
+  const refresherRefresh = async () => {
+    console.log('自定义下拉刷新')
+    if (scrollState.value.isHandle) return
+    scrollState.value.isHandle = true
+    scrollState.value.refreshStatus = true
+    if (scheduleTabsactive.value == 0) {
+      getListDayClassCoursesByClass(dayTime.value)
+    } else {
+      getListWeekClassCoursesByClass(startDate.value, endDate.value)
+    }
+    await sleep(300)
+    scrollState.value.refreshStatus = false
+    scrollState.value.isHandle = false
+  }
 
   // 获取日课表数据
   const getListDayClassCoursesByClass = async (date) => {
@@ -224,7 +258,10 @@
   }
 
   const weekChange = async (item) => {
+    console.log(item)
     weekTime.value = item.time
+    startDate.value = item.startDate
+    endDate.value = item.endDate
     await getListWeekClassCoursesByClass(item.startDate, item.endDate)
   }
 </script>
@@ -256,7 +293,6 @@
         color: #fff;
         line-height: 32rpx;
         font-weight: bold;
-        cursor: pointer;
       }
       .before {
         width: 40rpx;
@@ -267,14 +303,15 @@
       }
     }
     .content {
-      padding: 0rpx 32rpx 10rpx 32rpx;
-      height: calc(100vh - 408rpx);
+      padding: 0rpx 32rpx 0rpx 32rpx;
+      height: calc(100vh - 400rpx);
       overflow: auto;
       margin-top: 30rpx;
       background: #fff;
       border-radius: 60rpx 60rpx 0rpx 0rpx;
       display: flex;
       flex-direction: column;
+      box-sizing: border-box;
       .sticky {
         background: #fff;
         padding-top: 40rpx;
@@ -323,58 +360,58 @@
           }
         }
       }
-      .week-schedule-tip {
-        padding: 32rpx;
-        box-sizing: border-box;
-        .close {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          text {
-            font-size: 34rpx;
-            color: #333;
-            line-height: 48rpx;
-          }
+    }
+  }
+  .week-schedule-tip {
+    padding: 32rpx;
+    box-sizing: border-box;
+    .close {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text {
+        font-size: 34rpx;
+        color: #333;
+        line-height: 48rpx;
+      }
+    }
+    .tip-label {
+      display: flex;
+      flex-wrap: wrap;
+      view {
+        display: flex;
+        align-items: center;
+        text {
+          color: #666;
         }
-        .tip-label {
-          display: flex;
-          flex-wrap: wrap;
-          view {
-            display: flex;
-            align-items: center;
-            text {
-              color: #666;
-            }
-          }
-          view:nth-child(1) {
-            text:nth-child(1) {
-              width: 48rpx;
-              height: 48rpx;
-              background: #f7f8fa;
-              border: 2rpx solid #e5e5e5;
-            }
-          }
-          view:nth-child(2) {
-            text:nth-child(1) {
-              width: 48rpx;
-              height: 48rpx;
-              background: #fff7eb;
-              border: 2rpx solid #ff9500;
-            }
-          }
-          .triangle {
-            width: 48rpx;
-            height: 48rpx;
-            background: #f7f8fa;
-            border: 2rpx solid #e5e5e5;
-            text {
-              position: absolute;
-              width: 0;
-              height: 0;
-              border-right: 16rpx solid transparent;
-              border-top: 16rpx solid #00a0ff;
-            }
-          }
+      }
+      view:nth-child(1) {
+        text:nth-child(1) {
+          width: 48rpx;
+          height: 48rpx;
+          background: #f7f8fa;
+          border: 2rpx solid #e5e5e5;
+        }
+      }
+      view:nth-child(2) {
+        text:nth-child(1) {
+          width: 48rpx;
+          height: 48rpx;
+          background: #fff7eb;
+          border: 2rpx solid #ff9500;
+        }
+      }
+      .triangle {
+        width: 48rpx;
+        height: 48rpx;
+        background: #f7f8fa;
+        border: 2rpx solid #e5e5e5;
+        text {
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-right: 16rpx solid transparent;
+          border-top: 16rpx solid #00a0ff;
         }
       }
     }
