@@ -49,7 +49,7 @@ const navStyle = computed(() => {
 
   return {
     height: `${offset + bottom}px`,
-    paddingTop: `${statusBarHeight}px`
+    paddingTop: `${statusBarHeight}rpx`
   }
 
 })

@@ -1,4 +1,5 @@
 <template>
+  <u-toast ref="uToastRef"></u-toast>
   <view class="class-review-detail">
     <image src="/static/blueBg2.png" class="bg-image" mode="top" />
     <navbar
@@ -89,6 +90,7 @@
   const homeworkDetailInfo = ref(null)
   const resourceList = ref([])
   const reachResourcesDetailList = ref([])
+  const uToastRef = ref(null) // 提示
 
   onLoad(async (e) => {
     await getResourceList(e.classCoursesHistoryId)
@@ -131,7 +133,28 @@
   // 预览
   const previewResources = (item) => {
     console.log(item)
-    downloadFile(item.resourcesUrl, false)
+    const urgentContentTypes = [1, 5, 6, 7, 8]
+    if (urgentContentTypes.includes(item.contentType)) {
+      uToastRef.value.show({
+        message: '详情页已经在加急开发中了哟',
+      })
+      return
+    } 
+
+    // 如果是网址
+    if(item.contentType == 2) {
+      let obj = {}
+      let type = 3
+      obj = { webUrl: item.resourcesUrl }
+      let data = JSON.stringify(obj)
+      uni.navigateTo({
+        url: `/components/fileView?data=${encodeURIComponent(data)}&type=${type}&title=${
+          item.title
+        }`,
+      })
+    } else {
+      downloadFile(item.resourcesUrl, false)
+    }
   }
 </script>
 
@@ -142,13 +165,14 @@
       top: 0;
       left: 0;
       width: 100%;
+      // height: 176rpx !important;
       z-index: -1;
       pointer-events: none;
     }
 
     .content {
       padding: 48rpx 32rpx 48rpx 0;
-      height: calc(100vh - 168rpx);
+      height: calc(100vh - 256rpx);
       box-sizing: border-box;
       background: #f8f8f8;
       overflow: auto;

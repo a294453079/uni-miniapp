@@ -81,7 +81,20 @@
   }
   // 预览
   const previewResources = () => {
-    downloadFile(homeworkDetailInfo.value.resourceUrl || homeworkDetailInfo.value.webUrl, false)
+    // 网址
+    if (homeworkDetailInfo.value.resourceType === 2) {
+      let obj = {}
+      let type = 3
+      obj = { webUrl: homeworkDetailInfo.value.webUrl }
+      let data = JSON.stringify(obj)
+      uni.navigateTo({
+        url: `/components/fileView?data=${encodeURIComponent(data)}&type=${type}&title=${
+          homeworkDetailInfo.value.webName
+        }`,
+      })
+    } else {
+      downloadFile(homeworkDetailInfo.value.resourceUrl || homeworkDetailInfo.value.webUrl, false)
+    }
     // 开启定时器，计算学习时间
     // timer.value = setInterval(() => {
     //   let num = parseInt(time.value) + 1
@@ -118,7 +131,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 408rpx !important;
+      // height: 408rpx !important;
       z-index: -1;
       pointer-events: none;
     }

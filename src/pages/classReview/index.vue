@@ -5,7 +5,6 @@
       <navbar title="课堂回顾" :titleStyle="{
         color: '#fff',
         fontSize: '36rpx',
-        fontWeight: 'bold',
       }">
       </navbar>
     </view>
@@ -329,7 +328,6 @@ const hangleDetail = (e) => {
   }
 
   .bg-image {
-    background: url('/static/blueBg2.png') no-repeat top #f9f9f9;
     position: fixed;
     top: 0;
     left: 0;
