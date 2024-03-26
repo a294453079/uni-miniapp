@@ -267,7 +267,6 @@
             align-items: center;
             justify-content: center;
             border-radius: 32rpx;
-            cursor: pointer;
             text {
               font-size: 28rpx;
               color: #fff;

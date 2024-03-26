@@ -1,8 +1,7 @@
 <template>
   <view class="page">
-    <!-- <image src="/static/blueBg2.png" class="bg-image" mode="top" /> -->
-
-    <view style="background:url('/static/blueBg2.png') no-repeat">
+    <image src="/static/blueBg2.png" class="bg-image" mode="top" />
+    <view>
       <navbar title="课堂回顾" :titleStyle="{
         color: '#fff',
         fontSize: '36rpx',
@@ -36,7 +35,7 @@
       </view>
     </view>
 
-    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="128" scrollContainer scrollRefresher
+    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="148" scrollContainer scrollRefresher
       scrollToLowerAllow @scrollToLower="onNextPage" @onRefresh="onRefreshPage">
       <view class="listStyle" v-if="pageList.length">
         <view class="listItemStyle" v-for="item in pageList" :key="item.classCoursesHistoryId"
@@ -330,10 +329,11 @@ const hangleDetail = (e) => {
   }
 
   .bg-image {
-    // background: url('/static/blueBg2.png') no-repeat top #f9f9f9;
+    background: url('/static/blueBg2.png') no-repeat top #f9f9f9;
     position: fixed;
     top: 0;
     left: 0;
+    height: 222rpx !important;
     width: 100%;
     z-index: -1;
     pointer-events: none;
