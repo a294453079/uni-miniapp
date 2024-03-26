@@ -136,7 +136,9 @@
     }
   }
   const onRefreshPage = () => {
-    uni.showLoading()
+    uni.showLoading({
+      title: '加载中'
+    })
     getPageStudentWorkRelease(date.value)
   }
   onMounted(async () => {

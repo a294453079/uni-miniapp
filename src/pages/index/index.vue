@@ -47,7 +47,9 @@ const { semesterInfo, classInfo, userInfo, authInfo, username } = JSON.parse(uni
 
 const onRefreshPage = () => {
   console.log('刷新页面')
-  uni.showLoading()
+  uni.showLoading({
+      title: '加载中'
+    })
   getListDayClassCoursesByClass(true)
 }
 
@@ -128,7 +130,6 @@ const handleDetailClick = (type) => {
       display: flex;
       align-items: center;
       flex-direction: column;
-      cursor: pointer;
 
       image {
         width: 55px;

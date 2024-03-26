@@ -56,9 +56,7 @@
   import { onLoad } from '@dcloudio/uni-app'
   import { defineProps, ref } from 'vue'
   import { getEncryptFilePathURL } from '@/utils/tools.js'
-  const { formatList } = JSON.parse(
-    uni.getStorageSync('userInfo'),
-  )
+  const { formatList } = JSON.parse(uni.getStorageSync('userInfo'))
   defineProps({
     text: {
       type: String,
@@ -86,6 +84,14 @@
   // 获取练习详情
   const getResourceUrl = async () => {
     const data = await getEncryptFilePathURL(resourceInfo.value.resourceUrl) // 获取文件全路径
+    uni.openDocument({
+      //fileType: 'docx',
+      showMenu: true, //关键点,可以转发到微信
+      filePath: data,
+      success: function (res) {
+        console.log('打开文档成功')
+      },
+    })
     resourceUrl.value = data
     if (viewType(resourceInfo.value.fileFormat) == 4) {
       imgList.value.push(resourceUrl.value)

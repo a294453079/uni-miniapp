@@ -41,14 +41,26 @@
 <script setup>
   import navbar from '@/components/navbar/navbar.vue'
   import { getModuleTypeIcon, downloadFile } from '@/utils/tools'
-  import { onLoad } from '@dcloudio/uni-app'
+  import { onLoad, onShow } from '@dcloudio/uni-app'
   import { http } from '@/utils'
   import { ref } from 'vue'
   const homeworkDetailInfo = ref(null)
+  // const timer = ref(null)
+  // const time = ref(0)
   onLoad(async (e) => {
     // 获取练习列表
     await getHomeworkDetail(e.id)
   })
+  // 这里停止计时器，请求接口
+  // onShow(async (e) => {
+  //   if(timer.value != null) {
+  //     clearInterval(timer.value)
+  //     timer.value = null
+  //     console.log(timer.value);
+  //     console.log(time.value);
+  //   }
+  //   console.log(111111111111111, 22222222222)
+  // })
   // 获取练习详情
   const getHomeworkDetail = async (homeworkStudentId) => {
     const res = await http.get({
@@ -69,6 +81,13 @@
   }
   // 预览
   const previewResources = () => {
+    downloadFile(homeworkDetailInfo.value.resourceUrl || homeworkDetailInfo.value.webUrl, false)
+    // 开启定时器，计算学习时间
+    // timer.value = setInterval(() => {
+    //   let num = parseInt(time.value) + 1
+    //   time.value = num
+    // }, 1000)
+    return
     let obj = {}
     let type = 1
     // 网址
@@ -83,6 +102,7 @@
       }
     }
     let data = JSON.stringify(obj)
+
     uni.navigateTo({
       url: `/components/fileView?data=${encodeURIComponent(data)}&type=${type}&title=${
         homeworkDetailInfo.value.resourceName || homeworkDetailInfo.value.webName

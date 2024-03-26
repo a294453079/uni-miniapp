@@ -180,6 +180,9 @@
     } else {
       getListWeekClassCoursesByClass(startDate.value, endDate.value)
     }
+    uni.showLoading({
+      title: '加载中'
+    })
     await sleep(300)
     scrollState.value.refreshStatus = false
     scrollState.value.isHandle = false

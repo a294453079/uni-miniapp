@@ -276,7 +276,7 @@ export async function getEncryptFilePathURL(resourceUrl) {
 }
 
 // 文件下载
-export async function downloadFile(url) {
+export async function downloadFile(url, showTitle = true) {
   uni.downloadFile({
 		url: await getEncryptFilePathURL(url) , //下载地址，后端接口获取的链接
 		success: (data) => {
@@ -286,14 +286,14 @@ export async function downloadFile(url) {
 				uni.saveFile({ //文件保存到本地
 					tempFilePath: data.tempFilePath, //临时路径
 					success: function(res) {
-						console.log("下载成功"+res.savedFilePath)
-						console.log(JSON.stringify(res))
-						uni.showToast({
-							icon: 'none',
-							mask: true,
-							title: '文件已保存!', 
-							duration: 3000,
-						});
+            if(showTitle) {
+              uni.showToast({
+                icon: 'none',
+                mask: true,
+                title: '文件已保存!', 
+                duration: 3000,
+              });
+            }
 						uni.openDocument({
 							//fileType: 'docx',
 							showMenu:true, //关键点,可以转发到微信
