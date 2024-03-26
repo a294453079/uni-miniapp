@@ -91,7 +91,7 @@ const props = defineProps({
   .rect {
     width: 10rpx;
     height: 80rpx;
-    background-color: $color-primary;
+    background-color: $color-dominant;
     margin: 0 5rpx;
     display: inline-block;
     animation: stretchDelay 1.2s infinite ease-in-out;

@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
 import { get, merge, set, cloneDeep } from 'lodash-es'
 import { reqUrlMatch, useGlobalSetting } from '@/settings'
-import { getBaseInfo, loginByAccount, logout } from '@/api/sys/auth'
+import { getBaseInfo, loginByAccount, logout, refreshToken } from '@/api/sys/auth'
 import { currentPageMatch } from '@/settings'
 import { toPromise } from '@/utils'
 import { JSEncrypt } from 'jsencrypt'
 import { getPublicKey } from '@/api/sys/service'
 import { getUserInfo, getStudentClassInfo, getSemesterInfo } from '@/api/sys/model/user'
 import { http } from '@/utils'
+import dayjs from 'dayjs'
 export const userInfoStore = defineStore(
   'userInfo',
   {
@@ -80,7 +81,7 @@ export const userInfoStore = defineStore(
         /**企微专用 */
         // const isQyWxLogin = get(params, 'thirdLoginReq.thirdAppType') === 2
         const { code } = await toPromise(uni.login)
-        console.log('code',code);
+        console.log('code', code)
         // set(params, 'thirdLoginReq.code', code) 设置第三方授权登录请求参数所用
         if (Object.keys(params?.userNameLoginReq).length) {
           const { username, password } = params.userNameLoginReq
@@ -105,11 +106,10 @@ export const userInfoStore = defineStore(
           this.username = ''
           this.password = ''
         }
-        console.log('登录信息返回', result)
-        this.authInfo = result.data
-
+        this.authInfo = cloneDeep(result.data)
+        const expirationTimestamp = dayjs().unix() + result.data.expires_in
+        this.authInfo.expires_in = expirationTimestamp
         await this.requestUserInfo()
-        console.log('账号登录信息', this.authInfo)
         // 当账号密码登录时，设置用户为已登录状态
         if (!checkAuth || params?.userNameLoginReq) {
           this.hasLogin = true
@@ -145,6 +145,15 @@ export const userInfoStore = defineStore(
         this.authUserInfo = baseInfo
         this.lastUpdateTime = Date.now()
         return baseInfo
+      },
+      async getRefreshToken() {
+        const result = await refreshToken({
+          refreshToken: this.authInfo.refresh_token,
+          userName: this.username,
+        })
+        this.authInfo = cloneDeep(result.data)
+        const expirationTimestamp = dayjs().unix() + result.data.expires_in
+        this.authInfo.expires_in = expirationTimestamp
       },
       resetState() {
         console.log('清空用户信息')
@@ -227,9 +236,9 @@ export const userInfoStore = defineStore(
         })
         if (res.code == 0) {
           this.uploadMethodInfo = res.data
-          if(res.data == 'cos') {
+          if (res.data == 'cos') {
             await this.getCosInfo()
-          } else if(res.data == 'minio') {
+          } else if (res.data == 'minio') {
             await this.getMinioInfo()
           }
         }

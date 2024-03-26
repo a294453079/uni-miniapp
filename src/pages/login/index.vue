@@ -216,7 +216,7 @@ const handleLogin = async () => {
   }
 
   &__desc {
-    @apply mt-40rpx ml-40rpx text-52rpx mb-108px text-[#FFFFFF];
+    @apply mt-40rpx ml-40rpx text-52rpx mb-108rpx text-[#FFFFFF];
 
     &__titles {
       @apply text-[#FFFFFF];

@@ -18,36 +18,49 @@
       </view>
       <view class="mt-68rpx">
         <moduleTitle title="课堂资源" />
-        <view v-for="(item, index) in resourceList" :key="index" class="classroom-resources">
-          <view>
-            <img class="w-48rpx h-48rpx" :src="getModuleTypeIcon(item.contentType, item.fileFormat)" alt="" />
-            <text class="w-336rpx truncate">{{ item.title }}</text>
+        <view v-if="resourceList.length">
+          <view v-for="(item, index) in resourceList" :key="index" class="classroom-resources">
+            <view>
+              <img class="w-48rpx h-48rpx" :src="getModuleTypeIcon(item.contentType, item.fileFormat)" alt="" />
+              <text class="w-336rpx truncate">{{ item.title }}</text>
+            </view>
+            <text class="btn" @click="previewResources">查看</text>
           </view>
-          <text class="btn" @click="previewResources">查看</text>
         </view>
-        <div class="mt-60rpx">
+        <view v-else>
+          <hEmpty text="暂无课堂资源" />
+        </view>
+
+        <view class="mt-60rpx">
           <moduleTitle title="课堂实录" />
-        </div>
-        <div class="course-video">
+        </view>
+        <div class="course-video" v-if="reachResourcesDetailList.filter(i => i.type == 1).length">
           <view v-for="(item, index) in reachResourcesDetailList.filter(i => i.type == 1)" :key="index"
             class="course-video-list">
             <video class="video" :src="item.url" object-fit="cover" alt=""></video>
             <text class="truncate">{{ item.realFileName }}</text>
           </view>
         </div>
+        <div v-else>
+          <hEmpty text="暂无课堂实录" />
+        </div>
         <moduleTitle title="课堂板书" />
-        <div class="course-video">
+        <div class="course-video" v-if="reachResourcesDetailList.filter(i => i.type == 2).length">
           <view v-for="(item, index) in reachResourcesDetailList.filter(i => i.type == 2)" :key="index"
             class="course-video-list">
             <image class="img" :src="item.url" alt="" @tap="preview(index)" />
             <text class="truncate">{{ item.realFileName }}</text>
           </view>
         </div>
+        <div v-else>
+          <hEmpty text="暂无课堂板书" />
+        </div>
       </view>
     </view>
   </view>
 </template>
 <script setup>
+import hEmpty from '@/components/common/h-empty.vue'
 import moduleTitle from '@/components/moduleTitle.vue'
 import navbar from '@/components/navbar/navbar.vue'
 import { getModuleTypeIcon, downloadFile, getEncryptFilePathURL } from '@/utils/tools'

@@ -42,6 +42,7 @@ export default function (instance) {
       })
       respId2 = instance.interceptors.response.use(undefined, (error) => {
         const { config, errMsg, data, statusCode } = error
+        console.log('结果错误',error);
         // 忽略相关处理
         if (error[IGNORE_ERROR] || config.ignoreHandleError || statusCode === 400) {
           return Promise.reject(error)

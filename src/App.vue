@@ -8,7 +8,7 @@ export default {
   },
   onShow: function (options) {
     checkAuth(options.path)
-    console.log({ ...options });
+    console.log('options---', { ...options });
 
   },
   onHide: function () {

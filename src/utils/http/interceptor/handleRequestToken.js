@@ -1,5 +1,5 @@
 import { merge } from 'lodash-es'
-import { AuthApi } from '@/api/sys/auth'
+import { AuthApi,refreshToken } from '@/api/sys/auth'
 import { reqUrlMatch, useGlobalSetting } from '@/settings'
 import {  http } from '@/utils'
 import { AsyncPromise } from '@/utils/asyncPromise'
@@ -37,7 +37,6 @@ export default function (instance) {
     if (isRefreshing) {
       const Promise = new AsyncPromise()
       requestQueue.push(Promise)
-      console.log('刷新时候存请求',requestQueue);
       return Promise.promise
     }
 
@@ -45,7 +44,9 @@ export default function (instance) {
     // 发起刷新 Token 请求，成功或失败都将执行队列中的请求
 
     try {
-      await userInfoStore.Login()
+      /**刷新token */
+     await userInfoStore.getRefreshToken()
+      // await userInfoStore.Login()
       executeQueue()
     } catch (e) {
       executeQueue(e)
@@ -56,10 +57,11 @@ export default function (instance) {
 
   const apply = () => {
     reqId = instance.interceptors.request.use(async (config) => {
-      console.log('token拦截层');
+      console.log('token拦截层',config);
       if (reqUrlMatch(config.url) || config.ignoreCheckToken) {
         return config
       }
+    
       // 退出登陆时单独处理
       if (config.url === AuthApi.Logout) {
         config.header = {
@@ -72,6 +74,8 @@ export default function (instance) {
 
       const code = verificationToken()
       const { checkAuth } = useGlobalSetting()
+      /**如果需要登录且token过期 */
+      console.log(code,'查看code');
       if (checkAuth && code < 0) {
         userInfoStore.Logout()
         return Promise.reject({
@@ -85,7 +89,6 @@ export default function (instance) {
         Authorization: `Bearer ${userInfoStore.getToken}`,
         ...config.header,
       }
-      
       return config
     })
     respId = instance.interceptors.response.use(undefined, (error) => {

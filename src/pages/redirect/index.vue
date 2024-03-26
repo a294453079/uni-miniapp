@@ -1,21 +1,24 @@
 <template>
   <view class="page">
     <view class="pt-310rpx flex justify-center">
-      <u-icon name="/static/logo.png" size="200rpx" :label="appConfig.name" space="20rpx" label-size="32rpx"
-        label-pos="bottom" />
+      <!-- <u-icon name="/static/logo.png" size="200rpx" :label="appConfig.name" space="20rpx" label-size="32rpx"
+        label-pos="bottom" /> -->
+      <Loading :loading="pageLoading" :text-style="{ color: '#00A0FF' }" :type="1" text="加载中"></Loading>
     </view>
   </view>
 </template>
 
 <script setup>
-
+import Loading from '@/components/loading/loading.vue'
 import { useGlobalSetting } from '@/settings'
 import userStore from "@/stores/index.js"
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+
 const appConfig = computed(() => {
   return useGlobalSetting()
 })
+const pageLoading = ref(true)
 
 onLoad(() => {
   uni.hideHomeButton()

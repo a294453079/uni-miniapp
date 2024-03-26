@@ -167,6 +167,9 @@ const changeDay = async (e) => {
   if (calendarList.value.length === 2) {
     showCalendar.value = false
     timeList.value = cloneDeep(calendarList.value)
+    form.startDate = timeList.value[0].time
+    form.endDate = timeList.value[1].time
+    getData(true)
   }
   // showCalendar.value = false
 }

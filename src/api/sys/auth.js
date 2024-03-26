@@ -3,7 +3,8 @@ export const AuthApi = {
   register : '/paas/paasuser/tenantUserRegister',
   Login : '/oauth-server/login/token',
   Logout : '/oauth-server/logout/token',
-  BaseInfo : '/user-server/users/getUserInfo'
+  BaseInfo: '/user-server/users/getUserInfo',
+  RefreshToken:'/oauth-server/login/refreshToken'
 }
 
 /* 小程序账号注册     */
@@ -29,6 +30,14 @@ export function loginByAccount (data, token) {
 export function logout(data) {
   return http.post(AuthApi.Logout, data, {
     joinParamsToUrl: true,
+    ignoreHandleError: true,
+    ignoreCheckToken:true
+  })
+}
+
+/**小程序刷新token */
+export function refreshToken(data) {
+  return http.get(AuthApi.RefreshToken, {...data,type:'wx'}, {
     ignoreHandleError: true,
     ignoreCheckToken:true
   })
