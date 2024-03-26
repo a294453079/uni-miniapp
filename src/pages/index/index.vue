@@ -142,7 +142,6 @@
         display: flex;
         align-items: center;
         flex-direction: column;
-        cursor: pointer;
 
         image {
           width: 55px;

@@ -45,7 +45,8 @@
           <view v-if="o.liveBroadcastClassId && (o.broadcastState == 1 || o.broadcastState == 2)" class="live-broadcast-btn">
             <text v-if="o.broadcastState == 1" @click="handleLive(o)">正在直播中</text>
             <text v-else-if="o.broadcastState == 2" @click="handleLive(o)">直播课堂已开启</text>
-            <img class="w-10rpx h-24rpx" src="@/static/home/live-broadcast-right-arrow.png" alt="" />
+            <img v-if="handleClassCoursesFn(o.classCoursesId, o.date)" class="w-10rpx h-24rpx" src="@/static/home/next-class-right-arrow.png" alt="" />
+            <img v-else class="w-10rpx h-24rpx" src="@/static/home/live-broadcast-right-arrow.png" alt="" />
           </view>
           <view class="course-review-btn" v-else-if="o.classCoursesHistoryId" @click="hangleCourseDetail(o.classCoursesHistoryId)">
             <!-- @click="goCourseDetail(o.classCoursesHistoryId)" -->
@@ -416,6 +417,27 @@
       }
       .status {
         color: #ff9500;
+      }
+      .live-broadcast-btn {
+        padding: 0 20rpx;
+        box-sizing: border-box;
+        height: 56rpx;
+        background: #fff;
+        border-radius: 32rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: absolute;
+        right: 32rpx;
+        bottom: 24rpx;
+        box-shadow: none;
+        text {
+          color: #FF9500;
+          font-size: 24rpx;
+          line-height: 24rpx;
+          margin-right: 12rpx;
+        }
       }
     }
     .not-class {
