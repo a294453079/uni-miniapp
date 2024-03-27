@@ -138,6 +138,8 @@
     .content {
       border-radius: 40rpx 40rpx 0 0;
       background: #fff;
+      height: calc(100vh - 212rpx);
+      overflow: auto;
       .header {
         box-sizing: border-box;
         padding: 50rpx 44rpx;

@@ -2,12 +2,14 @@
   <view class="nav-container" :class="{ border }" :style="[navStyle, navbarStyle]" v-show="sysInfo.statusBarHeight">
     <!--    <view class="h-sb"></view>-->
     <slot name="main">
-      <view v-if="title" class="title-container" :style="[titleStyle]">
-        {{ title }}
-
-        <view class="nav-btn-back">
-          <u-icon name="arrow-left" size="36rpx" color="#fff" @click="handleNavBack" />
+      <view v-if="title" class="title-container" :style="[titleStyle]" :class="isShowCenter ? 'justify-center' : ''">
+        <view class="nav-btn-back" :class="isShowCenter ? 'absolute' : 'pr-20rpx'" @click="handleNavBack">
+          <!-- <u-icon name="arrow-left" size="36rpx" color="#fff" @click="handleNavBack" /> -->
+          <img class="w-16rpx h-32rpx" src="@/static/tabbar/back-icon.png" alt="">
         </view>
+        <div @click="isShowCenter ? '' : handleNavBack()">
+          {{ title }}
+        </div>
       </view>
       <view v-else class="nav-content" :style="[navContent, contentStyle]">
         <slot name="default"></slot>
@@ -33,7 +35,8 @@ const props = defineProps({
   titleStyle: { type: Object, default: () => ({}) },
   // 显示底部边框
   border: { type: Boolean, default: false },
-
+  // 是否居中
+  isShowCenter: { type: Boolean, default: false },
 })
 /* 顶部胶囊的相关信息 */
 const capsule = ref(getMenuButtonBoundingRect())
@@ -90,20 +93,18 @@ const handleNavBack = () => {
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
   text-align: center;
   font-size: $uni-font-size-base;
   color: $uni-text-color;
   position: relative;
 
   .nav-btn-back {
-    position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
     display: flex;
     align-items: center;
-    padding-left: $space-sm;
+    padding-left: 32rpx;
   }
 }
 </style>

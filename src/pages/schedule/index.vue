@@ -8,6 +8,7 @@
         fontSize: '36rpx',
         fontWeight: 'bold',
       }"
+      :isShowCenter="true"
     ></navbar>
     <view class="schedule-tabs">
       <view v-for="(item, index) in scheduleTabs" :key="index" @click="changeScheduleTabs(index)">
