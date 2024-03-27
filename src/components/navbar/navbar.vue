@@ -45,14 +45,14 @@ const sysInfo = shallowRef(getSystemSetting())
 
 /* 导航栏的样式（不包含状态栏） */
 const navStyle = computed(() => {
-  const { top = 24, bottom = 56 } = capsule.value
+  const { top = 24, bottom = 56, height } = capsule.value
   const { statusBarHeight = 20 } = sysInfo.value
 
   const offset = top - statusBarHeight
 
   return {
-    height: `${offset + bottom}px`,
-    paddingTop: `${statusBarHeight}rpx`
+    height: `${offset * 2 + height + 8}px`,
+    paddingTop: `${statusBarHeight}px`
   }
 
 })

@@ -1,11 +1,11 @@
 <template>
   <view class="page">
-    <image src="/static/blueBg2.png" class="bg-image" mode="top" />
+    <image src="/static/bgnavbar.png" class="bg-image" :style="[bgImageHeight]" />
     <view>
       <navbar title="课堂回顾" :titleStyle="{
-        color: '#fff',
-        fontSize: '36rpx',
-      }">
+      color: '#fff',
+      fontSize: '36rpx',
+    }">
       </navbar>
     </view>
     <view class="selectFrom">
@@ -23,9 +23,9 @@
         <u-icon v-else name="arrow-up" color="#B0B8C7" size="26rpx" @click="handleSemester"></u-icon>
       </view>
       <view class="selectFrom_item">
-        <view class="select_text">{{ timeList[0].time }}</view>
+        <view class="select_text" @click="showCalendar = true">{{ timeList[0].time }}</view>
         <view class="select_date">至</view>
-        <view class="select_text">{{ timeList[1]?.time }}</view>
+        <view class="select_text" @click="showCalendar = true">{{ timeList[1]?.time }}</view>
         <view class="lineDateStyle">|</view>
         <img class="w-44rpx h-44rpx" src="@/static/classReview/calendar.png" @click="showCalendar = true">
         <!-- <up-calendar :show="showCalendar" :mode="mode" @confirm="handleConfirmCalendar" @close="showCalendar = false"
@@ -34,7 +34,7 @@
       </view>
     </view>
 
-    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="148" scrollContainer scrollRefresher
+    <PagesContainer :loading="pageLoading" hasCustomNavbar :customHeight="96" scrollContainer scrollRefresher
       scrollToLowerAllow @scrollToLower="onNextPage" @onRefresh="onRefreshPage">
       <view class="listStyle" v-if="pageList.length">
         <view class="listItemStyle" v-for="item in pageList" :key="item.classCoursesHistoryId"
@@ -79,6 +79,7 @@ import { getClassCoursesHistory, getCourseBySchoolId } from './service'
 import { usePagination } from '@/utils/usePagination.js'
 import hCalendar from '@/components/common/h-calendar.vue'
 import userStore from "@/stores/index.js"
+import { getBgNavBarHeight } from '@/utils/helper/cacheQueryHelper'
 const { userInfoStore } = userStore();
 const pageLoading = shallowRef(false)
 const showSubject = shallowRef(false)
@@ -86,6 +87,12 @@ const showSemester = shallowRef(false)
 const mode = shallowRef('range');
 const semesterData = reactive({ year: '请选择学期', id: '' })
 const courseData = reactive({ name: '全部学科', id: '' })
+const bgImageHeight = computed(() => {
+  const { height, paddingTop } = getBgNavBarHeight()
+  const bgHeight = (height + paddingTop)
+  return { height: `${bgHeight + 8}px ` }
+})
+
 // const courseList = ref([])
 const pageList = computed(() => {
   return pageData.payload.data
@@ -331,7 +338,6 @@ const hangleDetail = (e) => {
     position: fixed;
     top: 0;
     left: 0;
-    height: 222rpx !important;
     width: 100%;
     z-index: -1;
     pointer-events: none;

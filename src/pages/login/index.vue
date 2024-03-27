@@ -25,7 +25,7 @@
             </u-checkbox>
           </u-checkbox-group>
         </view>
-        <view class="mb-50rpx">
+        <view class="mb-100rpx">
           <up-button :custom-style="buttonCustomStyle" :throttle-time="600" type="primary" text="登录"
             @click="handleLogin"></up-button>
         </view>
@@ -184,8 +184,8 @@ const handleLogin = async () => {
 
   .loginContainer {
     background: #fff;
-    border-top-left-radius: 20rpx;
-    border-top-right-radius: 20rpx;
+    border-top-left-radius: 60rpx;
+    border-top-right-radius: 60rpx;
     padding: 120rpx 60rpx 50rpx 60rpx;
     // height: calc(100vh-);
 
@@ -212,7 +212,7 @@ const handleLogin = async () => {
   }
 
   &__title {
-    @apply text-52rpx ml-40rpx text-[#FFFFFF];
+    @apply text-52rpx ml-40rpx mt-134rpx text-[#FFFFFF];
   }
 
   &__desc {

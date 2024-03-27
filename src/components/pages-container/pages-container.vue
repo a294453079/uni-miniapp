@@ -20,7 +20,8 @@ import Loading from '@/components/loading/loading.vue'
 import { sleep } from '@/utils/helper/uniHelper'
 import {
   getMenuButtonBoundingRect,
-  getSystemSetting
+  getSystemSetting,
+  getBgNavBarHeight
 } from '@/utils/helper/cacheQueryHelper'
 const props = defineProps({
   hasCustomNavbar: {
@@ -95,18 +96,15 @@ const containerStyle = ref({
 
 const initCustomHeight = () => {
   if (props.hasCustomNavbar) {
-    const { statusBarHeight = 24 } = getSystemSetting()
-    console.log('状态栏', statusBarHeight);
-    const { top, bottom } = getMenuButtonBoundingRect()
-    console.log('胶囊', top, bottom)
-
+    const { height, paddingTop } = getBgNavBarHeight()
+    const bgHeight = (height + paddingTop)
     if (props.customHeight) {
       containerStyle.value = {
-        height: `calc(100vh - ${top - statusBarHeight + bottom + props.customHeight}px)`
+        height: `calc(100vh - ${bgHeight + props.customHeight + 8}px)`
       }
     } else {
       containerStyle.value = {
-        height: `calc(100vh - ${top - statusBarHeight + bottom}px)`
+        height: `calc(100vh - ${bgHeight + 8}px)`
       }
     }
   }
